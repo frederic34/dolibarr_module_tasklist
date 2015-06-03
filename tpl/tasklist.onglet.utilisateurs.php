@@ -1,13 +1,10 @@
 <?php
 
 	//Récupération de la liste utilisateur
+	$disabled = ($user->rights->projet->all->lire) ? 0 : 1;
+
 	$form = new Form($db);
-	$selectUsers = $form->select_dolusers($user->id,'search_user" data-native-menu="false',1);
-	
-	if($conf->asset->enabled && $user->rights->asset->of->lire){
-		//Récupération de la liste des OF
-		$TOf = _getOfList($PDOdb);
-	}
+	$selectUsers = $form->select_dolusers($user->id,'search_user" data-native-menu="false',1,'',$disabled);
 	
 	//Affichage des filtres
 	?>
@@ -18,21 +15,3 @@
 		</div>
 	</div>
 	<hr>
-	<?php
-	
-	//Récupération de la liste des tâches à réaliser
-	$TTasks = _getTaskList($PDOdb);
-	
-	//Affichage des tâches
-	if(count($TTasks)){
-		
-		foreach($TTasks as $task){
-			?>
-			
-			<hr>
-			<?php
-		}
-		
-	}
-	
-	

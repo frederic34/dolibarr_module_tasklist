@@ -2,9 +2,13 @@
 
 	require('config.php');
 	dol_include_once('/tasklist/fonction.php');
-	dol_include_once('/compta/facture/class/facture.class.php');
-	dol_include_once('/societe/class/societe.class.php');
+	dol_include_once('/projet/class/task.class.php');
+	dol_include_once('/projet/class/projet.class.php');
 	dol_include_once('/user/class/usergroup.class.php');
+	dol_include_once('/core/lib/date.lib.php');
+	
+	if($conf->asset->enabled) dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
+	if($conf->workstation->enabled) dol_include_once('/workstation/class/workstation.class.php');
 
     $conf->use_javascript_ajax = false; // 3.7 compatibility
     
@@ -42,7 +46,7 @@
 						
 						<!-- Affichage de l'onglet "Utilisateur" --> 
 						<?php require('./tpl/tasklist.onglet.utilisateurs.php'); ?>
-						
+						<?php require('./tpl/tasklist.listeTache.php'); ?>
 					</div>
 					<?php	
 					if($conf->workstation->enabled){
@@ -50,7 +54,7 @@
 						<div id="corps-2" class="ui-content ui-bar-a corps" style="width: 100%">
 							<!-- Affichage de l'onglet "Postes de travail" -->
 							<?php require('./tpl/tasklist.onglet.workstations.php'); ?>
-							
+							<?php require('./tpl/tasklist.listeTache.php'); ?>
 						</div>
 						<?php
 					}
@@ -59,7 +63,7 @@
 						<div id="corps-3" class="ui-content ui-bar-a corps" style="width: 100%">
 							<!-- Affichage de l'onglet "Ordre de fabrication" -->
 							<?php require('./tpl/tasklist.onglet.of.php'); ?>
-							
+							<?php require('./tpl/tasklist.listeTache.php'); ?>
 						</div>
 						<?php
 					}
