@@ -31,7 +31,6 @@
 		<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
 		<script src="js/jquery.mobile-1.3.0.min.js" type="text/javascript"></script>
 		<script src="js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
-		<script src="js/ajax.js" type="text/javascript"></script>
 		<script src="js/fonctions.js" type="text/javascript"></script>
 	</head>
 	<body>		
@@ -40,7 +39,7 @@
 				<div id="main" class="ui-grid-a contenu">
 					<!-- Affichage des onglets -->
 					<?php require('./tpl/tasklist.onglet.php'); ?>
-					
+
 					<!-- Corps de la page -->
 					<div id="corps-1" class="ui-content ui-bar-a corps" style="width: 100%">
 						

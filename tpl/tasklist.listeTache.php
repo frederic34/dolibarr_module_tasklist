@@ -4,10 +4,12 @@
 	//pre($TTasks,true);
 	//Affichage des tâches
 	if(count($TTasks)){
-		
+		?>
+		<div id='liste_tache' style="width:100%;">
+		<?php
 		foreach($TTasks as $task){
 			?>
-			<div class="ui-grid-b" style="margin-left: 15px; margin-right: 15px;">
+			<div if="task[<?php echo $task->rowid; ?>]" class="ui-grid-b" style="margin-left: 15px; margin-right: 15px;">
 				<div class="ui-block-a" style="font-size: 20px;">
 					Tâche : <label id="task[<?php echo $task->rowid; ?>]['taskRef']"><?php echo $task->taskRef." - ".$task->taskLabel; ?></label>
 				</div>
@@ -36,12 +38,14 @@
 			<div class="ui-grid-a" style="margin-left: 15px; margin-right: 15px;">
 				<p style="text-align: center; width: 100%;">
 					 <a href="#" data-role="button" data-theme="b" data-inline="true">Démarrer</a>
-					 <a href="#" data-role="button" data-theme="b" data-inline="true">Mettre en pause</a>
-					 <a href="#" data-role="button" data-theme="b" data-inline="true">Terminer</a>
+					 <a href="#" data-role="button" data-theme="b" data-inline="true" style="display:none;">Mettre en pause</a>
+					 <a href="#" data-role="button" data-theme="b" data-inline="true" style="display:none;">Terminer</a>
 				</p>
 			</div>
 			<hr>
 			<?php
 		}
-		
+		?>
+		</div>
+	<?php
 	}
