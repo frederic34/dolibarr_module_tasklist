@@ -1,13 +1,17 @@
 <?php
 
 	require('config.php');
+	dol_include_once('/tasklist/fonction.php');
 	dol_include_once('/compta/facture/class/facture.class.php');
 	dol_include_once('/societe/class/societe.class.php');
 	dol_include_once('/user/class/usergroup.class.php');
 
     $conf->use_javascript_ajax = false; // 3.7 compatibility
     
-    $langs->load('workstation@workstation');
+    if($conf->workstation->enabled) $langs->load('workstation@workstation');
+	if($conf->asset->enabled) $langs->load('asset@asset');
+	
+	$PDOdb = new TPDOdb;
 ?>
 <!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
 <!DOCTYPE html>
@@ -33,11 +37,33 @@
 					<!-- Affichage des onglets -->
 					<?php require('./tpl/tasklist.onglet.php'); ?>
 					
-					<!-- Affichage de l'onglet "Utilisateur" --> 
-					<?php require('./tpl/tasklist.onglet.utilisateurs.php'); ?>
-					
-					<!-- Affichage de l'onglet "Postes de travail" -->
-					<?php require('./tpl/tasklist.onglet.workstations.php'); ?>
+					<!-- Corps de la page -->
+					<div id="corps-1" class="ui-content ui-bar-a corps" style="width: 100%">
+						
+						<!-- Affichage de l'onglet "Utilisateur" --> 
+						<?php require('./tpl/tasklist.onglet.utilisateurs.php'); ?>
+						
+					</div>
+					<?php	
+					if($conf->workstation->enabled){
+						?>
+						<div id="corps-2" class="ui-content ui-bar-a corps" style="width: 100%">
+							<!-- Affichage de l'onglet "Postes de travail" -->
+							<?php require('./tpl/tasklist.onglet.workstations.php'); ?>
+							
+						</div>
+						<?php
+					}
+					if($conf->asset->enabled){
+						?>
+						<div id="corps-3" class="ui-content ui-bar-a corps" style="width: 100%">
+							<!-- Affichage de l'onglet "Ordre de fabrication" -->
+							<?php require('./tpl/tasklist.onglet.of.php'); ?>
+							
+						</div>
+						<?php
+					}
+					?>
 				</div>
 			</div>
 		</div>

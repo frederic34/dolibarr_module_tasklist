@@ -6,89 +6,13 @@
 	padding: 0;
 }
 
-#main_left{
-	height: 100%;
-	overflow: visible;
-	float:left;
-}
-
-#main_right{
-	width: 416px;
-	float:left;
-}
-
 .corps{
 	height: 100%;
-}
-
-#zone_saisie{
-	height: 55px;
-}
-
-#clavier{
-	padding: 5px 5px 5px 5px;
-	height: 296px; /* 364 */
-}
-
-#chiffres{
-	width: 297px;
-	float:left;
-}
-
-#chiffres .ui-btn {
-    height: 70px;
-    margin: 1px 1px 1px 1px;
-    width: 90px;
-}
-
-#actions{
-	float:left;
-	width:94px;
-}
-
-#autres .ui-btn {
-    height: 70px;
-    margin: 1px 1px 1px 1px;
-    width: 90px;
-}
-
-#autres #valide .ui-btn {
-    height: 143px;
-    margin: 1px 1px 1px 1px;
-    width: 90px;
-}
-
-#ticket .ui-grid-b .ui-bar{
-	padding-top:0;
-}
-
-#ticket .ui-grid-a .ui-bar{
-	padding-bottom:0;
-}
-
-#ticket .ui-grid-a .ui-block-a{
-	width:33.333%;
-}
-
-#ticket .ui-grid-a .ui-block-b{
-	width:66.666%;
 }
 
 .bouton_clavier{
 	width: 90px;
 	height: 70px;	
-}
-
-#corps-1 .ui-btn-inner, #corps-1 .ui-btn-text {
-	height:45px;
-}
-
-#recapitulatif{
-	font-size: 20px;
-}
-
-#etat_payement{
-	font-size: 27px;
 }
 
 /* Listview autocomplete */
@@ -109,11 +33,18 @@ ul.ui-autocomplete li {
 	font-size: 16px;
 }
 
-#corps-1 .ui-select .ui-btn-inner, #corps-1 .ui-select .ui-btn-text {
-	height:20px;
-	width: 240px;
+.ui-btn-inner{
+	height: 40px;
 }
 
-#corps-1 .ui-select .ui-btn{
-	width: 306px;
+.ui-btn-text{
+	font-size: 26px;
+}
+
+.ui-content{
+	padding : 0;
+}
+
+.ui-select, .ui-controlgroup-controls{
+	width: 100%;
 }
