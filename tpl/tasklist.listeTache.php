@@ -1,6 +1,6 @@
 <?php
 	//Récupération de la liste des tâches à réaliser
-	$TTasks = _getTaskList($PDOdb);
+	$TTasks = _getTaskList($PDOdb,$user->id,'user');
 	//pre($TTasks,true);
 	//Affichage des tâches
 	if(count($TTasks)){
