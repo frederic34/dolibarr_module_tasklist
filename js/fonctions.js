@@ -4,6 +4,8 @@ var id_ba_attente = '';
 
 $(window).load(function(){
 	switch_onglet('onglet1');
+	
+	reload_liste_tache('onglet1');
 });
 
 // Actions graphique au changement d'onglet
@@ -49,33 +51,54 @@ function reload_liste_tache(onglet){
 			break;
 	}
 	
-	TTask = ajax_get_liste_task(id,type);
-	//console.log(TTask);
-	refresh_liste_tache(TTask);
+	ajax_get_liste_task(id,type);
 }
 
 function ajax_get_liste_task(id,type){
 	
 	$.ajax({
 		url: "ajax/interface.php",
-		dataType: "html",
+		dataType: "json",
 		crossDomain: true,
+		async : false,
 		data: {
 			   get:'task_liste'
 			   ,id : id
 			   ,type : type
+			   ,json : 1
 		}
 	})
 	.then(function (data){
-		return data;
+		//console.log(data);
+		refresh_liste_tache(data);
 	});
 }
 
-function refresh_liste_tache(TTask){
+function refresh_liste_tache(data){
 	
 	vider_liste();
+
+	$.each(data,function(i,task){
+		clone = $('#task_list_clone').clone();
+		
+		clone.attr('id','task_list_'+task.rowid);
+		
+		clone.find('[rel=taskRef]').text(task.taskRef);
+		clone.find('[rel=dateo]').append(task.dateo);
+		clone.find('[rel=datee]').append(task.datee);
+		clone.find('[rel=planned_workload]').append(task.planned_workload);
+		clone.find('[rel=spent_time]').append(task.spent_time);
+		clone.find('[rel=progress]').append(task.progress);
+		clone.find('[rel=priority]').append(task.priority);
+
+		clone.appendTo('#liste_tache');
+		
+		clone.show();
+	});
+
 }
 
 function vider_liste(){
 	
+	$('#liste_tache').empty();
 }

@@ -7,3 +7,15 @@ tasklistSetup = Configuration du module tasklist
 tasklistAbout = A propos du module tasklist
 
 Tasklist = Tâches à réaliser
+
+#Liste des tâches
+Task = Tâche
+DateStart = Date début
+DateEnd = Date fin
+ExpectedTime = Temps prévu (h)
+PastTime = Temps passé (h)
+Progress = Progression
+Priority = Priorité
+Start = Démarrer
+Pause = Mettre en pause
+Close = Terminer

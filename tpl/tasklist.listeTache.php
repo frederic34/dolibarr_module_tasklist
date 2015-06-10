@@ -1,51 +1,41 @@
-<?php
-	//Récupération de la liste des tâches à réaliser
-	$TTasks = _getTaskList($PDOdb,$user->id,'user');
-	//pre($TTasks,true);
-	//Affichage des tâches
-	if(count($TTasks)){
-		?>
 		<div id='liste_tache' style="width:100%;">
-		<?php
-		foreach($TTasks as $task){
-			?>
-			<div if="task[<?php echo $task->rowid; ?>]" class="ui-grid-b" style="margin-left: 15px; margin-right: 15px;">
+		</div>
+		<!--
+			DIV caché clonée pour afficher la liste : sert de template de base
+		-->
+		<div id="task_list_clone" class='task_list' style="display: none;">
+			<div class="ui-grid-b" style="margin-left: 15px; margin-right: 15px;">
 				<div class="ui-block-a" style="font-size: 20px;">
-					Tâche : <label id="task[<?php echo $task->rowid; ?>]['taskRef']"><?php echo $task->taskRef." - ".$task->taskLabel; ?></label>
+					<?php echo $langs->trans('Task'); ?> : <label rel="taskRef"></label>
 				</div>
 				<!--<div class="ui-block-b" style="font-size: 20px;">
 					Projet : <label id="task[<?php echo $task->rowid; ?>]['projetRef']"><?php echo $task->projetRef." - ".$task->projetLabel; ?></label>
 				</div>-->
 				<div class="ui-block-a" style="margin-left: 35px; margin-right: 15px;">
-					Date début : <label id="task[<?php echo $task->rowid; ?>]['dateo']"><?php echo date('d/m/Y H:i',strtotime($task->dateo)); ?></label>
+					<?php echo $langs->trans('DateStart'); ?> : <label rel="dateo"></label>
 				</div>
 				<div class="ui-block-b" style="margin-left: 35px; margin-right: 15px;">
-					Date fin : <label id="task[<?php echo $task->rowid; ?>]['datee']"><?php echo date('d/m/Y H:i',strtotime($task->datee)); ?></label>
+					<?php echo $langs->trans('DateEnd'); ?> : <label rel="datee"></label>
 				</div>
 				<div class="ui-block-a" style="margin-left: 35px; margin-right: 15px;">
-					Temps prévu : <label id="task[<?php echo $task->rowid; ?>]['planned_workload']"><?php echo $task->planned_workload; ?></label>
+					<?php echo $langs->trans('ExpectedTime'); ?> : <label rel="planned_workload"></label>
 				</div>
 				<div class="ui-block-b" style="margin-left: 35px; margin-right: 15px;">
-					Temps passé : <label id="task[<?php echo $task->rowid; ?>]['spent_time']"><?php echo $task->spent_time; ?></label>
+					<?php echo $langs->trans('PastTime'); ?> : <label rel="spent_time"></label>
 				</div>
 				<div class="ui-block-a" style="margin-left: 35px; margin-right: 15px;">
-					Progression : <label id="task[<?php echo $task->rowid; ?>]['progress']"><?php echo $task->progress; ?></label>
+					<?php echo $langs->trans('Progress'); ?> : <label rel="progress"></label> %
 				</div>
 				<div class="ui-block-b" style="margin-left: 35px; margin-right: 15px;">
-					Priorité : <label id="task[<?php echo $task->rowid; ?>]['priority']"><?php echo $task->priority; ?></label>
+					<?php echo $langs->trans('Priority'); ?> : <label rel="priority"></label>
 				</div>
 			</div>
 			<div class="ui-grid-a" style="margin-left: 15px; margin-right: 15px;">
 				<p style="text-align: center; width: 100%;">
-					 <a href="#" data-role="button" data-theme="b" data-inline="true">Démarrer</a>
-					 <a href="#" data-role="button" data-theme="b" data-inline="true" style="display:none;">Mettre en pause</a>
-					 <a href="#" data-role="button" data-theme="b" data-inline="true" style="display:none;">Terminer</a>
+					 <a href="#" data-role="button" data-theme="b" data-inline="true"><?php echo $langs->trans('Start'); ?></a>
+					 <a href="#" data-role="button" data-theme="b" data-inline="true" style="display:none;"><?php echo $langs->trans('Pause'); ?></a>
+					 <a href="#" data-role="button" data-theme="b" data-inline="true" style="display:none;"><?php echo $langs->trans('Close'); ?></a>
 				</p>
 			</div>
 			<hr>
-			<?php
-		}
-		?>
 		</div>
-	<?php
-	}
