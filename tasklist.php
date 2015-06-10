@@ -51,7 +51,7 @@
 						<?php require('./tpl/tasklist.listeTache.php'); ?>
 					</div>
 					<?php	
-					if($conf->workstation->enabled){
+					if($conf->workstation->enabled && $user->rights->workstation->all->read){
 						?>
 						<div id="corps-2" class="ui-content ui-bar-a corps" style="width: 100%">
 							<!-- Affichage de l'onglet "Postes de travail" -->
@@ -64,7 +64,7 @@
 						</div>
 						<?php
 					}
-					if($conf->asset->enabled){
+					if($conf->asset->enabled && $user->rights->asset->of->lire){
 						?>
 						<div id="corps-3" class="ui-content ui-bar-a corps" style="width: 100%">
 							<!-- Affichage de l'onglet "Ordre de fabrication" -->

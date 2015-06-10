@@ -1,7 +1,7 @@
 <?php
 
 	//Récupération de la liste des postes de travail
-	$disabled = ($user->rights->projet->all->lire) ? 0 : 1;
+	$disabled = ($user->rights->workstation->all->lire) ? 0 : 1;
 	
 	$sql = "SELECT rowid, name FROM ".MAIN_DB_PREFIX."workstation";
 	$PDOdb->Execute($sql);
