@@ -45,6 +45,9 @@
 						
 						<!-- Affichage de l'onglet "Utilisateur" --> 
 						<?php require('./tpl/tasklist.onglet.utilisateurs.php'); ?>
+						
+						<div id='liste_tache_user' style="width:100%;"></div>
+						
 						<?php require('./tpl/tasklist.listeTache.php'); ?>
 					</div>
 					<?php	
@@ -53,7 +56,11 @@
 						<div id="corps-2" class="ui-content ui-bar-a corps" style="width: 100%">
 							<!-- Affichage de l'onglet "Postes de travail" -->
 							<?php require('./tpl/tasklist.onglet.workstations.php'); ?>
+							
+							<div id='liste_tache_workstation' style="width:100%;"></div>
+							
 							<?php require('./tpl/tasklist.listeTache.php'); ?>
+
 						</div>
 						<?php
 					}
@@ -62,7 +69,11 @@
 						<div id="corps-3" class="ui-content ui-bar-a corps" style="width: 100%">
 							<!-- Affichage de l'onglet "Ordre de fabrication" -->
 							<?php require('./tpl/tasklist.onglet.of.php'); ?>
+							
+							<div id='liste_tache_of' style="width:100%;"></div>
+							
 							<?php require('./tpl/tasklist.listeTache.php'); ?>
+							
 						</div>
 						<?php
 					}

@@ -1,5 +1,3 @@
-		<div id='liste_tache' style="width:100%;">
-		</div>
 		<!--
 			DIV caché clonée pour afficher la liste : sert de template de base
 		-->

@@ -6,6 +6,18 @@ $(window).load(function(){
 	switch_onglet('onglet1');
 	
 	reload_liste_tache('onglet1');
+
+	$("#search_user").on( "change", function(event, ui) {
+ 		reload_liste_tache('onglet1');
+	});
+	
+	$("#search_workstation").on( "change", function(event, ui) {
+ 		reload_liste_tache('onglet2');
+	});
+	
+	$("#search_of").on( "change", function(event, ui) {
+ 		reload_liste_tache('onglet3');
+	});
 });
 
 // Actions graphique au changement d'onglet
@@ -70,13 +82,13 @@ function ajax_get_liste_task(id,type){
 	})
 	.then(function (data){
 		//console.log(data);
-		refresh_liste_tache(data);
+		refresh_liste_tache(data,type);
 	});
 }
 
-function refresh_liste_tache(data){
+function refresh_liste_tache(data,onglet){
 	
-	vider_liste();
+	vider_liste(onglet);
 
 	$.each(data,function(i,task){
 		clone = $('#task_list_clone').clone();
@@ -91,14 +103,14 @@ function refresh_liste_tache(data){
 		clone.find('[rel=progress]').append(task.progress);
 		clone.find('[rel=priority]').append(task.priority);
 
-		clone.appendTo('#liste_tache');
+		clone.appendTo('#liste_tache_'+onglet);
 		
 		clone.show();
 	});
 
 }
 
-function vider_liste(){
+function vider_liste(onglet){
 	
-	$('#liste_tache').empty();
+	$('#liste_tache_'+onglet).empty();
 }
