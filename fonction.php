@@ -39,7 +39,7 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 				break;
 			case 'of':
 				//On ne prends que les tâches liées à l'Ordre de Fabrication
-				$sql .= " WHERE te.fk_of = ".$id." ";
+				if(!empty($id) && $id>=0) $sql .= " WHERE te.fk_of = ".$id." ";
 				break;
 		}
 	}
