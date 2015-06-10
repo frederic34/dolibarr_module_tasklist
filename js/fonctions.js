@@ -6,7 +6,10 @@ $(window).load(function(){
 	switch_onglet('onglet1');
 	
 	reload_liste_tache('onglet1');
-
+	
+	/*
+	 * ACTION LISTE DEROULANTE
+	 */
 	$("#search_user").on( "change", function(event, ui) {
  		reload_liste_tache('onglet1');
 	});
@@ -18,7 +21,85 @@ $(window).load(function(){
 	$("#search_of").on( "change", function(event, ui) {
  		reload_liste_tache('onglet3');
 	});
+	
+	/*
+	 * ACTIONS BOUTONS
+	 */
+	$(".start").on( "click", function(event, ui) {
+		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
+ 		start_task(id_task);
+	});
+	
+	$(".pause").on( "click", function(event, ui) {
+		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
+ 		stop_task(id_task);
+	});
+	
+	$(".close").on( "click", function(event, ui) {
+		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
+ 		close_task(id_task);
+	});
+	
+	
+	
 });
+
+function start_task(id_task){
+	
+	$.ajax({
+		url: "ajax/interface.php",
+		dataType: "json",
+		crossDomain: true,
+		async : false,
+		data: {
+			   put:'start_task'
+			   ,id : id_task
+			   ,json : 1
+		}
+	})
+	.then(function (data){
+		//console.log(data);
+		refresh_liste_tache(data,type);
+	});
+}
+
+function stop_task(id_task){
+	
+	$.ajax({
+		url: "ajax/interface.php",
+		dataType: "json",
+		crossDomain: true,
+		async : false,
+		data: {
+			   put:'stop_task'
+			   ,id : id_task
+			   ,json : 1
+		}
+	})
+	.then(function (data){
+		//console.log(data);
+		refresh_liste_tache(data,type);
+	});
+}
+
+function close_task(id_task){
+	
+	$.ajax({
+		url: "ajax/interface.php",
+		dataType: "json",
+		crossDomain: true,
+		async : false,
+		data: {
+			   put:'close_task'
+			   ,id : id_task
+			   ,json : 1
+		}
+	})
+	.then(function (data){
+		//console.log(data);
+		refresh_liste_tache(data,type);
+	});
+}
 
 // Actions graphique au changement d'onglet
 function switch_onglet(onglet){

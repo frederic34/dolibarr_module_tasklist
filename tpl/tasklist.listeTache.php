@@ -30,9 +30,9 @@
 			</div>
 			<div class="ui-grid-a" style="margin-left: 15px; margin-right: 15px;">
 				<p style="text-align: center; width: 100%;">
-					 <a href="#" data-role="button" data-theme="b" data-inline="true"><?php echo $langs->trans('Start'); ?></a>
-					 <a href="#" data-role="button" data-theme="b" data-inline="true" style="display:none;"><?php echo $langs->trans('Pause'); ?></a>
-					 <a href="#" data-role="button" data-theme="b" data-inline="true" style="display:none;"><?php echo $langs->trans('Close'); ?></a>
+					 <a href="#" data-role="button" data-theme="b" data-inline="true" class="start"><?php echo $langs->trans('Start'); ?></a>
+					 <a href="#" data-role="button" data-theme="b" data-inline="true" class="pause" style="display:none;"><?php echo $langs->trans('Pause'); ?></a>
+					 <a href="#" data-role="button" data-theme="b" data-inline="true" class="close" style="display:none;"><?php echo $langs->trans('Close'); ?></a>
 				</p>
 			</div>
 			<hr>

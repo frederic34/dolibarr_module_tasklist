@@ -1,7 +1,6 @@
 <?php
 
 	require('config.php');
-	dol_include_once('/tasklist/fonction.php');
 	dol_include_once('/projet/class/task.class.php');
 	dol_include_once('/projet/class/projet.class.php');
 	dol_include_once('/user/class/usergroup.class.php');
