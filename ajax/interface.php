@@ -45,10 +45,10 @@ function _put(&$PDOdb,$case) {
 			__out(_startTask($PDOdb,$_REQUEST['id']));
 			break;
 		case 'stop_task':
-			__out(_stopTask($PDOdb,$_REQUEST['id']));
+			__out(_stopTask($PDOdb,$_REQUEST['id'],$_REQUEST['hour'],$_REQUEST['minutes']));
 			break;
 		case 'close_task':
-			__out(_closeTask($PDOdb,$_REQUEST['id']));
+			__out(_closeTask($PDOdb,$_REQUEST['id'],$_REQUEST['hour'],$_REQUEST['minutes']));
 			break;
 		default:
 			
@@ -56,13 +56,13 @@ function _put(&$PDOdb,$case) {
 	}
 }
 
-function _closeTask(&$PDOdb,$taskId){
+function _closeTask(&$PDOdb,$taskId,$hour,$minutes){
 	global $db, $user;
 	
 	$Tid = explode('_',$taskId);
 	$id = array_pop($Tid);
 	
-	_stopTask($PDOdb,$taskId);
+	_stopTask($PDOdb,$taskId,$hour,$minutes);
 	
 	$task = new Task($db);
 	$task->fetch($id);
@@ -74,7 +74,7 @@ function _closeTask(&$PDOdb,$taskId){
 	return 0;
 }
 
-function _stopTask(&$PDOdb,$taskId){
+function _stopTask(&$PDOdb,$taskId,$hour,$minutes){
 	global $db,$user;
 
 	$Tid = explode('_',$taskId);
@@ -88,10 +88,10 @@ function _stopTask(&$PDOdb,$taskId){
 		$PDOdb->Execute("SELECT tasklist_time_start FROM ".MAIN_DB_PREFIX."projet_task  WHERE rowid = ".$task->id);
 
 		if($PDOdb->Get_line()){
-			$time_start = strtotime($PDOdb->Get_field("tasklist_time_start"));
-			$time_end = time();
-			
-			$time = $time_end - $time_start;
+			/*$time_start = strtotime($PDOdb->Get_field("tasklist_time_start"));
+			$time_end = strtotime($time);*/
+			//ime = $time_end - $time_start;
+			$time = ($hour * 60 * 60) + ($minutes * 60 );
 			
 			if($time > 0){
 				
