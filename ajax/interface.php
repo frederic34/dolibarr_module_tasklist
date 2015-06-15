@@ -27,7 +27,7 @@ function _get(&$PDOdb,$case) {
 			__out(_getTasklist($PDOdb,$_REQUEST['id'],$_REQUEST['type']));
 			break;
 			
-		case 'time_spend':
+		case 'time_spent':
 			__out(_getTimeSpent($PDOdb,$_REQUEST['id']));
 			break;
 		default:
@@ -115,7 +115,9 @@ function _stopTask(&$PDOdb,$taskId){
 }
 
 function _getTimeSpent(&$PDOdb,$taskId){
-			
+	global $db;	
+	
+	//echo 'coucou';		
 	$Tid = explode('_',$taskId);
 	$id = array_pop($Tid);
 

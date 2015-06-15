@@ -10,7 +10,7 @@ $(document).ready(function(){
 	/*
 	 * ACTION LISTE DEROULANTE
 	 */
-	$("#search_").on( "change", function(event, ui) {
+	$("#search_user").on( "change", function(event, ui) {
  		reload_liste_tache('onglet1');
 	});
 	
@@ -76,7 +76,12 @@ function getTimeSpent(id_task){
 function stop_task(id_task,onglet){
 	
 	$("#confirm-add-time" ).popup('open');
-	alert(getTimeSpent(id_task));
+	timespent = getTimeSpent(id_task);
+	TTime = timespent.split(":");
+	hour = TTime[0];
+	minutes = TTime[1];
+	$('#heure').val(hour);
+	$('#minute').val(minutes);
 	
 	$("#liste_tache_"+onglet+" > #"+id_task).find('.start').show();
 	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').hide();
