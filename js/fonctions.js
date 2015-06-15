@@ -22,28 +22,7 @@ $(document).ready(function(){
  		reload_liste_tache('onglet3');
 	});
 	
-	/*
-	 * ACTIONS BOUTONS
-	 */
-	$(".start").on( "click", function(event, ui) {
-		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
-		onglet = "user";
- 		start_task(id_task,onglet);
-	});
-	
-	$(".pause").on( "click", function(event, ui) {
-		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
-		onglet = "user";
- 		stop_task(id_task,onglet);
-	});
-	
-	$(".close").on( "click", function(event, ui) {
-		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
-		onglet = "user";
- 		close_task(id_task,onglet);
-	});
-	
-	
+	$("#confirm-add-time" ).popup();
 	
 });
 
@@ -72,7 +51,32 @@ function start_task(id_task,onglet){
 	});
 }
 
+function getTimeSpent(id_task){
+	
+	var res = 0;
+	
+	$.ajax({
+		url: "ajax/interface.php",
+		dataType: "json",
+		crossDomain: true,
+		async : false,
+		data: {
+			   get:'time_spent'
+			   ,id : id_task
+			   ,json : 1
+		}
+	})
+	.then(function (data){
+		res = data;
+	});
+	
+	return res;
+}
+
 function stop_task(id_task,onglet){
+	
+	$("#confirm-add-time" ).popup('open');
+	alert(getTimeSpent(id_task));
 	
 	$("#liste_tache_"+onglet+" > #"+id_task).find('.start').show();
 	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').hide();

@@ -26,6 +26,10 @@ function _get(&$PDOdb,$case) {
 		case 'task_liste':
 			__out(_getTasklist($PDOdb,$_REQUEST['id'],$_REQUEST['type']));
 			break;
+			
+		case 'time_spend':
+			__out(_getTimeSpent($PDOdb,$_REQUEST['id']));
+			break;
 		default:
 			
 			break;
@@ -40,27 +44,12 @@ function _put(&$PDOdb,$case) {
 		case 'start_task':
 			__out(_startTask($PDOdb,$_REQUEST['id']));
 			break;
-		
 		case 'stop_task':
 			__out(_stopTask($PDOdb,$_REQUEST['id']));
 			break;
-		
 		case 'close_task':
 			__out(_closeTask($PDOdb,$_REQUEST['id']));
 			break;
-		
-		/*case 'logout':
-			/* Déloggue ! 
-			$prefix=dol_getprefix();
-			$sessionname='DOLSESSID_'.$prefix;
-			$sessiontimeout='DOLSESSTIMEOUT_'.$prefix;
-			if (! empty($_COOKIE[$sessiontimeout])) ini_set('session.gc_maxlifetime',$_COOKIE[$sessiontimeout]);
-			session_name($sessionname);
-			session_destroy();
-			dol_syslog("End of session ".$sessionname);
-
-			break;*/
-
 		default:
 			
 			break;
@@ -100,7 +89,7 @@ function _stopTask(&$PDOdb,$taskId){
 
 		if($PDOdb->Get_line()){
 			$time_start = strtotime($PDOdb->Get_field("tasklist_time_start"));
-			$time_end = strtotime(date('Y-m-d H:i:s'));
+			$time_end = time();
 			
 			$time = $time_end - $time_start;
 			
@@ -123,6 +112,31 @@ function _stopTask(&$PDOdb,$taskId){
 	}
 	
 	return 0;
+}
+
+function _getTimeSpent(&$PDOdb,$taskId){
+			
+	$Tid = explode('_',$taskId);
+	$id = array_pop($Tid);
+
+	$task = new Task($db);
+	$task->fetch($id);
+	//echo "UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '".date('Y-m-d h:i:s')."' WHERE rowid = ".$task->id;
+	if($task->id){
+		
+		$PDOdb->Execute("SELECT tasklist_time_start FROM ".MAIN_DB_PREFIX."projet_task  WHERE rowid = ".$task->id);
+
+		if($PDOdb->Get_line()){
+			$time_start = strtotime($PDOdb->Get_field("tasklist_time_start"));
+			$time_end = time();
+
+			$time = $time_end - $time_start;
+			
+			return date('H:i',$time);
+		}
+	}
+	return -1;
+
 }
 
 function _startTask(&$PDOdb,$taskId){

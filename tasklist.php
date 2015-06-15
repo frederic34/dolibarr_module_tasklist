@@ -80,5 +80,7 @@
 				</div>
 			</div>
 		</div>
+		
+		<?php require('./tpl/tasklist.popup.php'); ?>
 	</body>
 </html>
