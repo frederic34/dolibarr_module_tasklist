@@ -97,9 +97,9 @@ function stop_task(id_task,onglet){
 
 function close_task(id_task,onglet){
 	
-	$("#liste_tache_"+onglet+" > #"+id_task).find('.start').hide();
+	/*$("#liste_tache_"+onglet+" > #"+id_task).find('.start').hide();
 	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').hide();
-	$("#liste_tache_"+onglet+" > #"+id_task).find('.close').hide();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.close').hide();*/
 	
 	$.ajax({
 		url: "ajax/interface.php",
@@ -114,7 +114,8 @@ function close_task(id_task,onglet){
 	})
 	.then(function (data){
 		//console.log(data);
-		refresh_liste_tache(data,type);
+		//alert(onglet);
+		reload_liste_tache(onglet);
 	});
 }
 
