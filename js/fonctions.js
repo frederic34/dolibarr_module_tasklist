@@ -46,6 +46,10 @@ $(window).load(function(){
 
 function start_task(id_task){
 	
+	$("#"+id_task).find('.start').hide();
+	$("#"+id_task).find('.pause').show();
+	$("#"+id_task).find('.close').show();
+	
 	$.ajax({
 		url: "ajax/interface.php",
 		dataType: "json",
@@ -59,11 +63,17 @@ function start_task(id_task){
 	})
 	.then(function (data){
 		//console.log(data);
-		refresh_liste_tache(data,type);
+		if(data == 1){
+			
+		}
 	});
 }
 
 function stop_task(id_task){
+	
+	$("#"+id_task).find('.start').show();
+	$("#"+id_task).find('.pause').hide();
+	$("#"+id_task).find('.close').show();
 	
 	$.ajax({
 		url: "ajax/interface.php",
@@ -78,11 +88,15 @@ function stop_task(id_task){
 	})
 	.then(function (data){
 		//console.log(data);
-		refresh_liste_tache(data,type);
+		//refresh_liste_tache(data,type);
 	});
 }
 
 function close_task(id_task){
+	
+	$("#"+id_task).find('.start').hide();
+	$("#"+id_task).find('.pause').hide();
+	$("#"+id_task).find('.close').hide();
 	
 	$.ajax({
 		url: "ajax/interface.php",

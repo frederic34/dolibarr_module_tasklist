@@ -33,7 +33,7 @@ function _get(&$PDOdb,$case) {
 	
 }
 
-function _put($case) {
+function _put(&$PDOdb,$case) {
 	
 	switch ($case) {
 		
@@ -49,8 +49,8 @@ function _put($case) {
 			__out(_closeTask($PDOdb,$_REQUEST['id']));
 			break;
 		
-		case 'logout':
-			/* Déloggue ! */
+		/*case 'logout':
+			/* Déloggue ! 
 			$prefix=dol_getprefix();
 			$sessionname='DOLSESSID_'.$prefix;
 			$sessiontimeout='DOLSESSTIMEOUT_'.$prefix;
@@ -59,12 +59,72 @@ function _put($case) {
 			session_destroy();
 			dol_syslog("End of session ".$sessionname);
 
-			break;
+			break;*/
 
 		default:
 			
 			break;
 	}
+}
+
+function _closeTask(&$PDOdb,$taskId){
+	global $db;
+}
+
+function _stopTask(&$PDOdb,$taskId){
+	global $db,$user;
+
+	$Tid = explode('_',$taskId);
+	$id = array_pop($Tid);
+
+	$task = new Task($db);
+	$task->fetch($id);
+	//echo "UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '".date('Y-m-d h:i:s')."' WHERE rowid = ".$task->id;
+	if($task->id){
+		
+		$PDOdb->Execute("SELECT tasklist_time_start FROM ".MAIN_DB_PREFIX."projet_task  WHERE rowid = ".$task->id);
+
+		if($PDOdb->Get_line()){
+			$time_start = strtotime($PDOdb->Get_field("tasklist_time_start"));
+			$time_end = strtotime(date('Y-m-d H:i:s'));
+			
+			$time = $time_end - $time_start;
+			
+			if($time > 0){
+				
+				$task->timespent_date = date('Y-m-d');
+		        $task->timespent_datehour = date('Y-m-d H:i:s');;
+		        $task->timespent_duration = $time;
+		        $task->timespent_fk_user = $user->id;
+				
+				$task->addTimeSpent($user);
+				
+				$PDOdb->Execute("UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '0000-00-00 00:00:00' WHERE rowid = ".$task->id);
+				
+				return 1;
+			}
+		}
+	}
+	
+	return 0;
+}
+
+function _startTask(&$PDOdb,$taskId){
+	global $db;
+
+	$Tid = explode('_',$taskId);
+	$id = array_pop($Tid);
+
+	$task = new Task($db);
+	$task->fetch($id);
+	//echo "UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '".date('Y-m-d h:i:s')."' WHERE rowid = ".$task->id;
+	if($task->id){
+		$PDOdb->Execute("UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '".date('Y-m-d H:i:s')."' WHERE rowid = ".$task->id);
+		
+		return 1;
+	}
+	
+	return 0;
 }
 
 function _getTasklist(&$PDOdb,$id='',$type=''){
@@ -111,6 +171,10 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 			$res->planned_workload = convertSecondToTime($res->planned_workload,'allhourmin');
 			$TSummary = $static_tack->getSummaryOfTimeSpent($res->rowid);
 			$res->spent_time = convertSecondToTime($TSummary['total_duration'],'allhourmin');
+
+			$static_tack->fetch($res->rowid);
+			$ttemp = $static_tack->getSummaryOfTimeSpent();
+			$res->progress = round($ttemp['total_duration'] / $static_tack->planned_workload * 100, 2);
 		}
 	}
 

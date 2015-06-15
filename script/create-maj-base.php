@@ -10,7 +10,12 @@ if(!defined('INC_FROM_DOLIBARR')) {
 
 }
 
+$ATMdb = new TPDOdb;
 
+//Obligatoire pour que la fonctionnalité d'import standard fonctionne
+$ATMdb->Execute("ALTER TABLE ".MAIN_DB_PREFIX."projet_task ADD tasklist_time_start TIMESTAMP");
+
+$ATMdb->close();
 /* uncomment
 
 
