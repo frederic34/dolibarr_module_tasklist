@@ -96,6 +96,8 @@ function _stopTask(&$PDOdb,$taskId){
 		        $task->timespent_datehour = date('Y-m-d H:i:s');;
 		        $task->timespent_duration = $time;
 		        $task->timespent_fk_user = $user->id;
+				$ttemp = $task->getSummaryOfTimeSpent();
+				$task->progress = round($ttemp['total_duration'] / $task->planned_workload * 100, 2);
 				
 				$task->addTimeSpent($user);
 				
@@ -110,7 +112,7 @@ function _stopTask(&$PDOdb,$taskId){
 }
 
 function _startTask(&$PDOdb,$taskId){
-	global $db;
+	global $db,$user;
 
 	$Tid = explode('_',$taskId);
 	$id = array_pop($Tid);
@@ -119,7 +121,14 @@ function _startTask(&$PDOdb,$taskId){
 	$task->fetch($id);
 	//echo "UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '".date('Y-m-d h:i:s')."' WHERE rowid = ".$task->id;
 	if($task->id){
-		$PDOdb->Execute("UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '".date('Y-m-d H:i:s')."' WHERE rowid = ".$task->id);
+		$sql  = "UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '".date('Y-m-d H:i:s')."' WHERE rowid = ".$task->id;
+		
+		if($task->progress == 0){
+			$task->date_start = date('Y-m-d H:i:s');
+			$task->update($user);
+		}
+		
+		$PDOdb->Execute($sql);
 		
 		return 1;
 	}

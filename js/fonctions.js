@@ -2,7 +2,7 @@
 var id_ticket_attente = '';
 var id_ba_attente = '';
 
-$(window).load(function(){
+$(document).ready(function(){
 	switch_onglet('onglet1');
 	
 	reload_liste_tache('onglet1');
@@ -10,7 +10,7 @@ $(window).load(function(){
 	/*
 	 * ACTION LISTE DEROULANTE
 	 */
-	$("#search_user").on( "change", function(event, ui) {
+	$("#search_").on( "change", function(event, ui) {
  		reload_liste_tache('onglet1');
 	});
 	
@@ -27,28 +27,31 @@ $(window).load(function(){
 	 */
 	$(".start").on( "click", function(event, ui) {
 		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
- 		start_task(id_task);
+		onglet = "user";
+ 		start_task(id_task,onglet);
 	});
 	
 	$(".pause").on( "click", function(event, ui) {
 		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
- 		stop_task(id_task);
+		onglet = "user";
+ 		stop_task(id_task,onglet);
 	});
 	
 	$(".close").on( "click", function(event, ui) {
 		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
- 		close_task(id_task);
+		onglet = "user";
+ 		close_task(id_task,onglet);
 	});
 	
 	
 	
 });
 
-function start_task(id_task){
-	
-	$("#"+id_task).find('.start').hide();
-	$("#"+id_task).find('.pause').show();
-	$("#"+id_task).find('.close').show();
+function start_task(id_task,onglet){
+
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.start').hide();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').show();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.close').show();
 	
 	$.ajax({
 		url: "ajax/interface.php",
@@ -69,11 +72,11 @@ function start_task(id_task){
 	});
 }
 
-function stop_task(id_task){
+function stop_task(id_task,onglet){
 	
-	$("#"+id_task).find('.start').show();
-	$("#"+id_task).find('.pause').hide();
-	$("#"+id_task).find('.close').show();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.start').show();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').hide();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.close').show();
 	
 	$.ajax({
 		url: "ajax/interface.php",
@@ -92,11 +95,11 @@ function stop_task(id_task){
 	});
 }
 
-function close_task(id_task){
+function close_task(id_task,onglet){
 	
-	$("#"+id_task).find('.start').hide();
-	$("#"+id_task).find('.pause').hide();
-	$("#"+id_task).find('.close').hide();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.start').hide();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').hide();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.close').hide();
 	
 	$.ajax({
 		url: "ajax/interface.php",
@@ -190,6 +193,7 @@ function refresh_liste_tache(data,onglet){
 		
 		clone.attr('id','task_list_'+task.rowid);
 		
+		//Refresh des datas
 		clone.find('[rel=taskRef]').text(task.taskRef);
 		clone.find('[rel=dateo]').append(task.dateo);
 		clone.find('[rel=datee]').append(task.datee);
@@ -197,7 +201,12 @@ function refresh_liste_tache(data,onglet){
 		clone.find('[rel=spent_time]').append(task.spent_time);
 		clone.find('[rel=progress]').append(task.progress);
 		clone.find('[rel=priority]').append(task.priority);
-
+		
+		//Refresh des actions
+		clone.find(".start").attr('onclick','start_task("task_list_'+task.rowid+'","'+onglet+'");');
+		clone.find(".pause").attr('onclick','stop_task("task_list_'+task.rowid+'","'+onglet+'");');
+		clone.find(".close").attr('onclick','close_task("task_list_'+task.rowid+'","'+onglet+'");');
+		
 		clone.appendTo('#liste_tache_'+onglet);
 		
 		clone.show();
