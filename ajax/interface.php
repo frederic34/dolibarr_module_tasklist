@@ -203,11 +203,12 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 
 	$sql .= " ORDER BY t.dateo ASC";
 	
-	//echo $sql;
 	if($PDOdb->Execute($sql)){
 		$TRes = $PDOdb->Get_All();
-
+	
 		foreach($TRes as &$res){
+			$res->taskLabel=utf8_encode($res->taskLabel);
+
 			$res->planned_workload = convertSecondToTime($res->planned_workload,'allhourmin');
 			$TSummary = $static_tack->getSummaryOfTimeSpent($res->rowid);
 			$res->spent_time = convertSecondToTime($TSummary['total_duration'],'allhourmin');
