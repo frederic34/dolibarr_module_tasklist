@@ -129,12 +129,20 @@ function _getTimeSpent(&$PDOdb,$taskId){
 		$PDOdb->Execute("SELECT tasklist_time_start FROM ".MAIN_DB_PREFIX."projet_task  WHERE rowid = ".$task->id);
 
 		if($PDOdb->Get_line()){
-			$time_start = strtotime($PDOdb->Get_field("tasklist_time_start"));
-			$time_end = time();
-
-			$time = $time_end - $time_start;
 			
-			return date('H:i',$time);
+			$t_start = new DateTime($PDOdb->Get_field("tasklist_time_start"));
+			$t_end = new DateTime(date('Y-m-d H:i:s'));
+			
+			$interval = $t_start->diff($t_end);
+			
+			$heures = $interval->h;
+			$minutes = ($interval->i > 0) ? $interval->i : 1;
+			
+			$heures = str_pad($heures, 2, '0', STR_PAD_LEFT);
+			$minutes = str_pad($minutes, 2, '0', STR_PAD_LEFT);
+			
+			return $heures.':'.$minutes;
+			
 		}
 	}
 	return -1;
