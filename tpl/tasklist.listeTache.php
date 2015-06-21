@@ -3,7 +3,7 @@
 		-->
 		<div id="task_list_clone" class='task_list' style="display: none;">
 			<div class="ui-grid-c" style="margin-left: 15px; margin-right: 15px;">
-				<div class="ui-block-a" style="font-size: 20px;">
+				<div class="ui-block-a" style="font-size: 20px; width: 100% ;">
 					<?php echo $langs->trans('Task'); ?> : <label rel="taskRef"></label>
 				</div>
 				<!--<div class="ui-block-b" style="font-size: 20px;">

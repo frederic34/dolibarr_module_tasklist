@@ -178,11 +178,20 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 	global $db, $user, $conf;
 	//echo "1";
 	$TRes = array();
-	$static_tack = new Task($db);
+	$static_task = new Task($db);
 	$static_user = new User($db);
 	
-	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, p.ref as projetRef, p.title as projetLabel, t.planned_workload, t.progress, t.priority, t.dateo, t.datee
-			FROM ".MAIN_DB_PREFIX."projet_task as t 
+	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, p.ref as projetRef, p.title as projetLabel, t.planned_workload
+			, t.progress, t.priority";
+			
+	if($conf->scrumboard->enabled) {
+		$sql .= " ,t.date_estimated_start as dateo,t.date_estimated_end as datee";
+	}
+	else{
+		$sql .= " , t.dateo, t.datee";
+	}
+			
+	$sql.=" FROM ".MAIN_DB_PREFIX."projet_task as t 
 				LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = t.fk_projet)
 				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid) 
 			WHERE t.progress != 100";
@@ -194,7 +203,7 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 			case 'user':
 				//On ne prends que les tâches assignées à l'utilisateur
 				$static_user->fetch($id);
-				$TRoles = $static_tack->getUserRolesForProjectsOrTasks('',$static_user);
+				$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
 				$TTaskIds = implode(',',array_keys($TRoles));
 				if(!empty($id) && $id>=0) $sql .= " AND t.rowid IN (".$TTaskIds.") ";
 				break;
@@ -220,15 +229,33 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 		$TRes = $PDOdb->Get_All();
 	
 		foreach($TRes as &$res){
+			$static_task->fetch($res->rowid);
+			$static_task->fetch_optionals();
 			$res->taskLabel=utf8_encode($res->taskLabel);
 
+			if($static_task->array_options['options_fk_of']>0) {
+				
+				dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
+				
+				$of=new TAssetOF;
+				$of->withChild = false;
+				$of->load($PDOdb, $static_task->array_options['options_fk_of']);
+				
+				$link_of = 'javascript:switch_onglet(\'onglet3\'); reload_liste_tache(\'onglet3\', '.$of->getId().');';
+				
+				$res->taskLabel.=' <a data-role="button" data-mini="true" data-shadow="false" data-inline="true" href="'.$link_of.'">'.$of->numero.'</a>';
+			}
+
 			$res->planned_workload = convertSecondToTime($res->planned_workload,'allhourmin');
-			$TSummary = $static_tack->getSummaryOfTimeSpent($res->rowid);
+			$TSummary = $static_task->getSummaryOfTimeSpent($res->rowid);
 			$res->spent_time = convertSecondToTime($TSummary['total_duration'],'allhourmin');
 
-			$static_tack->fetch($res->rowid);
-			$ttemp = $static_tack->getSummaryOfTimeSpent();
-			$res->progress = round($ttemp['total_duration'] / $static_tack->planned_workload * 100, 2);
+			$ttemp = $static_task->getSummaryOfTimeSpent();
+			$res->progress = round($ttemp['total_duration'] / $static_task->planned_workload * 100, 2);
+			
+			$res->dateo_aff = dol_print_date($res->dateo,'dayhour');
+			$res->datee_aff = dol_print_date($res->datee,'dayhour');
+			
 		}
 	}
 

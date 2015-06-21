@@ -176,20 +176,20 @@ function switch_onglet(onglet){
 	reload_liste_tache(onglet);
 }
 
-function reload_liste_tache(onglet){
+function reload_liste_tache(onglet, id){
 	
 	switch(onglet){
 		
 		case "onglet1": //Utilisateurs
-			id = $('#search_user option:selected').val();
+			if(id==null) id = $('#search_user option:selected').val();
 			type = 'user';
 			break;
 		case "onglet2": //Postes de travail
-			id = $('#search_workstation option:selected').val();
+			if(id==null) id = $('#search_workstation option:selected').val();
 			type = 'workstation';
 			break;
 		case "onglet3": //Ordre de fabrication
-			id = $('#search_of option:selected').val();
+			if(id==null) id = $('#search_of option:selected').val();
 			type = 'of';
 			break;
 	}
@@ -227,9 +227,10 @@ function refresh_liste_tache(data,onglet){
 		clone.attr('id','task_list_'+task.rowid);
 		
 		//Refresh des datas
-		clone.find('[rel=taskRef]').text(task.taskRef);
-		clone.find('[rel=dateo]').append(task.dateo);
-		clone.find('[rel=datee]').append(task.datee);
+		clone.find('[rel=taskRef]').html(task.taskRef+' '+task.taskLabel);
+		clone.find('[rel=taskRef] a[data-role=button]').button();
+		clone.find('[rel=dateo]').append(task.dateo_aff);
+		clone.find('[rel=datee]').append(task.datee_aff);
 		clone.find('[rel=planned_workload]').append(task.planned_workload);
 		clone.find('[rel=spent_time]').append(task.spent_time);
 		clone.find('[rel=progress]').append(task.progress);
