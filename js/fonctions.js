@@ -2,7 +2,7 @@
 var id_ticket_attente = '';
 var id_ba_attente = '';
 
-$(window).load(function(){
+$(document).ready(function(){
 	switch_onglet('onglet1');
 	
 	reload_liste_tache('onglet1');
@@ -22,29 +22,15 @@ $(window).load(function(){
  		reload_liste_tache('onglet3');
 	});
 	
-	/*
-	 * ACTIONS BOUTONS
-	 */
-	$(".start").on( "click", function(event, ui) {
-		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
- 		start_task(id_task);
-	});
-	
-	$(".pause").on( "click", function(event, ui) {
-		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
- 		stop_task(id_task);
-	});
-	
-	$(".close").on( "click", function(event, ui) {
-		id_task = $(this).closest('div[id^="task_list_"]').attr('id');
- 		close_task(id_task);
-	});
-	
-	
+	$("#confirm-add-time" ).popup();
 	
 });
 
-function start_task(id_task){
+function start_task(id_task,onglet){
+
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.start').hide();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').show();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.close').show();
 	
 	$.ajax({
 		url: "ajax/interface.php",
@@ -59,11 +45,66 @@ function start_task(id_task){
 	})
 	.then(function (data){
 		//console.log(data);
-		refresh_liste_tache(data,type);
+		if(data == 1){
+			
+		}
 	});
 }
 
-function stop_task(id_task){
+function getTimeSpent(id_task){
+	
+	var res = 0;
+	
+	$.ajax({
+		url: "ajax/interface.php",
+		dataType: "json",
+		crossDomain: true,
+		async : false,
+		data: {
+			   get:'time_spent'
+			   ,id : id_task
+			   ,json : 1
+		}
+	})
+	.then(function (data){
+		res = data;
+	});
+	
+	return res;
+}
+
+function aff_popup(id_task,onglet,action){
+	
+	$("#confirm-add-time" ).popup('open');
+	timespent = getTimeSpent(id_task);
+	TTime = timespent.split(":");
+	hour = TTime[0];
+	minutes = TTime[1];
+	$('#heure').val(hour);
+	$('#minute').val(minutes);
+	
+	$('#valide_popup').on('click',function(event, ui){
+		
+		hour = $('#heure').val();
+		minutes = $('#minute').val();
+		
+		if(action == 'stop'){
+			stop_task(id_task,onglet,hour,minutes);
+		}
+		else{
+			close_task(id_task,onglet,hour,minutes);
+		}
+		
+		$("#confirm-add-time").popup('close');
+	});
+	
+}
+
+function stop_task(id_task,onglet,hour,minutes){
+	
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.start').show();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').hide();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.close').show();
 	
 	$.ajax({
 		url: "ajax/interface.php",
@@ -73,16 +114,22 @@ function stop_task(id_task){
 		data: {
 			   put:'stop_task'
 			   ,id : id_task
+			   ,hour : hour
+			   ,minutes : minutes
 			   ,json : 1
 		}
 	})
 	.then(function (data){
 		//console.log(data);
-		refresh_liste_tache(data,type);
+		//refresh_liste_tache(data,type);
 	});
 }
 
-function close_task(id_task){
+function close_task(id_task,onglet){
+	
+	/*$("#liste_tache_"+onglet+" > #"+id_task).find('.start').hide();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').hide();
+	$("#liste_tache_"+onglet+" > #"+id_task).find('.close').hide();*/
 	
 	$.ajax({
 		url: "ajax/interface.php",
@@ -92,12 +139,15 @@ function close_task(id_task){
 		data: {
 			   put:'close_task'
 			   ,id : id_task
+			   ,hour : hour
+			   ,minutes : minutes
 			   ,json : 1
 		}
 	})
 	.then(function (data){
 		//console.log(data);
-		refresh_liste_tache(data,type);
+		//alert(onglet);
+		reload_liste_tache(onglet);
 	});
 }
 
@@ -176,6 +226,7 @@ function refresh_liste_tache(data,onglet){
 		
 		clone.attr('id','task_list_'+task.rowid);
 		
+		//Refresh des datas
 		clone.find('[rel=taskRef]').text(task.taskRef);
 		clone.find('[rel=dateo]').append(task.dateo);
 		clone.find('[rel=datee]').append(task.datee);
@@ -183,7 +234,12 @@ function refresh_liste_tache(data,onglet){
 		clone.find('[rel=spent_time]').append(task.spent_time);
 		clone.find('[rel=progress]').append(task.progress);
 		clone.find('[rel=priority]').append(task.priority);
-
+		
+		//Refresh des actions
+		clone.find(".start").attr('onclick','start_task("task_list_'+task.rowid+'","'+onglet+'");');
+		clone.find(".pause").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+onglet+'","stop");');
+		clone.find(".close").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+onglet+'","close");');
+		
 		clone.appendTo('#liste_tache_'+onglet);
 		
 		clone.show();
