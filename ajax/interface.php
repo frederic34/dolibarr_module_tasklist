@@ -68,7 +68,7 @@ function _put($case) {
 }
 
 function _getTasklist(&$PDOdb,$id='',$type=''){
-	global $db, $user;
+	global $db, $user, $conf;
 	//echo "1";
 	$TRes = array();
 	$static_tack = new Task($db);
@@ -100,8 +100,14 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 				break;
 		}
 	}
+	
+	if($conf->scrumboard->enabled) {
+		$sql .= "ORDER BY t.date_estimated_start ASC";
+	}
+	else{
+		$sql .= "ORDER BY t.dateo ASC";
+	}
 
-	$sql .= "ORDER BY t.dateo ASC";
 	
 	//echo $sql;
 	if($PDOdb->Execute($sql)){
