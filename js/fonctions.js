@@ -83,7 +83,7 @@ function aff_popup(id_task,onglet,action){
 	$('#heure').val(hour);
 	$('#minute').val(minutes);
 	
-	$('#valide_popup').on('click',function(event, ui){
+	$('#valide_popup').unbind().click(function(event, ui){
 		
 		hour = $('#heure').val();
 		minutes = $('#minute').val();

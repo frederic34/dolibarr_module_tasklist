@@ -231,7 +231,7 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 		foreach($TRes as &$res){
 			$static_task->fetch($res->rowid);
 			$static_task->fetch_optionals();
-			$res->taskLabel=utf8_encode($res->taskLabel);
+			$res->taskLabel=$res->taskLabel;
 
 			if($static_task->array_options['options_fk_of']>0) {
 				
