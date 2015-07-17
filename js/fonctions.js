@@ -117,6 +117,7 @@ function stop_task(id_task,onglet,hour,minutes){
 			   ,hour : hour
 			   ,minutes : minutes
 			   ,json : 1
+			   ,id_user_selected : $('#search_user option:selected').val()
 		}
 	})
 	.then(function (data){
@@ -142,6 +143,7 @@ function close_task(id_task,onglet){
 			   ,hour : hour
 			   ,minutes : minutes
 			   ,json : 1
+			   ,id_user_selected : $('#search_user option:selected').val()
 		}
 	})
 	.then(function (data){

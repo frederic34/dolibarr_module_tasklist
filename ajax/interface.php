@@ -45,10 +45,10 @@ function _put(&$PDOdb,$case) {
 			__out(_startTask($PDOdb,$_REQUEST['id']));
 			break;
 		case 'stop_task':
-			__out(_stopTask($PDOdb,$_REQUEST['id'],$_REQUEST['hour'],$_REQUEST['minutes']));
+			__out(_stopTask($PDOdb,$_REQUEST['id'],$_REQUEST['hour'],$_REQUEST['minutes'],$_REQUEST['id_user_selected']));
 			break;
 		case 'close_task':
-			__out(_closeTask($PDOdb,$_REQUEST['id'],$_REQUEST['hour'],$_REQUEST['minutes']));
+			__out(_closeTask($PDOdb,$_REQUEST['id'],$_REQUEST['hour'],$_REQUEST['minutes'],$_REQUEST['id_user_selected']));
 			break;
 		default:
 			
@@ -56,13 +56,13 @@ function _put(&$PDOdb,$case) {
 	}
 }
 
-function _closeTask(&$PDOdb,$taskId,$hour,$minutes){
+function _closeTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected){
 	global $db, $user;
 	
 	$Tid = explode('_',$taskId);
 	$id = array_pop($Tid);
 	
-	_stopTask($PDOdb,$taskId,$hour,$minutes);
+	_stopTask($PDOdb,$taskId,$hour,$minutes,$id_user_selected);
 	
 	$task = new Task($db);
 	$task->fetch($id);
@@ -74,7 +74,7 @@ function _closeTask(&$PDOdb,$taskId,$hour,$minutes){
 	return 0;
 }
 
-function _stopTask(&$PDOdb,$taskId,$hour,$minutes){
+function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 	global $db,$user;
 
 	$Tid = explode('_',$taskId);
@@ -98,7 +98,8 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes){
 				$task->timespent_date = date('Y-m-d');
 		        $task->timespent_datehour = date('Y-m-d H:i:s');;
 		        $task->timespent_duration = $time;
-		        $task->timespent_fk_user = $user->id;
+		        //$task->timespent_fk_user = $user->id;
+		        $task->timespent_fk_user = $id_user_selected;
 				$ttemp = $task->getSummaryOfTimeSpent();
 				$task->progress = round($ttemp['total_duration'] / $task->planned_workload * 100, 2);
 				
