@@ -253,8 +253,11 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 			$ttemp = $static_task->getSummaryOfTimeSpent();
 			$res->progress = round($ttemp['total_duration'] / $static_task->planned_workload * 100, 2);
 			
-			$res->dateo_aff = dol_print_date($res->dateo,'dayhour');
-			$res->datee_aff = dol_print_date($res->datee,'dayhour');
+			if($res->dateo === '0000-00-00 00:00:00') $res->dateo_aff = '00-00-0000 00:00:00';
+			else $res->dateo_aff = dol_print_date($res->dateo,'dayhour');
+			
+			if($res->datee === '0000-00-00 00:00:00') $res->datee_aff = '00-00-0000 00:00:00';
+			else $res->datee_aff = dol_print_date($res->datee,'dayhour');
 			
 		}
 	}
