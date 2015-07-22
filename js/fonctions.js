@@ -223,6 +223,8 @@ function refresh_liste_tache(data,onglet){
 	
 	vider_liste(onglet);
 
+	//$( '#liste_tache_'+onglet ).collapsibleset( "destroy" );
+
 	$.each(data,function(i,task){
 		clone = $('#task_list_clone').clone();
 		
@@ -242,12 +244,17 @@ function refresh_liste_tache(data,onglet){
 		clone.find(".start").attr('onclick','start_task("task_list_'+task.rowid+'","'+onglet+'");');
 		clone.find(".pause").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+onglet+'","stop");');
 		clone.find(".close").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+onglet+'","close");');
+	    clone.find('h3>a').on('click', function(e) {
+	        e.stopPropagation();
+	        e.stopImmediatePropagation();          
+	    }).button({ inline : true, mini: true});    
 		
 		clone.appendTo('#liste_tache_'+onglet);
-		
 		clone.show();
+		clone.collapsible();
 	});
 
+	//$( '#liste_tache_'+onglet ).collapsibleset( "create" );
 }
 
 function vider_liste(onglet){

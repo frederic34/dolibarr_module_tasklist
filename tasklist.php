@@ -22,13 +22,13 @@
 	<head>
 		<title>Dolibarr - <?php echo $langs->trans('Tasklist'); ?></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="stylesheet" href="js/jquery.mobile-1.3.0.min.css" />
+		<link rel="stylesheet" href="js/jquery.mobile-1.4.5.min.css" />
 		<link rel="stylesheet" href="js/jquery.mobile.popup.css" />
 		
 		<link rel="stylesheet" href="css/style.css"/>
 		
 		<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
-		<script src="js/jquery.mobile-1.3.0.min.js" type="text/javascript"></script>
+		<script src="js/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
 		<script src="js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
 		<script src="js/fonctions.js" type="text/javascript"></script>
 	</head>
@@ -42,12 +42,16 @@
 					<!-- Corps de la page -->
 					<div id="corps-1" class="ui-content ui-bar-a corps" style="width: 100%">
 						
+						<div data-role="collapsibleset" data-theme="a" data-content-theme="a">
+   
+						
 						<!-- Affichage de l'onglet "Utilisateur" --> 
 						<?php require('./tpl/tasklist.onglet.utilisateurs.php'); ?>
+						<div id='liste_tache_user' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a">
+							<?php require('./tpl/tasklist.listeTache.php'); ?>
+						</div>
 						
-						<div id='liste_tache_user' style="width:100%;"></div>
 						
-						<?php require('./tpl/tasklist.listeTache.php'); ?>
 					</div>
 					<?php	
 					if($conf->workstation->enabled && $user->rights->workstation->all->read){

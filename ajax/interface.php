@@ -244,7 +244,7 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 				
 				$link_of = 'javascript:switch_onglet(\'onglet3\'); reload_liste_tache(\'onglet3\', '.$of->getId().');';
 				
-				$res->taskLabel.=' <a data-role="button" data-mini="true" data-shadow="false" data-inline="true" href="'.$link_of.'">'.$of->numero.'</a>';
+				$res->taskLabel.=' <a href="'.$link_of.'">'.$of->numero.'</a>';
 			}
 
 			$res->planned_workload = convertSecondToTime($res->planned_workload,'allhourmin');
