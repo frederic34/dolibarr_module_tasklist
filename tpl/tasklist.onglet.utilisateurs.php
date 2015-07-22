@@ -1,5 +1,5 @@
 <?php
-
+	$conf->global->USER_HIDE_INACTIVE_IN_COMBOBOX = 1;
 	//Récupération de la liste utilisateur
 	$disabled = ($user->rights->projet->all->lire) ? 0 : 1;
 

@@ -2,8 +2,8 @@
 			DIV caché clonée pour afficher la liste : sert de template de base
 		-->
 		<div id="task_list_clone" class='task_list' style="display: none;">
-			<div class="ui-grid-b" style="margin-left: 15px; margin-right: 15px;">
-				<div class="ui-block-a" style="font-size: 20px;">
+			<div class="ui-grid-c" style="margin-left: 15px; margin-right: 15px;">
+				<div class="ui-block-a" style="font-size: 20px; width: 100% ;">
 					<?php echo $langs->trans('Task'); ?> : <label rel="taskRef"></label>
 				</div>
 				<!--<div class="ui-block-b" style="font-size: 20px;">
@@ -26,6 +26,11 @@
 				</div>
 				<div class="ui-block-b" style="margin-left: 35px; margin-right: 15px;">
 					<?php echo $langs->trans('Priority'); ?> : <label rel="priority"></label>
+				</div>
+			</div>
+			<div class="ui-grid-a" style="margin-left: 15px; margin-right: 15px;">
+				<div class="ui-block-b" style="margin-left: 35px; margin-right: 15px;">
+					<label rel="compteur"></label>
 				</div>
 			</div>
 			<div class="ui-grid-a" style="margin-left: 15px; margin-right: 15px;">

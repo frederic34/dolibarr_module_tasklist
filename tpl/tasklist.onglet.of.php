@@ -9,7 +9,7 @@
 	
 	$TOF[-1] = 'Tous';
 	foreach($TOFTemp as $of){
-		$TOF[$workstation['rowid']] = $of['numero'];
+		$TOF[$of['rowid']] = $of['numero'];
 	}
 	
 	//pre($TWorkstation,true);exit;
