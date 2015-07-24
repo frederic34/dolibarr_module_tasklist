@@ -24,7 +24,8 @@
 function _get(&$PDOdb,$case) {
 	switch ($case) {
 		case 'task_liste':
-			__out(_getTasklist($PDOdb,$_REQUEST['id'],$_REQUEST['type']));
+            $TTask = _getTasklist($PDOdb,$_REQUEST['id'],$_REQUEST['type']);
+            __out($TTask, 'json');
 			break;
 			
 		case 'time_spent':
@@ -101,7 +102,7 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 		        //$task->timespent_fk_user = $user->id;
 		        $task->timespent_fk_user = $id_user_selected;
 				$ttemp = $task->getSummaryOfTimeSpent();
-				$task->progress = round($ttemp['total_duration'] / $task->planned_workload * 100, 2);
+				if($task->planned_workload>0) $task->progress = round($ttemp['total_duration'] / $task->planned_workload * 100, 2);
 				
 				$task->addTimeSpent($user);
 				
@@ -206,7 +207,7 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 				$static_user->fetch($id);
 				$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
 				$TTaskIds = implode(',',array_keys($TRoles));
-				if(!empty($id) && $id>=0) $sql .= " AND t.rowid IN (".$TTaskIds.") ";
+				if(!empty($id) && $id>=0) $sql .= " AND t.rowid IN (".$TTaskIds.") "; // TODO le IN est limité, attention au nombre d'itération testé
 				break;
 			case 'workstation':
 				//On ne prends que les tâches liées au poste de travail
@@ -232,7 +233,7 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 		foreach($TRes as &$res){
 			$static_task->fetch($res->rowid);
 			$static_task->fetch_optionals();
-			$res->taskLabel=$res->taskLabel;
+			$res->taskLabel=utf8_encode($res->taskLabel);
 
 			if($static_task->array_options['options_fk_of']>0) {
 				
@@ -252,7 +253,7 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 			$res->spent_time = convertSecondToTime($TSummary['total_duration'],'allhourmin');
 
 			$ttemp = $static_task->getSummaryOfTimeSpent();
-			$res->progress = round($ttemp['total_duration'] / $static_task->planned_workload * 100, 2);
+			if($static_task->planned_workload>0) $res->progress = round($ttemp['total_duration'] / $static_task->planned_workload * 100, 2);
 			
 			if($res->dateo === '0000-00-00 00:00:00') $res->dateo_aff = '00-00-0000 00:00:00';
 			else $res->dateo_aff = dol_print_date($res->dateo,'dayhour');

@@ -31,60 +31,90 @@
 		<script src="js/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
 		<script src="js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
 		<script src="js/fonctions.js" type="text/javascript"></script>
+		<script>
+            $(function() {
+                $( "[data-role='navbar']" ).navbar();
+                $( "[data-role='header'], [data-role='footer']" ).toolbar();
+            });
+            // Update the contents of the toolbars
+            /*$( document ).on( "pagecontainerchange", function() {
+                // Each of the four pages in this demo has a data-title attribute
+                // which value is equal to the text of the nav button
+                // For example, on first page: <div data-role="page" data-title="Info">
+                var current = $( ".ui-page-active" ).jqmData( "title" );
+                // Change the heading
+                $( "[data-role='header'] h1" ).text( current );
+                // Remove active class from nav buttons
+                $( "[data-role='navbar'] a.ui-btn-active" ).removeClass( "ui-btn-active" );
+                // Add active class to current nav button
+                $( "[data-role='navbar'] a" ).each(function() {
+                    if ( $( this ).text() === current ) {
+                        $( this ).addClass( "ui-btn-active" );
+                    }
+                });
+            });*/
+    </script>
 	</head>
 	<body>		
-		<div id="page" data-role="page">
-			<div class="ui-content contenu" data-role="content" role="main">
-				<div id="main" class="ui-grid-a contenu">
-					<!-- Affichage des onglets -->
-					<?php require('./tpl/tasklist.onglet.php'); ?>
-
-					<!-- Corps de la page -->
-					<div id="corps-1" class="ui-content ui-bar-a corps" style="width: 100%">
-						
-						<div data-role="collapsibleset" data-theme="a" data-content-theme="a">
-   
-						
-						<!-- Affichage de l'onglet "Utilisateur" --> 
+	    
+		<div id="list-task-user" data-role="page">
+		    <div data-role="header">
+                <h1>Tâches par utilisateur</h1>
+            </div><!-- /header -->
+			<div role="main" class="ui-content">
+			    	<!-- Affichage de l'onglet "Utilisateur" --> 
 						<?php require('./tpl/tasklist.onglet.utilisateurs.php'); ?>
 						<div id='liste_tache_user' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a">
-							<?php require('./tpl/tasklist.listeTache.php'); ?>
-						</div>
-						
-						
-					</div>
-					<?php	
-					if($conf->workstation->enabled && $user->rights->workstation->all->read){
-						?>
-						<div id="corps-2" class="ui-content ui-bar-a corps" style="width: 100%">
-							<!-- Affichage de l'onglet "Postes de travail" -->
-							<?php require('./tpl/tasklist.onglet.workstations.php'); ?>
-							
-							<div id='liste_tache_workstation' style="width:100%;"></div>
-							
-							<?php require('./tpl/tasklist.listeTache.php'); ?>
-
-						</div>
-						<?php
-					}
-					if($conf->asset->enabled && $user->rights->asset->of->lire){
-						?>
-						<div id="corps-3" class="ui-content ui-bar-a corps" style="width: 100%">
-							<!-- Affichage de l'onglet "Ordre de fabrication" -->
-							<?php require('./tpl/tasklist.onglet.of.php'); ?>
-							
-							<div id='liste_tache_of' style="width:100%;"></div>
-							
-							<?php require('./tpl/tasklist.listeTache.php'); ?>
 							
 						</div>
-						<?php
-					}
-					?>
-				</div>
+					
+					
 			</div>
 		</div>
 		
+		
+        <div id="list-task-workstation" data-role="page">
+            <div data-role="header">
+                <h1>Tâches par poste de travail</h1>
+            </div><!-- /header -->
+            <div class="ui-content contenu" data-role="content" role="main">
+                <?php 
+                    if($conf->workstation->enabled && $user->rights->workstation->all->read){
+                        ?>
+                            <!-- Affichage de l'onglet "Postes de travail" -->
+                            <?php require('./tpl/tasklist.onglet.workstations.php'); ?>
+                            
+                            <div id='liste_tache_workstation' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a"></div>
+                        <?php
+                    }
+
+                ?>
+                
+                
+            </div>
+        </div>
+        
+        <div id="list-task-of" data-role="page">
+            <div data-role="header">
+                <h1>Tâches par of</h1>
+            </div><!-- /header -->
+            <div class="ui-content contenu" data-role="content" role="main">
+                <?php 
+                   if($conf->asset->enabled && $user->rights->asset->of->lire){
+                        ?>
+                            <!-- Affichage de l'onglet "Ordre de fabrication" -->
+                            <?php require('./tpl/tasklist.onglet.of.php'); ?>
+                            
+                            <div id='liste_tache_of' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a"></div>
+                            
+                           <?php 
+                    }
+
+                ?>
+            </div>
+        </div>
+        <?php require('./tpl/tasklist.listeTache.php'); ?>
 		<?php require('./tpl/tasklist.popup.php'); ?>
+		<?php require('./tpl/tasklist.onglet.php'); ?>
 	</body>
 </html>

@@ -3,23 +3,23 @@ var id_ticket_attente = '';
 var id_ba_attente = '';
 
 $(document).ready(function(){
-	switch_onglet('onglet1');
-	
-	reload_liste_tache('onglet1');
+	reload_liste_tache('user');
+	reload_liste_tache('workstation');
+	reload_liste_tache('of');
 	
 	/*
 	 * ACTION LISTE DEROULANTE
 	 */
 	$("#search_user").on( "change", function(event, ui) {
- 		reload_liste_tache('onglet1');
+ 		reload_liste_tache('user');
 	});
 	
 	$("#search_workstation").on( "change", function(event, ui) {
- 		reload_liste_tache('onglet2');
+ 		reload_liste_tache('workstation');
 	});
 	
 	$("#search_of").on( "change", function(event, ui) {
- 		reload_liste_tache('onglet3');
+ 		reload_liste_tache('of');
 	});
 	
 	$("#confirm-add-time" ).popup();
@@ -178,21 +178,21 @@ function switch_onglet(onglet){
 	reload_liste_tache(onglet);
 }
 
-function reload_liste_tache(onglet, id){
+function reload_liste_tache(type, id){
 	
-	switch(onglet){
+	switch(type){
 		
-		case "onglet1": //Utilisateurs
+		case "user": //Utilisateurs
 			if(id==null) id = $('#search_user option:selected').val();
-			type = 'user';
+			
 			break;
-		case "onglet2": //Postes de travail
+		case "workstation": //Postes de travail
 			if(id==null) id = $('#search_workstation option:selected').val();
-			type = 'workstation';
+			
 			break;
-		case "onglet3": //Ordre de fabrication
+		case "of": //Ordre de fabrication
 			if(id==null) id = $('#search_of option:selected').val();
-			type = 'of';
+			
 			break;
 	}
 	
@@ -219,15 +219,14 @@ function ajax_get_liste_task(id,type){
 	});
 }
 
-function refresh_liste_tache(data,onglet){
+function refresh_liste_tache(data,type){
 	
-	vider_liste(onglet);
+	vider_liste(type);
 
 	//$( '#liste_tache_'+onglet ).collapsibleset( "destroy" );
 
 	$.each(data,function(i,task){
-		clone = $('#task_list_clone').clone();
-		
+		var clone = $('#task_list_clone').clone();
 		clone.attr('id','task_list_'+task.rowid);
 		
 		//Refresh des datas
@@ -241,20 +240,19 @@ function refresh_liste_tache(data,onglet){
 		clone.find('[rel=priority]').append(task.priority);
 		
 		//Refresh des actions
-		clone.find(".start").attr('onclick','start_task("task_list_'+task.rowid+'","'+onglet+'");');
-		clone.find(".pause").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+onglet+'","stop");');
-		clone.find(".close").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+onglet+'","close");');
+		clone.find(".start").attr('onclick','start_task("task_list_'+task.rowid+'","'+type+'");');
+		clone.find(".pause").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+type+'","stop");');
+		clone.find(".close").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+type+'","close");');
 	    clone.find('h3>a').on('click', function(e) {
 	        e.stopPropagation();
 	        e.stopImmediatePropagation();          
 	    }).button({ inline : true, mini: true});    
-		
-		clone.appendTo('#liste_tache_'+onglet);
+	
+		clone.appendTo('#liste_tache_'+type);
 		clone.show();
 		clone.collapsible();
 	});
 
-	//$( '#liste_tache_'+onglet ).collapsibleset( "create" );
 }
 
 function vider_liste(onglet){

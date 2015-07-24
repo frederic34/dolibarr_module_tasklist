@@ -8,10 +8,6 @@
 	
 	//Affichage des filtres
 	?>
-	<div class="ui-grid-a" style="margin-left: 15px; margin-right: 15px;">
-		<div class="ui-block-a">
-			<fieldset data-role="controlgroup" data-type="horizontal" data-inline="true">
+	
 			<?php print $selectUsers; ?>
-		</div>
-	</div>
-	<hr>
+	
