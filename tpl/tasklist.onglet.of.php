@@ -3,7 +3,7 @@
 	//Récupération de la liste des postes de travail
 	$disabled = ($user->rights->asset->of->lire) ? 0 : 1;
 	
-	$sql = "SELECT rowid, numero FROM ".MAIN_DB_PREFIX."assetOf";
+	$sql = "SELECT rowid, numero FROM ".MAIN_DB_PREFIX."assetOf ORDER BY numero ASC";
 	$PDOdb->Execute($sql);
 	$TOFTemp = $PDOdb->Get_All(PDO::FETCH_ASSOC);
 	
