@@ -149,10 +149,10 @@ function close_task(id_task,onglet){
 }
 
 function openOF(fk_of) {
-	
+	$('#search_of').val(fk_of);
 	reload_liste_tache('of', fk_of);
 	
-	$.mobile.changePage('list-task-of');
+	$.mobile.changePage('#list-task-of');
 }
 
 
