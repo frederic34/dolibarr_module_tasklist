@@ -1,27 +1,27 @@
-//Vartiables globales
-var id_ticket_attente = '';
-var id_ba_attente = '';
 
-$(document).ready(function(){
+$( "#list-task-user" ).on( "pagecreate", function( event, ui ) {
 	reload_liste_tache('user');
-	reload_liste_tache('workstation');
-	reload_liste_tache('of');
-	
-	/*
-	 * ACTION LISTE DEROULANTE
-	 */
 	$("#search_user").on( "change", function(event, ui) {
  		reload_liste_tache('user');
 	});
-	
+} );
+
+$( "#list-task-workstation" ).on( "pagecreate", function( event, ui ) {
+	reload_liste_tache('workstation');
 	$("#search_workstation").on( "change", function(event, ui) {
  		reload_liste_tache('workstation');
 	});
-	
+} );
+
+$( "#list-task-of" ).on( "pagecreate", function( event, ui ) {
+	reload_liste_tache('of');
 	$("#search_of").on( "change", function(event, ui) {
  		reload_liste_tache('of');
 	});
-	
+} );
+
+
+$(document).ready(function(){
 	$("#confirm-add-time" ).popup();
 	
 });
@@ -252,7 +252,10 @@ function refresh_liste_tache(data,type){
 		clone.show();
 		clone.collapsible();
 	});
-
+	
+	
+	$('#liste_tache_'+type+' a[data-role="button"]:visible').button();
+	
 }
 
 function vider_liste(onglet){
