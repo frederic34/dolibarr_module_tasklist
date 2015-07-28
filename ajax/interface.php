@@ -243,7 +243,7 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 				$of->withChild = false;
 				$of->load($PDOdb, $static_task->array_options['options_fk_of']);
 				
-				$link_of = 'javascript:switch_onglet(\'onglet3\'); reload_liste_tache(\'onglet3\', '.$of->getId().');';
+				$link_of = 'javascript:openOF('.$of->getId().');';
 				
 				$res->taskLabel.=' <a href="'.$link_of.'">'.$of->numero.'</a>';
 			}

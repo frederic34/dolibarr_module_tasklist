@@ -148,6 +148,13 @@ function close_task(id_task,onglet){
 	});
 }
 
+function openOF(fk_of) {
+	
+	reload_liste_tache('of', fk_of);
+	
+	$.mobile.changePage('list-task-of');
+}
+
 
 function reload_liste_tache(type, id){
 	

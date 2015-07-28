@@ -40,8 +40,7 @@
 	    
 		<div id="list-task-user" data-role="page">
 		    <div data-role="header">
-		        <a href="#" onclick="aff_popup(0,'user','pause') ">test</a>
-                <h1>Tâches par utilisateur</h1>
+		        <h1>Tâches par utilisateur</h1>
                 <div data-role="navbar">
                     <ul>
                        
