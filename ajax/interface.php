@@ -147,7 +147,7 @@ function _getTimeSpent(&$PDOdb,$taskId){
 			
 		}
 	}
-	return -1;
+	return '00:00';
 
 }
 

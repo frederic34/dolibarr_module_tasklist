@@ -1,12 +1,15 @@
-<div data-role="popup" id="confirm-add-time" data-theme="a">
-    <div data-role="popup" id="popupAddTime" data-theme="a" class="ui-corner-all">
+<div data-role="panel" id="confirm-add-time" data-display="push" data-theme="b">
+    <div class="panel-content">
         <form>
-            <div style="padding:10px 20px;">
+             <a data-rel="close" class="ui-btn ui-icon-delete ui-btn-icon-left">Close panel</a>
               <h3>Temps passé</h3>
               <input id="heure" value="" placeholder="H" data-theme="c" type="text" style="width: 35px;"> h 
-              <input id="minute" value="" placeholder="m" data-theme="c" type="text" style="width: 35px;"> m<br><br>
-              <button type="button" data-theme="b" data-icon="check" onclick="$('#confirm-add-time').popup('close');">Annuler</button> <button type="button" data-theme="b" data-icon="check" id="valide_popup">Valider</button>
-            </div>
-        </form>
+              <input id="minute" value="" placeholder="m" data-theme="c" type="text" style="width: 35px;"> m<br /> <br />
+              
+             
+              <a class="ui-btn ui-icon-check ui-btn-icon-right" id="valide_popup">Valider</a>
+              
+           
+        </form>   
     </div>
 </div>

@@ -20,12 +20,6 @@ $( "#list-task-of" ).on( "pagecreate", function( event, ui ) {
 	});
 } );
 
-
-$(document).ready(function(){
-	$("#confirm-add-time" ).popup();
-	
-});
-
 function start_task(id_task,onglet){
 
 	$("#liste_tache_"+onglet+" > #"+id_task).find('.start').hide();
@@ -53,7 +47,7 @@ function start_task(id_task,onglet){
 
 function getTimeSpent(id_task){
 	
-	var res = 0;
+	var res = '00:00';
 	
 	$.ajax({
 		url: "ajax/interface.php",
@@ -74,9 +68,10 @@ function getTimeSpent(id_task){
 }
 
 function aff_popup(id_task,onglet,action){
+	$('#confirm-add-time').panel('open');
 	
-	$("#confirm-add-time" ).popup('open');
 	timespent = getTimeSpent(id_task);
+	console.log(timespent);
 	TTime = timespent.split(":");
 	hour = TTime[0];
 	minutes = TTime[1];
@@ -95,7 +90,7 @@ function aff_popup(id_task,onglet,action){
 			close_task(id_task,onglet,hour,minutes);
 		}
 		
-		$("#confirm-add-time").popup('close');
+		$('#confirm-add-time').panel('close');
 	});
 	
 }
@@ -153,30 +148,6 @@ function close_task(id_task,onglet){
 	});
 }
 
-// Actions graphique au changement d'onglet
-function switch_onglet(onglet){
-	
-	$("#onglet1,#onglet2,#onglet3,#onglet4,#onglet5").removeClass("ui-btn-active");
-	$("#"+onglet).addClass("ui-btn-active");	
-	
-	switch(onglet)
-	{
-		case "onglet1": //Utilisateurs
-			$("#corps-2, #corps-3").hide();
-			$("#corps-1").show();
-			break;
-		case "onglet2": //Postes de travail
-			$("#corps-1, #corps-3").hide();
-			$("#corps-2").show();
-			break;
-		case "onglet3": //Ordre de fabrication
-			$("#corps-1, #corps-2").hide();
-			$("#corps-3").show();
-			break;
-	}
-	
-	reload_liste_tache(onglet);
-}
 
 function reload_liste_tache(type, id){
 	
@@ -254,7 +225,7 @@ function refresh_liste_tache(data,type){
 	});
 	
 	
-	$('#liste_tache_'+type+' a[data-role="button"]:visible').button();
+
 	
 }
 

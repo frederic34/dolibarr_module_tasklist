@@ -23,23 +23,28 @@
 		<title>Dolibarr - <?php echo $langs->trans('Tasklist'); ?></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link rel="stylesheet" href="js/jquery.mobile-1.4.5.min.css" />
-		<link rel="stylesheet" href="js/jquery.mobile.popup.css" />
 		
 		<link rel="stylesheet" href="css/style.css"/>
 		
 		<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
 		<script src="js/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
 		<script src="js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
-		
+		<script id="panel-init">
+        $(function() {
+            $( "body>[data-role='panel']" ).panel();
+        });
+    </script>
 		
 	</head>
 	<body>		
 	    
 		<div id="list-task-user" data-role="page">
 		    <div data-role="header">
+		        <a href="#" onclick="aff_popup(0,'user','pause') ">test</a>
                 <h1>Tâches par utilisateur</h1>
                 <div data-role="navbar">
                     <ul>
+                       
                         <li><a href="#list-task-user" id="onglet1" class="ui-btn-active"><?php echo $langs->trans('Users'); ?></a></li>
                         <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a  href="#list-task-workstation" id="onglet2"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
                         <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  href="#list-task-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
@@ -115,6 +120,7 @@
             </div>
         </div>
         <?php require('./tpl/tasklist.listeTache.php'); ?>
+        
 		<?php require('./tpl/tasklist.popup.php'); ?>
 		
 		<script src="js/fonctions.js" type="text/javascript"></script>

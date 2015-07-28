@@ -31,9 +31,9 @@
 					
 				</div>
 				<div>
-						 <a href="#" data-role="button" data-theme="b" data-inline="true" class="start"><?php echo $langs->trans('Start'); ?></a>
-						 <a href="#" data-role="button" data-theme="c" data-inline="true" class="pause" style="display:none;"><?php echo $langs->trans('Pause'); ?></a>
-						 <a href="#" data-role="button" data-theme="e" data-inline="true" class="close" style="display:none;"><?php echo $langs->trans('Close'); ?></a>
+						 <a href="#" class="ui-btn ui-icon-arrow-r ui-btn-icon-right ui-btn-inline ui-btn-b start"><?php echo $langs->trans('Start'); ?></a>
+						 <a href="#" class="ui-btn ui-icon-arrow-l ui-btn-icon-right ui-btn-inline ui-btn-b pause" style="display:none;"><?php echo $langs->trans('Pause'); ?></a>
+						 <a href="#" class="ui-btn ui-icon-check ui-btn-icon-right ui-btn-inline ui-btn-b close" style="display:none;"><?php echo $langs->trans('Close'); ?></a>
 					
 				</div>
 							
