@@ -46,7 +46,7 @@
                        
                         <li><a href="#list-task-user" id="onglet1" class="ui-btn-active"><?php echo $langs->trans('Users'); ?></a></li>
                         <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a  href="#list-task-workstation" id="onglet2"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
-                        <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  href="#list-task-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
+                        <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  href="#list-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
                     </ul>
                 </div>
             </div><!-- /header -->
@@ -69,7 +69,7 @@
                     <ul>
                         <li><a href="#list-task-user" id="onglet1"><?php echo $langs->trans('Users'); ?></a></li>
                         <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a  class="ui-btn-active"  href="#list-task-workstation" id="onglet2"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
-                        <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  href="#list-task-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
+                        <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  href="#list-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
                     </ul>
                 </div>
 
@@ -90,9 +90,31 @@
                 
             </div>
         </div>
-        
-        <div id="list-task-of" data-role="page">
+        <div id="list-of" data-role="page">
             <div data-role="header">
+                <h1>Liste des OFs</h1>
+                <div data-role="navbar">
+                    <ul>
+                        <li><a href="#list-task-user" id="onglet1"><?php echo $langs->trans('Users'); ?></a></li>
+                        <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a href="#list-task-workstation" id="onglet2"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
+                        <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  class="ui-btn-active" href="#list-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
+                    </ul>
+                </div>
+
+            </div><!-- /header -->
+            <div class="ui-content contenu" data-role="content" role="main">
+                <?php 
+                   if($conf->asset->enabled && $user->rights->asset->of->lire){
+                       require('./tpl/tasklist.onglet.of.php');  
+                    }
+
+                ?>
+            </div>
+        </div>
+        
+        <div id="list-task-of" data-role="page" da>
+            <div data-role="header">
+                <a class="ui-btn ui-btn-inline ui-icon-back ui-btn-icon-notext" href="#list-of"></a>
                 <h1>Tâches par of</h1>
                 <div data-role="navbar">
                     <ul>
@@ -108,8 +130,7 @@
                    if($conf->asset->enabled && $user->rights->asset->of->lire){
                         ?>
                             <!-- Affichage de l'onglet "Ordre de fabrication" -->
-                            <?php require('./tpl/tasklist.onglet.of.php'); ?>
-                            
+        
                             <div id='liste_tache_of' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a"></div>
                             
                            <?php 

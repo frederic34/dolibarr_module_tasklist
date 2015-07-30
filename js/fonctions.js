@@ -14,10 +14,10 @@ $( "#list-task-workstation" ).on( "pagecreate", function( event, ui ) {
 } );
 
 $( "#list-task-of" ).on( "pagecreate", function( event, ui ) {
-	reload_liste_tache('of');
+	/*reload_liste_tache('of');
 	$("#search_of").on( "change", function(event, ui) {
  		reload_liste_tache('of');
-	});
+	});*/
 } );
 
 function start_task(id_task,onglet){
@@ -148,13 +148,82 @@ function close_task(id_task,onglet){
 	});
 }
 
-function openOF(fk_of) {
-	$('#search_of').val(fk_of);
+function openOF(fk_of, numero) {
+	
 	reload_liste_tache('of', fk_of);
+	
+	/*inutile déjà fait par le framework
+	 * var currentPage = $(':mobile-pagecontainer').pagecontainer( "getActivePage" ).attr('id');
+	if(currentPage!='list-task-of')
+	 */
+	
+	$('#list-task-of div[data-role="header"] h1').html("Tâches OF "+numero);
+	
+	_draw_of_product(fk_of);
 	
 	$.mobile.changePage('#list-task-of');
 }
 
+function _draw_of_product(fk_of){
+	
+	$.ajax({
+		url:'ajax/interface.php'
+		,data:{
+			get :'task-product-of'
+			,fk_of: fk_of
+		}
+		,dataType:'json'
+	}).done(function(data){
+		
+		$('#list-task-of div.ui-content table.product-list').remove();
+		
+		if(data.productOF.length>0) {
+			
+			$('#list-task-of div#liste_tache_of').before('<table data-role="table" id="product-list-of" class="ui-responsive table-stroke product-list"></table> ');
+			
+			$table = $('#list-task-of div.ui-content table#product-list-of');
+			
+			$table.append('<tr><th>Produit</th><th>Quantité</th><th>#</th></tr>');
+			
+			for(x in data.productOF) {
+				
+				line = data.productOF[x]; 
+				
+				$table.append('<tr><td>'+line.label+'</td><td>'+line.qty+'</td><td></td></tr>');	
+			}
+			
+			$table.table({
+			  defaults: true
+			});
+			
+			
+			
+			
+			
+		}
+		
+		if(data.productTask.length>0) {
+			for(taskid in data.productTask) {
+				$('#task_list_'+taskid+' .ui-collapsible-content').preprend('<table data-role="table" id="product-list-task-'+taskid+'" class="ui-responsive table-stroke product-list"></table> ');
+				$table = $('table#product-list-task-'+taskid);
+				$table.append('<tr><th>Produit</th><th>Quantité</th><th>#</th></tr>');
+				
+				for(x in data.productTask[taskid]) {
+					
+					line = data.productTask[taskid][x]; 
+				
+					$table.append('<tr><td>'+line.label+'</td><td>'+line.qty+'</td><td></td></tr>');	
+					
+				}
+				
+			}
+		}
+		
+		
+		
+	});
+	
+}
 
 function reload_liste_tache(type, id){
 	

@@ -3,7 +3,10 @@
 	//Récupération de la liste des postes de travail
 	$disabled = ($user->rights->asset->of->lire) ? 0 : 1;
 	
-	$sql = "SELECT rowid, numero FROM ".MAIN_DB_PREFIX."assetOf ORDER BY numero ASC";
+	$sql = "SELECT rowid, numero 
+	   FROM ".MAIN_DB_PREFIX."assetOf 
+	   WHERE status IN ('VALID','OPEN')
+	ORDER BY numero ASC";
 	$PDOdb->Execute($sql);
 	$TOFTemp = $PDOdb->Get_All(PDO::FETCH_ASSOC);
 	
@@ -12,15 +15,13 @@
 		$TOF[$of['rowid']] = $of['numero'];
 	}
 	
-	//pre($TWorkstation,true);exit;
-	$form = new TFormCore;
-	$selectOf = $form->combo('','search_of',$TOF,'',1,'','data-native-menu="false"');
 	
-	//Affichage des filtres
-	?>
+	?><ul id="list-of" data-role="listview"  data-inset="true" data-filter="true" data-filter-placeholder="Numéro OF"><?php
 	
-		
-			<?php print $selectOf; ?>
-		
+	   foreach($TOF as $idOf=>$numero) {
+	       
+           print '<li><a href="javascript:openOF('.$idOf.',\''.$numero.'\');">'.$numero.'</a></li>';
+           
+	   }
 	
-	
+	?></ul>

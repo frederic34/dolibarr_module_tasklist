@@ -28,6 +28,12 @@ function _get(&$PDOdb,$case) {
             __out($TTask, 'json');
 			break;
 			
+        case 'task-product-of':
+            $TProduct = _getProductTaskOF($PDOdb,(int)$_REQUEST['fk_of']);
+            
+            __out($TProduct, 'json');
+            break;    
+            
 		case 'time_spent':
 			__out(_getTimeSpent($PDOdb,$_REQUEST['id']));
 			break;
@@ -55,6 +61,59 @@ function _put(&$PDOdb,$case) {
 			
 			break;
 	}
+}
+
+function _getProductTaskOF(&$PDOdb, $fk_of) {
+    global $db;
+    
+    dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
+    dol_include_once('/product/class/product.class.php');
+    
+    $Tab = array('productOF'=>array(), 'productTask'=>array());
+    
+    $of=new TAssetOF;
+    $of->load($PDOdb, $fk_of);
+    
+    foreach($of->TAssetOFLine as &$line) {
+        
+        if($line->type!='NEEDED') continue;
+        
+        $fk_product = $line->fk_product;
+        
+        $p=new Product($db);
+        $p->fetch($fk_product);
+        
+        
+        if(empty($line->TWorkstation)) {
+            $Tab['productOF'][] = array(
+                'fk_product'=>$fk_product
+                ,'label'=>$p->label
+                ,'qty_needed'=>$line->qty_needed
+                ,'qty'=>$line->qty
+                ,'qty_used'=>$line->qty_used
+            );
+        }
+        else{
+            foreach($line->TWorkstation as &$ws) {
+                
+                $Tab['productTask'][$ws->getId()][]= array(
+                    'fk_product'=>$fk_product
+                    ,'label'=>$p->label
+                    ,'qty_needed'=>$line->qty_needed
+                    ,'qty'=>$line->qty
+                    ,'qty_used'=>$line->qty_used
+                );
+            }
+            
+        }
+        
+        
+    }
+    
+    
+    return $Tab;
+    
+    
 }
 
 function _closeTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected){
@@ -246,6 +305,8 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 				$link_of = 'javascript:openOF('.$of->getId().');';
 				
 				$res->taskLabel.=' <a href="'.$link_of.'">'.$of->numero.'</a>';
+                
+                $res->taskLabel.=' '.$res->progress.'%';
 			}
 
 			$res->planned_workload = convertSecondToTime($res->planned_workload,'allhourmin');
