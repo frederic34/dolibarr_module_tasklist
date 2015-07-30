@@ -6,6 +6,10 @@
 	dol_include_once('/user/class/usergroup.class.php');
 	dol_include_once('/core/lib/date.lib.php');
 	
+	if (!($user->admin || $user->rights->tasklist->all->read)) {
+    	accessforbidden();
+	}
+	
 	if($conf->asset->enabled) dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
 	if($conf->workstation->enabled) dol_include_once('/workstation/class/workstation.class.php');
 
