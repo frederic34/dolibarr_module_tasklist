@@ -115,8 +115,9 @@ function stop_task(id_task,onglet,hour,minutes){
 			   ,id_user_selected : $('#search_user option:selected').val()
 		}
 	})
-	.then(function (data){
+	.then(function (time){
 		//console.log(data);
+		refresh_time_spent($('#liste_tache_'+onglet+' > #'+id_task).find('span[rel=spent_time]'), time);
 		//refresh_liste_tache(data,type);
 	});
 }
@@ -146,6 +147,11 @@ function close_task(id_task,onglet){
 		//alert(onglet);
 		reload_liste_tache(onglet);
 	});
+}
+
+function refresh_time_spent(obj, time)
+{
+	$(obj).text(time);
 }
 
 function openOF(fk_of, numero) {
@@ -308,4 +314,31 @@ function refresh_liste_tache(data,type){
 function vider_liste(onglet){
 	
 	$('#liste_tache_'+onglet).empty();
+}
+
+checkLoginStatus();
+
+function checkLoginStatus() {
+	
+	$.ajax({
+		url: "ajax/interface.php",
+		dataType: "html",
+		crossDomain: true,
+		data: {
+			get:'logged-status'
+		}
+	})
+	.then(function (data){
+		
+		if(data!='ok') {
+			document.location.href = document.location.href; // reload car la session est expirée		
+		}
+		else {
+			setTimeout(function() {
+				checkLoginStatus();
+			}, 30000);
+		}
+		
+	});
+
 }

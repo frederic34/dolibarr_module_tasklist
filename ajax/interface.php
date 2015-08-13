@@ -37,6 +37,11 @@ function _get(&$PDOdb,$case) {
 		case 'time_spent':
 			__out(_getTimeSpent($PDOdb,$_REQUEST['id']));
 			break;
+		
+		case 'logged-status':
+			print 'ok';
+			
+			break;
 		default:
 			
 			break;
@@ -167,7 +172,7 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 				
 				$PDOdb->Execute("UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '0000-00-00 00:00:00' WHERE rowid = ".$task->id);
 				
-				return 1;
+				return convertSecondToTime($ttemp['total_duration']+$time);
 			}
 		}
 	}
