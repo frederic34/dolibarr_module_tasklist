@@ -211,7 +211,7 @@ function _getTimeSpent(&$PDOdb,$taskId){
 }
 
 function _startTask(&$PDOdb,$taskId){
-	global $db,$user;
+	global $db,$user,$conf;
 
 	$Tid = explode('_',$taskId);
 	$id = array_pop($Tid);
@@ -229,10 +229,42 @@ function _startTask(&$PDOdb,$taskId){
 		
 		$PDOdb->Execute($sql);
 		
+		if ($conf->asset->enabled) _openProdOF($PDOdb, $db, $task);
+		
 		return 1;
 	}
 	
 	return 0;
+}
+
+//Lance le/les OFs en production s'ils ne le sont pas
+function _openProdOF(&$PDOdb, &$db, &$task)
+{
+	if ($task->fk_project > 0)
+	{
+		dol_include_once('/projet/class/project.class.php');
+		dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
+		dol_include_once('/asset/class/asset.class.php');
+		
+		$project = new Project($db);
+		$project->fetch($task->fk_project);
+
+		if ($project->id > 0)
+		{
+			$sql = 'SELECT rowid FROM '.MAIN_DB_PREFIX.'assetOf WHERE fk_project = '.$project->id.' AND status = "VALID"';
+			$PDOdb->Execute($sql);
+			
+			while ($res = $PDOdb->Get_line())
+			{
+				$assetOf = new TAssetOF;
+				$assetOf->load($PDOdb, $res->rowid);
+				
+				$assetOf->openOF($PDOdb);
+			}
+			
+		}
+		
+	}
 }
 
 function _getTasklist(&$PDOdb,$id='',$type=''){
