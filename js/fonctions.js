@@ -159,8 +159,8 @@ function refresh_time_spent(obj, time)
 
 function openOF(fk_of, numero) {
 	
-	//reload_liste_tache('of', fk_of);
-	reload_liste_of();
+	reload_liste_tache('of', fk_of);
+	//reload_liste_of();
 	
 	/*inutile déjà fait par le framework
 	 * var currentPage = $(':mobile-pagecontainer').pagecontainer( "getActivePage" ).attr('id');
@@ -205,9 +205,6 @@ function _draw_of_product(fk_of){
 			$table.table({
 			  defaults: true
 			});
-			
-			
-			
 			
 			
 		}
