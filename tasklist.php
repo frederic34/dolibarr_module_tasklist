@@ -35,7 +35,13 @@
 		<script src="js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
 		<script id="panel-init">
         $(function() {
-            $( "body>[data-role='panel']" ).panel();
+             $("body>[data-role='panel']").panel().enhanceWithin();
+             $( "#select-user" ).panel({
+			  beforeopen: function( event, ui ) {
+			  	$('#select-user input[data-type=search]').focus();
+			  	
+			  }
+			});
         });
     </script>
 		
@@ -52,6 +58,7 @@
                         <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a  href="#list-task-workstation" id="onglet2"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
                         <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  href="#list-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
                     </ul>
+                   
                 </div>
             </div><!-- /header -->
 			<div role="main" class="ui-content">
@@ -69,6 +76,7 @@
         <div id="list-task-workstation" data-role="page">
             <div data-role="header">
                 <h1>Tâches par poste de travail</h1>
+                <a href="#select-user" class="ui-btn ui-btn-right ui-shadow ui-corner-all ui-icon-user ui-btn-icon-notext">Utilisateur</a>
                 <div data-role="navbar">
                     <ul>
                         <li><a href="#list-task-user" id="onglet1"><?php echo $langs->trans('Users'); ?></a></li>
@@ -97,6 +105,7 @@
         <div id="list-of" data-role="page">
             <div data-role="header">
                 <h1>Liste des OFs</h1>
+                <a href="#select-user" class="ui-btn ui-btn-right ui-shadow ui-corner-all ui-icon-user ui-btn-icon-notext">Utilisateur</a>
                 <div data-role="navbar">
                     <ul>
                         <li><a href="#list-task-user" id="onglet1"><?php echo $langs->trans('Users'); ?></a></li>

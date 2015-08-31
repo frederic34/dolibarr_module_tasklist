@@ -24,10 +24,14 @@
 function _get(&$PDOdb,$case) {
 	switch ($case) {
 		case 'task_liste':
-            $TTask = _getTasklist($PDOdb,$_REQUEST['id'],$_REQUEST['type']);
+            $TTask = _getTasklist($PDOdb,$_REQUEST['id'],$_REQUEST['type'],$_REQUEST['fk_user']);
             __out($TTask, 'json');
 			break;
+		
+		case 'of_liste':
 			
+			__out(_list_of($PDOdb,$_REQUEST['fk_user']));
+			break;
         case 'task-product-of':
             $TProduct = _getProductTaskOF($PDOdb,(int)$_REQUEST['fk_of']);
             
@@ -272,7 +276,44 @@ function _openProdOF(&$PDOdb, &$db, &$task)
 	}
 }
 
-function _getTasklist(&$PDOdb,$id='',$type=''){
+function _list_of(&$PDOdb, $fk_user=0) {
+	global $db, $user, $conf;
+	//echo "1";
+	$TRes = array();
+	$static_task = new Task($db);
+	$static_user = new User($db);
+	dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
+	
+	$sql="SELECT DISTINCT tex.fk_of
+	 FROM ".MAIN_DB_PREFIX."projet_task t LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields tex ON (tex.fk_object=t.rowid)
+	 WHERE t.progress < 100  AND tex.fk_of>0";
+	 
+	if($fk_user>0) {
+		$static_user->fetch($fk_user);
+		$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
+		$TTaskIds = implode(',',array_keys($TRoles));
+		if(!empty($TTaskIds)) $sql .= " AND t.rowid IN (".$TTaskIds.") "; 
+				
+	}
+
+	$TOF=array();
+	$Tab = $PDOdb->ExecuteAsArray($sql);
+	
+	foreach($Tab as &$res) {
+		
+				$of=new TAssetOF;
+				$of->withChild = false;
+				$of->load($PDOdb, $res->fk_of);
+				$TOF[$of->getId()] = $of->numero;
+                
+		
+	}
+	
+	return $TOF;
+	
+}
+
+function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	global $db, $user, $conf;
 	//echo "1";
 	$TRes = array();
@@ -308,10 +349,29 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 			case 'workstation':
 				//On ne prends que les tâches liées au poste de travail
 				if(!empty($id) && $id>=0) $sql .= " AND te.fk_workstation = ".$id." ";
+				
+				if($fk_user>0) {
+					$static_user->fetch($fk_user);
+					$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
+					$TTaskIds = implode(',',array_keys($TRoles));
+					if(!empty($TTaskIds)) $sql .= " AND t.rowid IN (".$TTaskIds.") "; 
+					
+				}
+				
 				break;
 			case 'of':
 				//On ne prends que les tâches liées à l'Ordre de Fabrication
 				if(!empty($id) && $id>=0) $sql .= " AND te.fk_of = ".$id." ";
+
+				if($fk_user>0) {
+					$static_user->fetch($fk_user);
+					$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
+					$TTaskIds = implode(',',array_keys($TRoles));
+					if(!empty($TTaskIds)) $sql .= " AND t.rowid IN (".$TTaskIds.") "; 
+					
+				}
+				
+
 				break;
 		}
 	}
@@ -339,7 +399,7 @@ function _getTasklist(&$PDOdb,$id='',$type=''){
 				$of->withChild = false;
 				$of->load($PDOdb, $static_task->array_options['options_fk_of']);
 				
-				$link_of = 'javascript:openOF('.$of->getId().');';
+				$link_of = 'javascript:openOF('.$of->getId().',\''.$of->numero.'\');';
 				
 				$res->taskLabel.=' <a href="'.$link_of.'">'.$of->numero.'</a>';
                 

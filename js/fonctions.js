@@ -3,6 +3,9 @@ $( "#list-task-user" ).on( "pagecreate", function( event, ui ) {
 	reload_liste_tache('user');
 	$("#search_user").on( "change", function(event, ui) {
  		reload_liste_tache('user');
+ 		reload_liste_tache('workstation');
+ 		reload_liste_of();
+ 		//reload_liste_tache('of');
 	});
 } );
 
@@ -14,11 +17,11 @@ $( "#list-task-workstation" ).on( "pagecreate", function( event, ui ) {
 } );
 
 $( "#list-task-of" ).on( "pagecreate", function( event, ui ) {
-	/*reload_liste_tache('of');
-	$("#search_of").on( "change", function(event, ui) {
- 		reload_liste_tache('of');
-	});*/
+	reload_liste_of();
+	
 } );
+
+
 
 function start_task(id_task,onglet){
 
@@ -112,7 +115,7 @@ function stop_task(id_task,onglet,hour,minutes){
 			   ,hour : hour
 			   ,minutes : minutes
 			   ,json : 1
-			   ,id_user_selected : $('#search_user option:selected').val()
+			   ,id_user_selected : $('#search_user').val()
 		}
 	})
 	.then(function (time){
@@ -139,7 +142,7 @@ function close_task(id_task,onglet){
 			   ,hour : hour
 			   ,minutes : minutes
 			   ,json : 1
-			   ,id_user_selected : $('#search_user option:selected').val()
+			   ,id_user_selected : $('#search_user').val()
 		}
 	})
 	.then(function (data){
@@ -156,7 +159,8 @@ function refresh_time_spent(obj, time)
 
 function openOF(fk_of, numero) {
 	
-	reload_liste_tache('of', fk_of);
+	//reload_liste_tache('of', fk_of);
+	reload_liste_of();
 	
 	/*inutile déjà fait par le framework
 	 * var currentPage = $(':mobile-pagecontainer').pagecontainer( "getActivePage" ).attr('id');
@@ -231,20 +235,55 @@ function _draw_of_product(fk_of){
 	
 }
 
-function reload_liste_tache(type, id){
+function selectUser(fk_user) {
+	$('#search_user').val(fk_user);
+	$('#search_user').change();
+	//$('#search_user').selectmenu('refresh');
+	$( "#select-user" ).panel( "close" );
+}
+function reload_liste_of() {
 	
+	$.ajax({
+		url: "ajax/interface.php",
+		dataType: "json",
+		crossDomain: true,
+		async : false,
+		data: {
+			   get:'of_liste'
+			   ,json : 1
+			   ,fk_user: $('#search_user').val()
+		}
+	})
+	.then(function (data){
+		//console.log(data);
+	
+		$li = $('ul#liste-of');
+		
+		$li.empty();
+		for(x in data) {
+			
+			$li.append('<li><a href="javascript:openOF('+x+',\''+data[x]+'\')">'+data[x]+'</a></li>');
+			
+		}
+	
+		$li.listview();
+	});
+	
+}
+function reload_liste_tache(type, id){
+
 	switch(type){
 		
 		case "user": //Utilisateurs
-			if(id==null) id = $('#search_user option:selected').val();
+			if(id==null) id = $('#search_user').val();
 			
 			break;
 		case "workstation": //Postes de travail
-			if(id==null) id = $('#search_workstation option:selected').val();
+			if(id==null) id = $('#search_workstation').val();
 			
 			break;
 		case "of": //Ordre de fabrication
-			if(id==null) id = $('#search_of option:selected').val();
+			if(id==null) id = $('#search_of').val();
 			
 			break;
 	}
@@ -264,6 +303,7 @@ function ajax_get_liste_task(id,type){
 			   ,id : id
 			   ,type : type
 			   ,json : 1
+			   ,fk_user: $('#search_user').val()
 		}
 	})
 	.then(function (data){

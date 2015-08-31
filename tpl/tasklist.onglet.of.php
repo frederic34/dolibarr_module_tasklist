@@ -10,13 +10,13 @@
 	$PDOdb->Execute($sql);
 	$TOFTemp = $PDOdb->Get_All(PDO::FETCH_ASSOC);
 	
-	$TOF[-1] = 'Tous';
+	//$TOF[-1] = 'Tous';
 	foreach($TOFTemp as $of){
 		$TOF[$of['rowid']] = $of['numero'];
 	}
 	
 	
-	?><ul id="list-of" data-role="listview"  data-inset="true" data-filter="true" data-filter-placeholder="Numéro OF"><?php
+	?><ul id="liste-of" data-role="listview"  data-inset="true" data-filter="true" data-filter-placeholder="Numéro OF"><?php
 	
 	   foreach($TOF as $idOf=>$numero) {
 	       
