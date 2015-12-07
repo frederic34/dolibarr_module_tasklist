@@ -3,9 +3,13 @@
         <form>
              <a data-rel="close" class="ui-btn ui-icon-delete ui-btn-icon-left">Close panel</a>
               <h3>Temps passé</h3>
-              <input id="heure" value="" placeholder="H" data-theme="c" type="text" style="width: 35px;"> h 
-              <input id="minute" value="" placeholder="m" data-theme="c" type="text" style="width: 35px;"> m<br /> <br />
-              
+              <?php if ($user->rights->tasklist->all->write){ ?>
+              <input id="heure" value="" placeholder="H" data-theme="c" type="text" style="width: 35px;" > h 
+              <input id="minute" value="" placeholder="m" data-theme="c" type="text" style="width: 35px;" > m<br /> <br />
+              <?php } else{ ?>
+              <input id="heure" value="" placeholder="H" data-theme="c" type="text" style="width: 35px;" disabled="disabled"> h 
+              <input id="minute" value="" placeholder="m" data-theme="c" type="text" style="width: 35px;" disabled="disabled"> m<br /> <br />
+              <?php } ?>
              
               <a class="ui-btn ui-icon-check ui-btn-icon-right" id="valide_popup">Valider</a>
               
