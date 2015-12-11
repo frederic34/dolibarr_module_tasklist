@@ -39,7 +39,7 @@ function _get(&$PDOdb,$case) {
             break;    
             
 		case 'time_spent':
-			__out(_getTimeSpent($PDOdb,$_REQUEST['id']));
+			__out(_getTimeSpent($PDOdb,$_REQUEST['id'],$_REQUEST['action']));
 			break;
 		
 		case 'logged-status':
@@ -184,7 +184,7 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 	return 0;
 }
 
-function _getTimeSpent(&$PDOdb,$taskId){
+function _getTimeSpent(&$PDOdb,$taskId,$action){
 	global $db;	
 	
 	//echo 'coucou';		
@@ -195,24 +195,47 @@ function _getTimeSpent(&$PDOdb,$taskId){
 	$task->fetch($id);
 	//echo "UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '".date('Y-m-d h:i:s')."' WHERE rowid = ".$task->id;
 	if($task->id){
-		
-		$PDOdb->Execute("SELECT tasklist_time_start FROM ".MAIN_DB_PREFIX."projet_task  WHERE rowid = ".$task->id);
-
-		if($PDOdb->Get_line()){
+		if($action == 'stop')
+		{
+			$PDOdb->Execute("SELECT tasklist_time_start FROM ".MAIN_DB_PREFIX."projet_task  WHERE rowid = ".$task->id);
+	
+			if($PDOdb->Get_line()){
+				
+				$t_start = new DateTime($PDOdb->Get_field("tasklist_time_start"));
+				$t_end = new DateTime(date('Y-m-d H:i:s'));
+				
+				$interval = $t_start->diff($t_end);
+				
+				$heures = $interval->h;
+				$minutes = ($interval->i > 0) ? $interval->i : 1;
+				
+				$heures = str_pad($heures, 2, '0', STR_PAD_LEFT);
+				$minutes = str_pad($minutes, 2, '0', STR_PAD_LEFT);
+				
+				return $heures.':'.$minutes;
+				
+			}
+		} else {
+			// CAS CLOSE
 			
-			$t_start = new DateTime($PDOdb->Get_field("tasklist_time_start"));
-			$t_end = new DateTime(date('Y-m-d H:i:s'));
-			
-			$interval = $t_start->diff($t_end);
-			
-			$heures = $interval->h;
-			$minutes = ($interval->i > 0) ? $interval->i : 1;
-			
-			$heures = str_pad($heures, 2, '0', STR_PAD_LEFT);
-			$minutes = str_pad($minutes, 2, '0', STR_PAD_LEFT);
-			
-			return $heures.':'.$minutes;
-			
+			$PDOdb->Execute("SELECT COUNT(task_duration) FROM ".MAIN_DB_PREFIX."projet_task_time  WHERE fk_task = ".$task->id);
+	
+			if($PDOdb->Get_line()){
+				
+				$t_start = new DateTime($PDOdb->Get_field("tasklist_time_start"));
+				$t_end = new DateTime(date('Y-m-d H:i:s'));
+				
+				$interval = $t_start->diff($t_end);
+				
+				$heures = $interval->h;
+				$minutes = ($interval->i > 0) ? $interval->i : 1;
+				
+				$heures = str_pad($heures, 2, '0', STR_PAD_LEFT);
+				$minutes = str_pad($minutes, 2, '0', STR_PAD_LEFT);
+				
+				return $heures.':'.$minutes;
+				
+			}
 		}
 	}
 	return '00:00';

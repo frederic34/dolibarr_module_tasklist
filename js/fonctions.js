@@ -48,7 +48,7 @@ function start_task(id_task,onglet){
 	});
 }
 
-function getTimeSpent(id_task){
+function getTimeSpent(id_task, action){
 	
 	var res = '00:00';
 	
@@ -60,21 +60,20 @@ function getTimeSpent(id_task){
 		data: {
 			   get:'time_spent'
 			   ,id : id_task
+			   ,action : action
 			   ,json : 1
 		}
 	})
 	.then(function (data){
 		res = data;
 	});
-	
 	return res;
 }
 
 function aff_popup(id_task,onglet,action){
 	$('#confirm-add-time').panel('open');
 	
-	timespent = getTimeSpent(id_task);
-	console.log(timespent);
+	timespent = getTimeSpent(id_task,action);
 	TTime = timespent.split(":");
 	hour = TTime[0];
 	minutes = TTime[1];
@@ -125,12 +124,11 @@ function stop_task(id_task,onglet,hour,minutes){
 	});
 }
 
-function close_task(id_task,onglet){
+function close_task(id_task,onglet,hour,minutes){
 	
 	/*$("#liste_tache_"+onglet+" > #"+id_task).find('.start').hide();
 	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').hide();
 	$("#liste_tache_"+onglet+" > #"+id_task).find('.close').hide();*/
-	
 	$.ajax({
 		url: "ajax/interface.php",
 		dataType: "json",
@@ -146,7 +144,6 @@ function close_task(id_task,onglet){
 		}
 	})
 	.then(function (data){
-		//console.log(data);
 		//alert(onglet);
 		reload_liste_tache(onglet);
 	});
