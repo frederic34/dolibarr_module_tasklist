@@ -190,20 +190,55 @@ function _draw_of_product(fk_of){
 			
 			$table = $('#list-task-of div.ui-content table#product-list-of');
 			
-			$table.append('<tr><th>Produit</th><th>Quantité</th><th>#</th></tr>');
+			$table.append('<tr><th>Produit</th><th>Quantité</th><th>Utilisée</th></tr>');
 			
 			for(x in data.productOF) {
 				
 				line = data.productOF[x]; 
 				
-				$table.append('<tr><td>'+line.label+'</td><td>'+line.qty+'</td><td></td></tr>');	
+				$tr = $('<tr />');
+				$tr.append('<td>'+line.label+'</td>');
+				$tr.append('<td>'+line.qty+'</td>');
+				
+				$tr.append('<td><input rel="prod-qty-used" line-id="'+line.lineid+'" type="text" value="'+line.qty_used+'" size="5" /></td>');
+				$table.append($tr);	
 			}
+			
+			$table.append('<tr><td align="right" colspan="3"><input data-role="button" type="button" id="retour-atelier" value="Enregistrer" /></td></tr>');
 			
 			$table.table({
 			  defaults: true
 			});
 			
+			$('#retour-atelier').button();
+			$('#retour-atelier').click(function() {
+				
+				var $bt = $(this); 
+				$bt.hide();
+				
+				TLine=[];
+				$('input[rel=prod-qty-used]').each(function(i,item) {
+					TLine.push({
+						'lineid':$(item).attr('line-id')
+						,'qty_use':$(item).val()
+					});
+				});
+				
+				$.ajax({
+					url:'ajax/interface.php'
+					,data:{
+						put :'task-product-of'
+						,fk_of: fk_of
+						,TLine : TLine
+					}
+					,dataType:'json'
+				}).done(function(data){
+					$bt.show();	
+				});
+			});
 			
+			
+			$table.table("refresh");
 		}
 		
 		if(data.productTask.length>0) {

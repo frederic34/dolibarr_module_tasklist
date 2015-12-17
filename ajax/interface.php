@@ -100,6 +100,7 @@ function _getProductTaskOF(&$PDOdb, $fk_of) {
                 ,'qty_needed'=>$line->qty_needed
                 ,'qty'=>$line->qty
                 ,'qty_used'=>$line->qty_used
+                ,'lineid'=>$line->getId()
             );
         }
         else{
@@ -111,6 +112,7 @@ function _getProductTaskOF(&$PDOdb, $fk_of) {
                     ,'qty_needed'=>$line->qty_needed
                     ,'qty'=>$line->qty
                     ,'qty_used'=>$line->qty_used
+                    ,'lineid'=>$line->getId()
                 );
             }
             
