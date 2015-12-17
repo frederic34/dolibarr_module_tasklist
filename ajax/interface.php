@@ -25,7 +25,7 @@ function _get(&$PDOdb,$case) {
 	switch ($case) {
 		case 'task_liste':
             $TTask = _getTasklist($PDOdb,$_REQUEST['id'],$_REQUEST['type'],$_REQUEST['fk_user']);
-            __out($TTask, 'json');
+			__out($TTask, 'json');
 			break;
 		
 		case 'of_liste':
@@ -364,7 +364,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		switch ($type) {
 			case 'user':
 				//On ne prends que les tâches assignées à l'utilisateur
-				$static_user->fetch($id);
+				$static_user->fetch( $fk_user > 0 ? $fk_user : $id);
 				$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
 				$TTaskIds = implode(',',array_keys($TRoles));
 				if(!empty($id) && $id>=0) $sql .= " AND t.rowid IN (".$TTaskIds.") "; // TODO le IN est limité, attention au nombre d'itération testé
@@ -406,28 +406,37 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		$sql .= " ORDER BY t.dateo ASC";
 	}
 
+	$TOf = array();
+
 	if($PDOdb->Execute($sql)){
 		$TRes = $PDOdb->Get_All();
 	
 		foreach($TRes as &$res){
 			$static_task->fetch($res->rowid);
 			$static_task->fetch_optionals();
-			$res->taskLabel=$res->taskLabel;
+			
+			$charset = mb_detect_encoding($res->taskLabel);
+			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
 
 			if($static_task->array_options['options_fk_of']>0) {
 				
+				$fk_of = $static_task->array_options['options_fk_of'];
+				
 				dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
 				
-				$of=new TAssetOF;
-				$of->withChild = false;
-				$of->load($PDOdb, $static_task->array_options['options_fk_of']);
+				if(!isset($TOf[$fk_of])) {
+					$TOf[$fk_of]=new TAssetOF;
+					$TOf[$fk_of]->withChild = false;
+					$TOf[$fk_of]->load($PDOdb, $static_task->array_options['options_fk_of']);
+				}
 				
-				$link_of = 'javascript:openOF('.$of->getId().',\''.$of->numero.'\');';
 				
-				$res->taskLabel.=' <a href="'.$link_of.'">'.$of->numero.'</a>';
+				$link_of = 'javascript:openOF('.$TOf[$fk_of]->getId().',\''.$TOf[$fk_of]->numero.'\');';
+				
+				$res->taskLabel.=' <a href="'.$link_of.'">'.$TOf[$fk_of]->numero.'</a>';
                 
-                $res->taskLabel.=' '.$res->progress.'%';
 			}
+			$res->taskLabel.=' '.$res->progress.'%';
 
 			$res->planned_workload = convertSecondToTime($res->planned_workload,'allhourmin');
 			$TSummary = $static_task->getSummaryOfTimeSpent($res->rowid);
