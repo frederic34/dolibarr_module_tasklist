@@ -190,26 +190,52 @@ function _draw_of_product(fk_of){
 			
 			$table = $('#list-task-of div.ui-content table#product-list-of');
 			
-			$table.append('<tr><th>Produit</th><th>Quantité</th><th>Utilisée</th></tr>');
+			$table.append('<thead><tr><th>Produit Nécessaire</th><th>Quantité prévue</th><th>Utilisée</th></tr></thead>');
 			
 			for(x in data.productOF) {
 				
 				line = data.productOF[x]; 
 				
-				$tr = $('<tr />');
-				$tr.append('<td>'+line.label+'</td>');
-				$tr.append('<td>'+line.qty+'</td>');
-				
-				$tr.append('<td><input rel="prod-qty-used" line-id="'+line.lineid+'" type="text" value="'+line.qty_used+'" size="5" /></td>');
-				$table.append($tr);	
+				if(line.type == 'NEEDED'){
+					$tr = $('<tr />');
+					$tr.append('<td>'+line.label+'</td>');
+					$tr.append('<td>'+line.qty+'</td>');
+					
+					$tr.append('<td><input rel="prod-qty-used" line-id="'+line.lineid+'" type="text" value="'+line.qty_used+'" size="5" /></td>');
+					$table.append($tr);
+				}
 			}
 			
-			$table.append('<tr><td align="right" colspan="3"><input data-role="button" type="button" id="retour-atelier" value="Enregistrer" /></td></tr>');
+			$('#list-task-of div#liste_tache_of').before('<table data-role="table" id="product-list-of-tomake" class="ui-responsive table-stroke product-list"></table> ');
+			
+			$table2 = $('#list-task-of div.ui-content table#product-list-of-tomake');
+			
+			$table2.append('<thead><tr><th>Produit Fabriqué</th><th>Quantité prévue</th><th>Fabriquée</th></tr></thead>');
+			
+			for(x in data.productOF) {
+				
+				line = data.productOF[x]; 
+				
+				if(line.type == 'TO_MAKE'){
+					$tr = $('<tr />');
+					$tr.append('<td>'+line.label+'</td>');
+					$tr.append('<td>'+line.qty+'</td>');
+					
+					$tr.append('<td><input rel="prod-qty-used" line-id="'+line.lineid+'" type="text" value="'+line.qty_used+'" size="5" /></td>');
+					$table2.append($tr);
+				}
+			}
+			
+			$table2.append('<tr><td align="right" colspan="3"><input data-role="button" type="button" id="retour-atelier" value="Enregistrer" /></td></tr>');
 			
 			$table.table({
 			  defaults: true
 			});
 			
+			$table2.table({
+			  defaults: true
+			});
+						
 			$('#retour-atelier').button();
 			$('#retour-atelier').click(function() {
 				
@@ -238,7 +264,8 @@ function _draw_of_product(fk_of){
 			});
 			
 			
-			$table.table("refresh");
+			$table.table("rebuild");
+			$table2.table("rebuild");
 		}
 		
 		if(data.productTask.length>0) {

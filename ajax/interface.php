@@ -60,6 +60,9 @@ function _put(&$PDOdb,$case) {
 		case 'start_task':
 			__out(_startTask($PDOdb,$_REQUEST['id']));
 			break;
+		case 'task-product-of':
+			__out(_updateQtyOfLine($PDOdb,$_REQUEST['fk_of'],$_REQUEST['TLine']));
+			break;
 		case 'stop_task':
 			__out(_stopTask($PDOdb,$_REQUEST['id'],$_REQUEST['hour'],$_REQUEST['minutes'],$_REQUEST['id_user_selected']));
 			break;
@@ -70,6 +73,30 @@ function _put(&$PDOdb,$case) {
 			
 			break;
 	}
+}
+
+function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
+	global $db, $conf;
+	
+	dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
+	
+	$assetOf = new TAssetOF;
+	$assetOf->load($PDOdb, $fk_of);
+	
+	if($assetOf->getId() && !empty($TLine)){
+		
+		foreach($TLine as $line){
+			$lineOF = new TAssetOFLine;
+			$lineOF->load($PDOdb, $line['lineid']);
+			
+			if($lineOF->getId()){
+				if($lineOF->type == 'NEEDED') $lineOF->qty_used = $line['qty_use'];
+				else $lineOF->qty = $line['qty_use'];
+				$lineOF->save($PDOdb);
+			}
+		}
+	}
+	
 }
 
 function _getProductTaskOF(&$PDOdb, $fk_of) {
@@ -85,7 +112,7 @@ function _getProductTaskOF(&$PDOdb, $fk_of) {
     
     foreach($of->TAssetOFLine as &$line) {
         
-        if($line->type!='NEEDED') continue;
+        //if($line->type!='NEEDED') continue;
         
         $fk_product = $line->fk_product;
         
@@ -101,6 +128,7 @@ function _getProductTaskOF(&$PDOdb, $fk_of) {
                 ,'qty'=>$line->qty
                 ,'qty_used'=>$line->qty_used
                 ,'lineid'=>$line->getId()
+				,'type'=>$line->type
             );
         }
         else{
@@ -310,9 +338,12 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
 	
 	$sql="SELECT DISTINCT tex.fk_of
-	 FROM ".MAIN_DB_PREFIX."projet_task t LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields tex ON (tex.fk_object=t.rowid)
+	 FROM ".MAIN_DB_PREFIX."projet_task t 
+	 	LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields tex ON (tex.fk_object=t.rowid)
 	 WHERE t.progress < 100  AND tex.fk_of>0";
-	 
+	
+	//echo $sql;
+	
 	if($fk_user>0) {
 		$static_user->fetch($fk_user);
 		$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
@@ -370,7 +401,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')." ".$heure_deb."' AND '".$date_deb." ".$heure_deb."'";
 	}
 	
-	echo $sql;
+	//echo $sql;
 	
 	//if(!empty($id)) $id = 0;
 
