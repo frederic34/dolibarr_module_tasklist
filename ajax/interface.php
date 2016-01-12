@@ -359,7 +359,19 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = t.fk_projet)
 				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid) 
 			WHERE t.progress != 100";
-				
+	
+	$date_deb = date('Y-m-d',strtotime("+2 day"));
+	$heure_deb = date('H:i');
+	
+	if($conf->scrumboard->enabled) {
+		$sql .= " AND t.date_estimated_start BETWEEN '".date('Y-m-d')." ".$heure_deb."' AND '".$date_deb." ".$heure_deb."'";
+	}
+	else{
+		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')." ".$heure_deb."' AND '".$date_deb." ".$heure_deb."'";
+	}
+	
+	echo $sql;
+	
 	//if(!empty($id)) $id = 0;
 
 	if(!empty($type)){
