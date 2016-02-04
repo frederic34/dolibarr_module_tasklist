@@ -7,7 +7,18 @@ $(document).ready(function( event, ui ) {
 	resizeAll();
 	reload_liste_tache('user');
 
+	reload_liste_tache('workstation');
+	
+	reload_liste_of();
+
 } );
+
+function setWorkstation(wsid) {
+	
+	$("#search_workstation").val(wsid);
+	reload_liste_tache('workstation');
+	
+}
 
 function changeUser() {
 	
@@ -19,17 +30,6 @@ function changeUser() {
 	
 }
 
-$( "#list-task-workstation" ).on( "pagecreate", function( event, ui ) {
-	reload_liste_tache('workstation');
-	$("#search_workstation").on( "change", function(event, ui) {
- 		reload_liste_tache('workstation');
-	});
-} );
-
-$( "#list-task-of" ).on( "pagecreate", function( event, ui ) {
-	reload_liste_of();
-	
-} );
 
 function resizeAll() {
 	
@@ -336,11 +336,10 @@ function reload_liste_of() {
 		$li.empty();
 		for(x in data) {
 			
-			$li.append('<li><a href="javascript:openOF('+x+',\''+data[x]+'\')">'+data[x]+'</a></li>');
+			$li.append('<li class="list-group-item"><a href="javascript:openOF('+x+',\''+data[x]+'\')">'+data[x]+'</a></li>');
 			
 		}
-	
-		$li.listview();
+
 	});
 	
 }
@@ -393,8 +392,8 @@ function refresh_liste_tache(data,type){
 	$.each(data,function(i,task){
 		var clone = $('#task_list_clone').clone();
 		clone.attr('id','task_list_'+task.rowid);
-		clone.find('a[data-toggle="collapse"]').attr("data-target",'#task_content_'+task.rowid);
-		clone.find('div.collapse').attr("id",'task_content_'+task.rowid);
+		clone.find('a[data-toggle="collapse"]').attr("data-target",'#task_content_'+type+'_'+task.rowid);
+		clone.find('div.collapse').attr("id",'task_content_'+type+'_'+task.rowid);
 		//Refresh des datas
 		clone.find('[rel=taskRef]').html(task.taskRef+' '+task.taskLabel);
 		clone.find('[rel=dateo]').append(task.dateo_aff);

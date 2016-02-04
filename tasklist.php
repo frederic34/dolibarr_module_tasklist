@@ -55,9 +55,12 @@
 	                    if($conf->workstation->enabled && $user->rights->workstation->all->read){
 	                        ?>
 	                            <!-- Affichage de l'onglet "Postes de travail" -->
-	                            <?php require('./tpl/tasklist.onglet.workstations.php'); ?>
-	                            
-	                            <div id='liste_tache_workstation' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a"></div>
+	                            <div class="col-md-4">
+	                            	<?php require('./tpl/tasklist.onglet.workstations.php'); ?>
+	                            </div>
+	                            <div class="col-md-8">
+	                            	<div id="liste_tache_workstation" class="list-group"></div>
+	                            </div>
 	                        <?php
 	                    }
 	
