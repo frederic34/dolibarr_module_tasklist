@@ -7,7 +7,7 @@
     
 	//pre($TWorkstation,true);exit;
 	$form = new TFormCore;
-	$selectWorkstation = $form->combo('','search_workstation',$TWorkstation,'',1,'','data-native-menu="false"');
+	$selectWorkstation = $form->combo('','search_workstation',$TWorkstation,'',1,'','','form-control');
 	
 	//Affichage des filtres
 	?>

@@ -4,10 +4,11 @@
 	$disabled = ($user->rights->projet->all->lire) ? 0 : 1;
 
 	$form = new Form($db);
-	$selectUsers = $form->select_dolusers($user->id,'search_user" data-native-menu="false',1,'',$disabled);
+	$selectUsers = $form->select_dolusers($user->id,'search_user',1,'',$disabled,'','',$conf->entity,'','','','','','form-control');
 	
 	//Affichage des filtres
 	?>
-	
+	<div class="form-group">
 			<?php print $selectUsers; ?>
+	</div>
 	

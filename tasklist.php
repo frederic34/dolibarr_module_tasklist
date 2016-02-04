@@ -26,136 +26,85 @@
 	<head>
 		<title>Dolibarr - <?php echo $langs->trans('Tasklist'); ?></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="stylesheet" href="js/jquery.mobile-1.4.5.min.css" />
 		
 		<link rel="stylesheet" href="css/style.css"/>
+		<link rel="stylesheet" href="lib/normalize.css"/>
+		<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
 		
 		<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
-		<script src="js/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
 		<script src="js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
-		<script id="panel-init">
-        $(function() {
-             $("body>[data-role='panel']").panel().enhanceWithin();
-             $( "#select-user" ).panel({
-			  beforeopen: function( event, ui ) {
-			  	$('#select-user input[data-type=search]').focus();
-			  	
-			  }
-			});
-        });
-    </script>
+		<script src="lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 		
 	</head>
 	<body>		
-	    
-		<div id="list-task-user" data-role="page">
-		    <div data-role="header">
-		        <h1>Tâches par utilisateur</h1>
-                <div data-role="navbar">
-                    <ul>
-                       
-                        <li><a href="#list-task-user" id="onglet1" class="ui-btn-active"><?php echo $langs->trans('Users'); ?></a></li>
-                        <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a  href="#list-task-workstation" id="onglet2"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
-                        <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  href="#list-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
-                    </ul>
-                   
-                </div>
-            </div><!-- /header -->
-			<div role="main" class="ui-content">
-			    	<!-- Affichage de l'onglet "Utilisateur" --> 
-						<?php require('./tpl/tasklist.onglet.utilisateurs.php'); ?>
-						<div id='liste_tache_user' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a">
-							
-						</div>
-					
-					
+	    <div class="container-fluid">
+			<?php require('./tpl/tasklist.onglet.php'); ?>
+			<!-- Tab panes -->
+			<div class="tab-content">
+			  <div class="tab-pane active" id="list-task-user">
+			  		<div class="row">
+			  				<div id="liste_tache_user" class="list-group">
+								
+							</div>
+					</div>
+			  	
+			  </div>
+			  <div class="tab-pane" id="list-task-workstation">
+			  		<div class="row">
+			  		<?php 
+	                    if($conf->workstation->enabled && $user->rights->workstation->all->read){
+	                        ?>
+	                            <!-- Affichage de l'onglet "Postes de travail" -->
+	                            <?php require('./tpl/tasklist.onglet.workstations.php'); ?>
+	                            
+	                            <div id='liste_tache_workstation' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a"></div>
+	                        <?php
+	                    }
+	
+	                ?>
+	               </div>
+			  </div>
+			  <div class="tab-pane" id="list-of">
+			  		<?php 
+	                   if($conf->asset->enabled && $user->rights->asset->of->lire){
+	                       require('./tpl/tasklist.onglet.of.php');  
+	                    }
+	
+	                ?></div>
+			  
 			</div>
+		    
+	        <div id="list-task-of" class="hidden">
+	            <div data-role="header">
+	                <a class="ui-btn ui-btn-inline ui-icon-back ui-btn-icon-notext" href="#list-of"></a>
+	                <h1>Tâches par of</h1>
+	                <div data-role="navbar">
+	                    <ul>
+	                        <li><a href="#list-task-user" id="onglet1"><?php echo $langs->trans('Users'); ?></a></li>
+	                        <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a href="#list-task-workstation" id="onglet2"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
+	                        <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  class="ui-btn-active" href="#list-task-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
+	                    </ul>
+	                </div>
+	
+	            </div><!-- /header -->
+	            <div class="ui-content contenu" data-role="content" role="main">
+	                <?php 
+	                   if($conf->asset->enabled && $user->rights->asset->of->lire){
+	                        ?>
+	                            <!-- Affichage de l'onglet "Ordre de fabrication" -->
+	        
+	                            <div id='liste_tache_of' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a"></div>
+	                            
+	                           <?php 
+	                    }
+	
+	                ?>
+	            </div>
+	        </div>
+	        <?php require('./tpl/tasklist.listeTache.php'); ?>
+	        
+			<?php require('./tpl/tasklist.popup.php'); ?>
 		</div>
-		
-		
-        <div id="list-task-workstation" data-role="page">
-            <div data-role="header">
-                <h1>Tâches par poste de travail</h1>
-                <a href="#select-user" class="ui-btn ui-btn-right ui-shadow ui-corner-all ui-icon-user ui-btn-icon-notext">Utilisateur</a>
-                <div data-role="navbar">
-                    <ul>
-                        <li><a href="#list-task-user" id="onglet1"><?php echo $langs->trans('Users'); ?></a></li>
-                        <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a  class="ui-btn-active"  href="#list-task-workstation" id="onglet2"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
-                        <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  href="#list-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
-                    </ul>
-                </div>
-
-            </div><!-- /header -->
-            <div class="ui-content contenu" data-role="content" role="main">
-                <?php 
-                    if($conf->workstation->enabled && $user->rights->workstation->all->read){
-                        ?>
-                            <!-- Affichage de l'onglet "Postes de travail" -->
-                            <?php require('./tpl/tasklist.onglet.workstations.php'); ?>
-                            
-                            <div id='liste_tache_workstation' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a"></div>
-                        <?php
-                    }
-
-                ?>
-                
-                
-            </div>
-        </div>
-        <div id="list-of" data-role="page">
-            <div data-role="header">
-                <h1>Liste des OFs</h1>
-                <a href="#select-user" class="ui-btn ui-btn-right ui-shadow ui-corner-all ui-icon-user ui-btn-icon-notext">Utilisateur</a>
-                <div data-role="navbar">
-                    <ul>
-                        <li><a href="#list-task-user" id="onglet1"><?php echo $langs->trans('Users'); ?></a></li>
-                        <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a href="#list-task-workstation" id="onglet2"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
-                        <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  class="ui-btn-active" href="#list-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
-                    </ul>
-                </div>
-
-            </div><!-- /header -->
-            <div class="ui-content contenu" data-role="content" role="main">
-                <?php 
-                   if($conf->asset->enabled && $user->rights->asset->of->lire){
-                       require('./tpl/tasklist.onglet.of.php');  
-                    }
-
-                ?>
-            </div>
-        </div>
-        
-        <div id="list-task-of" data-role="page" da>
-            <div data-role="header">
-                <a class="ui-btn ui-btn-inline ui-icon-back ui-btn-icon-notext" href="#list-of"></a>
-                <h1>Tâches par of</h1>
-                <div data-role="navbar">
-                    <ul>
-                        <li><a href="#list-task-user" id="onglet1"><?php echo $langs->trans('Users'); ?></a></li>
-                        <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a href="#list-task-workstation" id="onglet2"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
-                        <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  class="ui-btn-active" href="#list-task-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
-                    </ul>
-                </div>
-
-            </div><!-- /header -->
-            <div class="ui-content contenu" data-role="content" role="main">
-                <?php 
-                   if($conf->asset->enabled && $user->rights->asset->of->lire){
-                        ?>
-                            <!-- Affichage de l'onglet "Ordre de fabrication" -->
-        
-                            <div id='liste_tache_of' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a"></div>
-                            
-                           <?php 
-                    }
-
-                ?>
-            </div>
-        </div>
-        <?php require('./tpl/tasklist.listeTache.php'); ?>
-        
-		<?php require('./tpl/tasklist.popup.php'); ?>
-		
 		<script src="js/fonctions.js" type="text/javascript"></script>
 	</body>
 </html>

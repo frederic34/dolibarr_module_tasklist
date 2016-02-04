@@ -1,13 +1,23 @@
 
-$( "#list-task-user" ).on( "pagecreate", function( event, ui ) {
+$(window).resize(function() {
+	resizeAll();
+});
+
+$(document).ready(function( event, ui ) {
+	resizeAll();
 	reload_liste_tache('user');
-	$("#search_user").on( "change", function(event, ui) {
- 		reload_liste_tache('user');
- 		reload_liste_tache('workstation');
- 		reload_liste_of();
- 		//reload_liste_tache('of');
-	});
+
 } );
+
+function changeUser() {
+	
+	$("#search_user").val($(this).val());
+	
+	reload_liste_tache('user');
+	reload_liste_tache('workstation');
+	reload_liste_of();
+	
+}
 
 $( "#list-task-workstation" ).on( "pagecreate", function( event, ui ) {
 	reload_liste_tache('workstation');
@@ -21,7 +31,14 @@ $( "#list-task-of" ).on( "pagecreate", function( event, ui ) {
 	
 } );
 
-
+function resizeAll() {
+	
+	
+	var doc_width = $(document).width();
+	var doc_height = $(window).height();
+	
+	$('#select-user-list').height( doc_height - 200 );
+}
 
 function start_task(id_task,onglet){
 
@@ -71,7 +88,8 @@ function getTimeSpent(id_task, action){
 }
 
 function aff_popup(id_task,onglet,action){
-	$('#confirm-add-time').panel('open');
+	
+	$("#confirm-add-time").modal({show: true});
 	
 	timespent = getTimeSpent(id_task,action);
 	TTime = timespent.split(":");
@@ -92,7 +110,7 @@ function aff_popup(id_task,onglet,action){
 			close_task(id_task,onglet,hour,minutes);
 		}
 		
-		$('#confirm-add-time').panel('close');
+		$('#confirm-add-time').modal('hide');
 	});
 	
 }
@@ -120,7 +138,7 @@ function stop_task(id_task,onglet,hour,minutes){
 	.then(function (time){
 		//console.log(data);
 		refresh_time_spent($('#liste_tache_'+onglet+' > #'+id_task).find('span[rel=spent_time]'), time);
-		//refresh_liste_tache(data,type);
+		
 	});
 }
 
@@ -372,15 +390,13 @@ function refresh_liste_tache(data,type){
 	
 	vider_liste(type);
 
-	//$( '#liste_tache_'+onglet ).collapsibleset( "destroy" );
-
 	$.each(data,function(i,task){
 		var clone = $('#task_list_clone').clone();
 		clone.attr('id','task_list_'+task.rowid);
-		
+		clone.find('a[data-toggle="collapse"]').attr("data-target",'#task_content_'+task.rowid);
+		clone.find('div.collapse').attr("id",'task_content_'+task.rowid);
 		//Refresh des datas
 		clone.find('[rel=taskRef]').html(task.taskRef+' '+task.taskLabel);
-		clone.find('[rel=taskRef] a[data-role=button]').button();
 		clone.find('[rel=dateo]').append(task.dateo_aff);
 		clone.find('[rel=datee]').append(task.datee_aff);
 		clone.find('[rel=planned_workload]').append(task.planned_workload);
@@ -392,14 +408,13 @@ function refresh_liste_tache(data,type){
 		clone.find(".start").attr('onclick','start_task("task_list_'+task.rowid+'","'+type+'");');
 		clone.find(".pause").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+type+'","stop");');
 		clone.find(".close").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+type+'","close");');
-	    clone.find('h3>a').on('click', function(e) {
+	    /*clone.find('h3>a').on('click', function(e) {
 	        e.stopPropagation();
 	        e.stopImmediatePropagation();          
 	    }).button({ inline : true, mini: true});    
-	
+	*/
 		clone.appendTo('#liste_tache_'+type);
 		clone.show();
-		clone.collapsible();
 	});
 	
 	
