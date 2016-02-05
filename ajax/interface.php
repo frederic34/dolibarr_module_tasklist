@@ -31,10 +31,13 @@ function _get(&$PDOdb,$case) {
 			break;
 		
 		case 'of_liste':
-			
-			__out(_list_of($PDOdb,$_REQUEST['fk_user']));
+			if(!class_exists('TAssetOF')) __out(array());
+			else __out(_list_of($PDOdb,$_REQUEST['fk_user']));
 			break;
         case 'task-product-of':
+			
+			if(!class_exists('TAssetOF')) __out(array(),'json');
+			
             $TProduct = _getProductTaskOF($PDOdb,(int)$_REQUEST['fk_of']);
             
             __out($TProduct, 'json');
