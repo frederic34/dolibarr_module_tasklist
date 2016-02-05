@@ -14,7 +14,7 @@ if($user->rights->tasklist->user->read) {
 			        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <span id="user-name"><?php echo $user->login ?></span> <span class="caret"></span></a>
 					<input id="search_user" type="hidden" value="<?php echo $user->id ?>" />
 					
-						<ul class="dropdown-menu" id="select-user-list" style="height: 500px; width:500px;overflow-y: scroll; ">
+						<ul class="dropdown-menu" id="select-user-list" style="height: 500px; overflow-y: scroll; ">
 <?php
 	global $conf;
 	
