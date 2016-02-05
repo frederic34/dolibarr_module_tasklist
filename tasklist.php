@@ -10,13 +10,15 @@
     	accessforbidden();
 	}
 	
-	if($conf->asset->enabled) dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
+	if($conf->of->enabled) dol_include_once('/of/asset/class/ordre_fabrication_asset.class.php');
 	if($conf->workstation->enabled) dol_include_once('/workstation/class/workstation.class.php');
 
     $conf->use_javascript_ajax = false; // 3.7 compatibility
     
     if($conf->workstation->enabled) $langs->load('workstation@workstation');
 	if($conf->asset->enabled) $langs->load('asset@asset');
+	
+	$accessOF = ($conf->asset->enabled && $user->rights->asset->of->lire)||($conf->of->enabled && $user->rights->of->of->lire); 
 	
 	$PDOdb = new TPDOdb;
 ?>
@@ -69,41 +71,26 @@
 			  </div>
 			  <div class="tab-pane" id="list-of">
 			  		<?php 
-	                   if($conf->asset->enabled && $user->rights->asset->of->lire){
-	                       require('./tpl/tasklist.onglet.of.php');  
-	                    }
-	
-	                ?></div>
-			  
-			</div>
-		    
-	        <div id="list-task-of" class="hidden">
-	            <div data-role="header">
-	                <a class="ui-btn ui-btn-inline ui-icon-back ui-btn-icon-notext" href="#list-of"></a>
-	                <h1>Tâches par of</h1>
-	                <div data-role="navbar">
-	                    <ul>
-	                        <li><a href="#list-task-user" id="onglet1"><?php echo $langs->trans('Users'); ?></a></li>
-	                        <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a href="#list-task-workstation" id="onglet2"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
-	                        <?php if($conf->asset->enabled && $user->rights->asset->of->lire){ ?><li><a  class="ui-btn-active" href="#list-task-of" id="onglet3"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
-	                    </ul>
-	                </div>
-	
-	            </div><!-- /header -->
-	            <div class="ui-content contenu" data-role="content" role="main">
-	                <?php 
-	                   if($conf->asset->enabled && $user->rights->asset->of->lire){
-	                        ?>
-	                            <!-- Affichage de l'onglet "Ordre de fabrication" -->
-	        
-	                            <div id='liste_tache_of' style="width:100%;" data-role="collapsibleset" data-theme="a" data-content-theme="a"></div>
-	                            
-	                           <?php 
+	                   if($accessOF){
+	                   	
+						  ?> <div class="col-md-4">
+                            	<?php require('./tpl/tasklist.onglet.of.php'); ?>
+                            </div>
+                            <div class="col-md-8">
+                            	<div id="list-task-of" class="">
+                            		<div id="liste_tache_of" class="list-group"></div>
+                            	</div>
+                            </div>
+	                      <?php
+	                         
 	                    }
 	
 	                ?>
-	            </div>
-	        </div>
+	           </div>
+			 
+			</div>
+		    
+	        
 	        <?php require('./tpl/tasklist.listeTache.php'); ?>
 	        
 			<?php require('./tpl/tasklist.popup.php'); ?>

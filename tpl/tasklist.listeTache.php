@@ -4,7 +4,10 @@
 								  
 
 		<div id="task_list_clone" class="list-group-item" style="display:none">
-			<a data-toggle="collapse" href="#"><h4 class="md-col-12" rel="taskRef"></h4></a>
+			<div class="container-fluid">
+				<span class="md-col-3 pull-right" rel="link-of"></span>
+				<a data-toggle="collapse" href="#" class="col-md-6"><h4 class="md-col-9" rel="taskRef"></h4></a>
+			</div>
 			<div class="collapse">
 				<div class="container-fluid">
 					<div class="row">

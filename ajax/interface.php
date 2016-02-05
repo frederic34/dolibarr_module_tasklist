@@ -5,11 +5,13 @@
 	error_reporting(E_ALL);
 
 	require('../config.php');
-	dol_include_once('/tasklist/fonction.php');
 	dol_include_once('/projet/class/task.class.php');
 	dol_include_once('/projet/class/projet.class.php');
 	dol_include_once('/user/class/usergroup.class.php');
 	dol_include_once('/core/lib/date.lib.php');
+
+	if($conf->of->enabled) $resOF = dol_include_once('/of/class/ordre_fabrication_asset.class.php');
+	else if($conf->asset->enabled) $resOF = dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
 
 	ob_clean();
 	
@@ -78,8 +80,6 @@ function _put(&$PDOdb,$case) {
 function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
 	global $db, $conf;
 	
-	dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
-	
 	$assetOf = new TAssetOF;
 	$assetOf->load($PDOdb, $fk_of);
 	
@@ -100,9 +100,8 @@ function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
 }
 
 function _getProductTaskOF(&$PDOdb, $fk_of) {
-    global $db;
+    global $db,$conf;
     
-    dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
     dol_include_once('/product/class/product.class.php');
     
     $Tab = array('productOF'=>array(), 'productTask'=>array());
@@ -302,10 +301,11 @@ function _startTask(&$PDOdb,$taskId){
 //Lance le/les OFs en production s'ils ne le sont pas
 function _openProdOF(&$PDOdb, &$db, &$task)
 {
+	global $conf;
+	
 	if ($task->fk_project > 0)
 	{
 		dol_include_once('/projet/class/project.class.php');
-		dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
 		dol_include_once('/asset/class/asset.class.php');
 		
 		$project = new Project($db);
@@ -335,7 +335,9 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	$TRes = array();
 	$static_task = new Task($db);
 	$static_user = new User($db);
-	dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
+	
+	if(!class_exists('TAssetOF')) return false;
+	
 	
 	$sql="SELECT DISTINCT tex.fk_of
 	 FROM ".MAIN_DB_PREFIX."projet_task t 
@@ -472,8 +474,6 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				
 				$fk_of = $static_task->array_options['options_fk_of'];
 				
-				dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
-				
 				if(!isset($TOf[$fk_of])) {
 					$TOf[$fk_of]=new TAssetOF;
 					$TOf[$fk_of]->withChild = false;
@@ -482,9 +482,13 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				
 				$link_of = 'javascript:openOF('.$TOf[$fk_of]->getId().',\''.$TOf[$fk_of]->numero.'\');';
 				
-				$res->taskLabel.=' <a href="'.$link_of.'">'.$TOf[$fk_of]->numero.'</a>';
+				$res->taskOF=' <a href="'.$link_of.'" class="btn btn-default">'.$TOf[$fk_of]->numero.'</a>';
                 
 			}
+			else {
+				$res->taskOF = '';	
+			}
+			
 			$res->taskLabel.=' '.$res->progress.'%';
 
 			$res->planned_workload = convertSecondToTime($res->planned_workload,'allhourmin');

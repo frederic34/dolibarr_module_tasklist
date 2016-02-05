@@ -16,11 +16,11 @@
 	}
 	
 	
-	?><ul id="liste-of" data-role="listview"  data-inset="true" data-filter="true" data-filter-placeholder="Numéro OF"><?php
+	?><ul id="liste-of" class="list-group" data-filter-placeholder="Numéro OF"><?php
 	
 	   foreach($TOF as $idOf=>$numero) {
 	       
-           print '<li><a href="javascript:openOF('.$idOf.',\''.$numero.'\');">'.$numero.'</a></li>';
+           print '<li class="list-group-item"><a href="javascript:openOF('.$idOf.',\''.$numero.'\');">'.$numero.'</a></li>';
            
 	   }
 	

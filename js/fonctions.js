@@ -23,10 +23,10 @@ function setWorkstation(wsid) {
 	
 }
 
-function changeUser() {
+function changeUser(fk_user) {
 	
-	$("#search_user").val($(this).val());
-	
+	$("#search_user").val(fk_user);
+	$("#user-name").html( $('li[user-id='+fk_user+']').attr('login') );
 	reload_liste_tache('user');
 	reload_liste_tache('workstation');
 	reload_liste_of();
@@ -37,10 +37,25 @@ function changeUser() {
 function resizeAll() {
 	
 	
-	var doc_width = $(document).width();
+	var doc_width = $(window).width();
 	var doc_height = $(window).height();
 	
 	$('#select-user-list').height( doc_height - 200 );
+	nb_user = $('#select-user-list>li').length;
+	
+	if(nb_user>10) {
+		
+		if(doc_width>800 && nb_user>30) {
+			$('#select-user-list').width( 600 );
+			$('#select-user-list>li').removeClass('col-md-6').addClass('col-md-4').width(160);
+		}
+		else if(doc_width>500) {
+			$('#select-user-list').width( 400 );
+			$('#select-user-list>li').removeClass('col-md-4').addClass('col-md-6').width(160);
+		}
+	}
+	
+	
 }
 
 function start_task(id_task,onglet){
@@ -65,7 +80,7 @@ function start_task(id_task,onglet){
 	.then(function (data){
 		//console.log(data);
 		if(data.result == 'OK'){
-			//$li.find(".pause span[start-time]").html(data.tasklist_time_start);		
+			$li.find(".pause span[start-time]").html(data.tasklist_time_start);		
 			$li.addClass('running');	
 		}
 	});
@@ -188,12 +203,14 @@ function openOF(fk_of, numero) {
 	 * var currentPage = $(':mobile-pagecontainer').pagecontainer( "getActivePage" ).attr('id');
 	if(currentPage!='list-task-of')
 	 */
+	$('ul#liste-of li').removeClass('active');
+	$('ul#liste-of li[fk-of='+fk_of+']').addClass('active');
 	
-	$('#list-task-of div[data-role="header"] h1').html("Tâches OF "+numero);
 	
 	_draw_of_product(fk_of);
 	
-	$.mobile.changePage('#list-task-of');
+	$('#myTabs a[href="#list-of"]').tab('show');
+	
 }
 
 function _draw_of_product(fk_of){
@@ -211,7 +228,7 @@ function _draw_of_product(fk_of){
 		
 		if(data.productOF.length>0) {
 			
-			$('#list-task-of div#liste_tache_of').before('<table data-role="table" id="product-list-of" class="ui-responsive table-stroke product-list"></table> ');
+			$('#list-task-of div#liste_tache_of').before('<table id="product-list-of" class="table product-list"></table> ');
 			
 			$table = $('#list-task-of div.ui-content table#product-list-of');
 			
@@ -231,7 +248,7 @@ function _draw_of_product(fk_of){
 				}
 			}
 			
-			$('#list-task-of div#liste_tache_of').before('<table data-role="table" id="product-list-of-tomake" class="ui-responsive table-stroke product-list"></table> ');
+			$('#list-task-of div#liste_tache_of').before('<table id="product-list-of-tomake" class="table product-list"></table> ');
 			
 			$table2 = $('#list-task-of div.ui-content table#product-list-of-tomake');
 			
@@ -251,17 +268,8 @@ function _draw_of_product(fk_of){
 				}
 			}
 			
-			$table2.append('<tr><td align="right" colspan="3"><input data-role="button" type="button" id="retour-atelier" value="Enregistrer" /></td></tr>');
+			$table2.append('<tr><td align="right" colspan="3"><input class="btn btn-default" type="button" id="retour-atelier" value="Enregistrer" /></td></tr>');
 			
-			$table.table({
-			  defaults: true
-			});
-			
-			$table2.table({
-			  defaults: true
-			});
-						
-			$('#retour-atelier').button();
 			$('#retour-atelier').click(function() {
 				
 				var $bt = $(this); 
@@ -288,14 +296,11 @@ function _draw_of_product(fk_of){
 				});
 			});
 			
-			
-			$table.table("rebuild");
-			$table2.table("rebuild");
 		}
 		
 		if(data.productTask.length>0) {
 			for(taskid in data.productTask) {
-				$('#task_list_'+taskid+' .ui-collapsible-content').preprend('<table data-role="table" id="product-list-task-'+taskid+'" class="ui-responsive table-stroke product-list"></table> ');
+				$('#task_list_'+taskid+' .ui-collapsible-content').preprend('<table id="product-list-task-'+taskid+'" class="table product-list"></table> ');
 				$table = $('table#product-list-task-'+taskid);
 				$table.append('<tr><th>Produit</th><th>Quantité</th><th>#</th></tr>');
 				
@@ -316,12 +321,6 @@ function _draw_of_product(fk_of){
 	
 }
 
-function selectUser(fk_user) {
-	$('#search_user').val(fk_user);
-	$('#search_user').change();
-	//$('#search_user').selectmenu('refresh');
-	$( "#select-user" ).panel( "close" );
-}
 function reload_liste_of() {
 	
 	$.ajax({
@@ -343,7 +342,7 @@ function reload_liste_of() {
 		$li.empty();
 		for(x in data) {
 			
-			$li.append('<li class="list-group-item"><a href="javascript:openOF('+x+',\''+data[x]+'\')">'+data[x]+'</a></li>');
+			$li.append('<li class="list-group-item" fk-of="'+x+'"><a href="javascript:openOF('+x+',\''+data[x]+'\')">'+data[x]+'</a></li>');
 			
 		}
 
@@ -409,6 +408,8 @@ function refresh_liste_tache(data,type){
 		clone.find('[rel=spent_time]').append(task.spent_time);
 		clone.find('[rel=progress]').append(task.progress);
 		clone.find('[rel=priority]').append(task.priority);
+		
+		if(task.taskOF!='') clone.find('[rel=link-of]').html(task.taskOF);
 		
 		//Refresh des actions
 		clone.find(".start").attr('onclick','start_task("task_list_'+task.rowid+'","'+type+'");');
