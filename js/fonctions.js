@@ -16,6 +16,9 @@ $(document).ready(function( event, ui ) {
 function setWorkstation(wsid) {
 	
 	$("#search_workstation").val(wsid);
+	$('ul#list-workstation li,ul#list-workstation li').removeClass('active');
+	$('ul#list-workstation li[ws-id='+wsid+']').addClass('active');
+	
 	reload_liste_tache('workstation');
 	
 }
@@ -42,9 +45,11 @@ function resizeAll() {
 
 function start_task(id_task,onglet){
 
-	$("#liste_tache_"+onglet+" > #"+id_task).find('.start').hide();
-	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').show();
-	$("#liste_tache_"+onglet+" > #"+id_task).find('.close').show();
+	$li = $("#liste_tache_"+onglet+" > #"+id_task);
+
+	$li.find('.start').hide();
+	$li.find('.pause').show();
+	$li.find('.close').show();
 	
 	$.ajax({
 		url: "ajax/interface.php",
@@ -59,8 +64,9 @@ function start_task(id_task,onglet){
 	})
 	.then(function (data){
 		//console.log(data);
-		if(data == 1){
-			
+		if(data.result == 'OK'){
+			//$li.find(".pause span[start-time]").html(data.tasklist_time_start);		
+			$li.addClass('running');	
 		}
 	});
 }
@@ -117,9 +123,10 @@ function aff_popup(id_task,onglet,action){
 
 function stop_task(id_task,onglet,hour,minutes){
 	
-	$("#liste_tache_"+onglet+" > #"+id_task).find('.start').show();
-	$("#liste_tache_"+onglet+" > #"+id_task).find('.pause').hide();
-	$("#liste_tache_"+onglet+" > #"+id_task).find('.close').show();
+	$li = $('#liste_tache_'+onglet+' > #'+id_task);
+	$li.find('.start').show();
+	$li.find('.pause').hide();
+	$li.find('.close').show();
 	
 	$.ajax({
 		url: "ajax/interface.php",
@@ -137,8 +144,8 @@ function stop_task(id_task,onglet,hour,minutes){
 	})
 	.then(function (time){
 		//console.log(data);
-		refresh_time_spent($('#liste_tache_'+onglet+' > #'+id_task).find('span[rel=spent_time]'), time);
-		
+		refresh_time_spent($li.find('span[rel=spent_time]'), time);
+		$li.removeClass('running');
 	});
 }
 
@@ -407,6 +414,16 @@ function refresh_liste_tache(data,type){
 		clone.find(".start").attr('onclick','start_task("task_list_'+task.rowid+'","'+type+'");');
 		clone.find(".pause").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+type+'","stop");');
 		clone.find(".close").attr('onclick','aff_popup("task_list_'+task.rowid+'","'+type+'","close");');
+	    
+	    if(task.tasklist_time_start!='') {
+			clone.find(".pause span[rel=start-time]").html(task.tasklist_time_start);
+			clone.addClass('running');
+			clone.find(".pause").show();
+			clone.find(".close").show();
+			clone.find(".start").hide();
+		}
+	    
+	    
 	    /*clone.find('h3>a').on('click', function(e) {
 	        e.stopPropagation();
 	        e.stopImmediatePropagation();          

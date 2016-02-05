@@ -293,10 +293,10 @@ function _startTask(&$PDOdb,$taskId){
 		
 		if ($conf->asset->enabled) _openProdOF($PDOdb, $db, $task);
 		
-		return 1;
+		return array('result'=>'OK', 'tasklist_time_start'=>dol_print_date(time(), 'dayhour'));
 	}
 	
-	return 0;
+	return array('result'=>'KO');
 }
 
 //Lance le/les OFs en production s'ils ne le sont pas
@@ -377,7 +377,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$static_user = new User($db);
 	
 	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, p.ref as projetRef, p.title as projetLabel, t.planned_workload
-			, t.progress, t.priority";
+			, t.progress, t.priority, t.tasklist_time_start";
 			
 	if($conf->scrumboard->enabled) {
 		$sql .= " ,t.date_estimated_start as dateo,t.date_estimated_end as datee";
@@ -391,15 +391,18 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid) 
 			WHERE t.progress != 100";
 	
-	$date_deb = date('Y-m-d',strtotime("+2 day"));
-	$heure_deb = date('H:i');
+	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 	
 	if($conf->scrumboard->enabled) {
-		$sql .= " AND t.date_estimated_start BETWEEN '".date('Y-m-d')." ".$heure_deb."' AND '".$date_deb." ".$heure_deb."'";
+		$sql .= " AND t.date_estimated_start < '".$date_deb."'
+		";
 	}
 	else{
-		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')." ".$heure_deb."' AND '".$date_deb." ".$heure_deb."'";
+		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')."<'".$date_deb."'
+		";
 	}
+	
+	
 	
 	//echo $sql;
 	
@@ -408,7 +411,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	if(!empty($type)){
 		switch ($type) {
 			case 'user':
-				//On ne prends que les tâches assignées à l'utilisateur
+				//On ne prends que les tâches assignées à l'utilisateurtask
 				$static_user->fetch( $fk_user > 0 ? $fk_user : $id);
 				$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
 				$TTaskIds = implode(',',array_keys($TRoles));
@@ -451,6 +454,8 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		$sql .= " ORDER BY t.dateo ASC";
 	}
 
+	$sql.=" LIMIT 20";
+
 	$TOf = array();
 
 	if($PDOdb->Execute($sql)){
@@ -475,7 +480,6 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 					$TOf[$fk_of]->load($PDOdb, $static_task->array_options['options_fk_of']);
 				}
 				
-				
 				$link_of = 'javascript:openOF('.$TOf[$fk_of]->getId().',\''.$TOf[$fk_of]->numero.'\');';
 				
 				$res->taskLabel.=' <a href="'.$link_of.'">'.$TOf[$fk_of]->numero.'</a>';
@@ -490,11 +494,14 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			$ttemp = $static_task->getSummaryOfTimeSpent();
 			if($static_task->planned_workload>0) $res->progress = round($ttemp['total_duration'] / $static_task->planned_workload * 100, 2);
 			
-			if($res->dateo === '0000-00-00 00:00:00') $res->dateo_aff = '00-00-0000 00:00:00';
+			if($res->dateo === '0000-00-00 00:00:00') $res->dateo_aff = 'N/A';
 			else $res->dateo_aff = dol_print_date($res->dateo,'dayhour');
 			
-			if($res->datee === '0000-00-00 00:00:00') $res->datee_aff = '00-00-0000 00:00:00';
+			if($res->datee === '0000-00-00 00:00:00') $res->datee_aff = 'N/A';
 			else $res->datee_aff = dol_print_date($res->datee,'dayhour');
+			
+			if($res->tasklist_time_start === '0000-00-00 00:00:00') $res->tasklist_time_start = '';
+			else $res->tasklist_time_start = dol_print_date($res->tasklist_time_start,'dayhour');
 			
 		}
 	}

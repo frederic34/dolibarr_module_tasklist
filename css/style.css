@@ -1,1 +1,12 @@
-.list-group>:nth-child(odd) { background: #5f6e7d; }
+.list-group>:nth-child(odd) { 
+	background: #5f6e7d; 
+}
+ul li.active a {
+	color:#000;
+}
+.list-group .running {
+	background: #dff0d8; 
+}
+.list-group .running div.container-fluid {
+	color:#000;
+}

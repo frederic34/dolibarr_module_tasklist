@@ -33,8 +33,8 @@
 					</div>
 					<div class="row">
 							 <a href="#" class="btn btn-primary col-md-3 start"><?php echo $langs->trans('Start'); ?></a>
-							 <a href="#" class="btn btn-info col-md-3 pause" style="display:none;"><?php echo $langs->trans('Pause'); ?></a>
-							 <a href="#" class="btn btn-warning col-md-3 close" style="display:none;"><?php echo $langs->trans('Close'); ?></a>
+							 <a href="#" class="btn btn-info col-md-3 pause" style="display:none;"><?php echo $langs->trans('Pause'); ?> <span rel="start-time" class="badge"></span></a>
+							 <a href="#" class="btn btn-success col-md-3 close" style="display:none;"><?php echo $langs->trans('Close'); ?></a>
 						
 					</div>
 				</div>	

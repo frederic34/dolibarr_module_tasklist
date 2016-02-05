@@ -17,11 +17,11 @@
 	
 */
 ?><input type="hidden" id="search_workstation" value="" />
-<ul class="list-group"><?php
+<ul class="list-group" id="list-workstation"><?php
 
 	foreach($TWorkstation as $idWS=>$label) {
 		
-		echo '<li class="list-group-item" onclick="javascript:setWorkstation('.$idWS.')"><a href="#">'.$label.'</a></li>';
+		echo '<li class="list-group-item" ws-id="'.$idWS.'" onclick="javascript:setWorkstation('.$idWS.')"><a href="#">'.$label.'</a></li>';
 		
 	}
 
