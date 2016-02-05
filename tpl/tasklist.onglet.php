@@ -7,6 +7,9 @@
 	
 	<ul class="nav navbar-nav navbar-right">	
 			<li>
+<?php
+if($user->rights->tasklist->user->read) {
+?>
 				<div class="button-group">
 			        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <span id="user-name"><?php echo $user->login ?></span> <span class="caret"></span></a>
 					<input id="search_user" type="hidden" value="<?php echo $user->id ?>" />
@@ -30,6 +33,13 @@
 						</ul>
 				
 				</div>
+<?php
+}
+else {
+	echo '<p class="navbar-text navbar-right"><span class="glyphicon glyphicon-user"></span> <span id="user-name">'.$user->login.'&nbsp;</span></p>';
+}
+?>				
+
 			</li>
 	</ul>
 </div>
