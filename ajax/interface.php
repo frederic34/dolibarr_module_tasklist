@@ -83,6 +83,8 @@ function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
 	$assetOf = new TAssetOF;
 	$assetOf->load($PDOdb, $fk_of);
 	
+	$TLineUpdated=array();
+	
 	if($assetOf->getId() && !empty($TLine)){
 		
 		foreach($TLine as $line){
@@ -93,10 +95,15 @@ function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
 				if($lineOF->type == 'NEEDED') $lineOF->qty_used = $line['qty_use'];
 				else $lineOF->qty = $line['qty_use'];
 				$lineOF->save($PDOdb);
+				
+				$TLineUpdated[] = $lineOF->getId();
+				
 			}
 		}
 	}
 	
+	
+	return $TLineUpdated;
 }
 
 function _getProductTaskOF(&$PDOdb, $fk_of) {

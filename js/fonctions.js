@@ -209,7 +209,7 @@ function openOF(fk_of, numero) {
 	
 	_draw_of_product(fk_of);
 	
-	$('#myTabs a[href="#list-of"]').tab('show');
+	$('#menu-tasklist ul[role=tablist] a[href="#list-of"]').tab('show');
 	
 }
 
@@ -224,15 +224,16 @@ function _draw_of_product(fk_of){
 		,dataType:'json'
 	}).done(function(data){
 		
-		$('#list-task-of div.ui-content table.product-list').remove();
+		$('#list-task-of table.product-list').remove();
+		
+		var needed = false;
+		var tomake=false;
 		
 		if(data.productOF.length>0) {
 			
-			$('#list-task-of div#liste_tache_of').before('<table id="product-list-of" class="table product-list"></table> ');
+			$table = $('<table id="product-list-of" class="table table-striped table-condensed product-list"></table> ');
 			
-			$table = $('#list-task-of div.ui-content table#product-list-of');
-			
-			$table.append('<thead><tr><th>Produit Nécessaire</th><th>Quantité prévue</th><th>Utilisée</th></tr></thead>');
+			$table.append('<thead><tr><th class="col-md-8">Produit Nécessaire</th><th class="col-md-2">Quantité prévue</th><th class="col-md-2">Utilisée</th></tr></thead><tbody></tbody>');
 			
 			for(x in data.productOF) {
 				
@@ -244,15 +245,15 @@ function _draw_of_product(fk_of){
 					$tr.append('<td>'+line.qty+'</td>');
 					
 					$tr.append('<td><input rel="prod-qty-used" line-id="'+line.lineid+'" type="text" value="'+line.qty_used+'" size="5" /></td>');
-					$table.append($tr);
+					$table.find('tbody').append($tr);
+					
+					needed = true;
 				}
 			}
 			
-			$('#list-task-of div#liste_tache_of').before('<table id="product-list-of-tomake" class="table product-list"></table> ');
+			$table2 = $('<table id="product-list-of-tomake" class="table table-striped table-condensed product-list"></table> ');
 			
-			$table2 = $('#list-task-of div.ui-content table#product-list-of-tomake');
-			
-			$table2.append('<thead><tr><th>Produit Fabriqué</th><th>Quantité prévue</th><th>Fabriquée</th></tr></thead>');
+			$table2.append('<thead><tr><th class="col-md-8">Produit Fabriqué</th><th class="col-md-2">Quantité prévue</th><th class="col-md-2">Fabriquée</th></tr></thead><tbody></tbody>');
 			
 			for(x in data.productOF) {
 				
@@ -264,16 +265,25 @@ function _draw_of_product(fk_of){
 					$tr.append('<td>'+line.qty+'</td>');
 					
 					$tr.append('<td><input rel="prod-qty-used" line-id="'+line.lineid+'" type="text" value="'+line.qty_used+'" size="5" /></td>');
-					$table2.append($tr);
+					$table2.find('tbody').append($tr);
+					
+					tomake = true;
 				}
 			}
 			
-			$table2.append('<tr><td align="right" colspan="3"><input class="btn btn-default" type="button" id="retour-atelier" value="Enregistrer" /></td></tr>');
+			if(needed || tomake) {
+				$table2.append('<tr><td align="right" colspan="3"><button class="btn btn-default" id="retour-atelier">Enregistrer</button></td></tr>');	
+				$('#list-task-of div#liste_tache_of').before($table);
+				$('#list-task-of div#liste_tache_of').before($table2);
+
+			}
 			
 			$('#retour-atelier').click(function() {
 				
 				var $bt = $(this); 
-				$bt.hide();
+				
+				var originalText = $bt.text();
+				$bt.html("<span class=\"glyphicon glyphicon-refresh glyphicon-refresh-animate\"></span> ...");
 				
 				TLine=[];
 				$('input[rel=prod-qty-used]').each(function(i,item) {
@@ -289,10 +299,13 @@ function _draw_of_product(fk_of){
 						put :'task-product-of'
 						,fk_of: fk_of
 						,TLine : TLine
+						,json:1
 					}
+					,method:'post'
 					,dataType:'json'
 				}).done(function(data){
-					$bt.show();	
+					console.log(data);
+					$bt.html(originalText);
 				});
 			});
 			
@@ -300,7 +313,7 @@ function _draw_of_product(fk_of){
 		
 		if(data.productTask.length>0) {
 			for(taskid in data.productTask) {
-				$('#task_list_'+taskid+' .ui-collapsible-content').preprend('<table id="product-list-task-'+taskid+'" class="table product-list"></table> ');
+				$('#task_list_'+taskid+' collapse.collapse').preprend('<table id="product-list-task-'+taskid+'" class="table table-striped table-condensed product-list"></table> ');
 				$table = $('table#product-list-task-'+taskid);
 				$table.append('<tr><th>Produit</th><th>Quantité</th><th>#</th></tr>');
 				
