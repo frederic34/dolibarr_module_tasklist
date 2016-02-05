@@ -332,12 +332,14 @@ function _openProdOF(&$PDOdb, &$db, &$task)
 function _list_of(&$PDOdb, $fk_user=0) {
 	global $db, $user, $conf;
 	//echo "1";
-	$TRes = array();
-	$static_task = new Task($db);
-	$static_user = new User($db);
 	
 	if(!class_exists('TAssetOF')) return false;
 	
+	$TRes = array();
+	$static_task = new Task($db);
+	$static_user = new User($db);
+	$static_user->fetch($fk_user);
+	$static_user->getrights('projet');
 	
 	$sql="SELECT DISTINCT tex.fk_of
 	 FROM ".MAIN_DB_PREFIX."projet_task t 
@@ -345,9 +347,8 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	 WHERE t.progress < 100  AND tex.fk_of>0";
 	
 	//echo $sql;
-	
-	if($fk_user>0) {
-		$static_user->fetch($fk_user);
+	if($fk_user>0 && empty($static_user->rights->projet->all->lire)) {
+		
 		$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
 		$TTaskIds = implode(',',array_keys($TRoles));
 		if(!empty($TTaskIds)) $sql .= " AND t.rowid IN (".$TTaskIds.") "; 
@@ -415,9 +416,15 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			case 'user':
 				//On ne prends que les tâches assignées à l'utilisateurtask
 				$static_user->fetch( $fk_user > 0 ? $fk_user : $id);
-				$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
-				$TTaskIds = implode(',',array_keys($TRoles));
-				if(!empty($id) && $id>=0) $sql .= " AND t.rowid IN (".$TTaskIds.") "; // TODO le IN est limité, attention au nombre d'itération testé
+				$static_user->getrights('projet');
+	
+				if(empty($static_user->rights->projet->all->lire)) {
+				
+					$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
+					$TTaskIds = implode(',',array_keys($TRoles));
+					if(!empty($id) && $id>=0) $sql .= " AND t.rowid IN (".$TTaskIds.") "; // TODO le IN est limité, attention au nombre d'itération testé
+					
+				}
 				break;
 			case 'workstation':
 				//On ne prends que les tâches liées au poste de travail
@@ -425,9 +432,12 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				
 				if($fk_user>0) {
 					$static_user->fetch($fk_user);
-					$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
-					$TTaskIds = implode(',',array_keys($TRoles));
-					if(!empty($TTaskIds)) $sql .= " AND t.rowid IN (".$TTaskIds.") "; 
+					$static_user->getrights('projet');
+					if(empty($static_user->rights->projet->all->lire)) {
+						$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
+						$TTaskIds = implode(',',array_keys($TRoles));
+						if(!empty($TTaskIds)) $sql .= " AND t.rowid IN (".$TTaskIds.") ";
+					} 
 					
 				}
 				
@@ -438,9 +448,12 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 
 				if($fk_user>0) {
 					$static_user->fetch($fk_user);
-					$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
-					$TTaskIds = implode(',',array_keys($TRoles));
-					if(!empty($TTaskIds)) $sql .= " AND t.rowid IN (".$TTaskIds.") "; 
+					$static_user->getrights('projet');
+					if(empty($static_user->rights->projet->all->lire)) {
+						$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
+						$TTaskIds = implode(',',array_keys($TRoles));
+						if(!empty($TTaskIds)) $sql .= " AND t.rowid IN (".$TTaskIds.") "; 
+					}
 					
 				}
 				
