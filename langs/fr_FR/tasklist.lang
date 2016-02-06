@@ -10,6 +10,7 @@ Tasklist = Tâches à réaliser
 
 #Liste des tâches
 Task = Tâche
+Tasks=Tâches
 DateStart = Date début
 DateEnd = Date fin
 ExpectedTime = Temps prévu (h)

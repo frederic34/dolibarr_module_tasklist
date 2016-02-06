@@ -5,8 +5,8 @@
 
 		<div id="task_list_clone" class="list-group-item" style="display:none">
 			<div class="container-fluid">
-				<span class="md-col-3 pull-right" rel="link-of"></span>
-				<a data-toggle="collapse" href="#" class="col-md-6"><h4 class="md-col-9" rel="taskRef"></h4></a>
+				<a data-toggle="collapse" href="#" class="col-md-9 col-sm-9 col-xs-9"><h4 class="md-col-9" rel="taskRef"></h4></a>
+				<span class="col-sm-3 col-md-3 col-xs-3" rel="link-of"></span>
 			</div>
 			<div class="collapse">
 				<div class="container-fluid">
