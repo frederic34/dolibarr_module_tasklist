@@ -11,22 +11,22 @@
 			<div class="collapse">
 				<div class="container-fluid">
 					<div class="row">
-						<div class="col-md-6">
+						<div class="col-xs-6 col-md-6">
 							<?php echo $langs->trans('DateStart'); ?> : <span rel="dateo"></span>
 						</div>
-						<div class="col-md-6">
+						<div class="col-xs-6 col-md-6">
 							<?php echo $langs->trans('DateEnd'); ?> : <span rel="datee"></span>
 						</div>
-						<div class="col-md-6">
+						<div class="col-xs-6 col-md-6">
 							<?php echo $langs->trans('ExpectedTime'); ?> : <span rel="planned_workload"></span>
 						</div>
-						<div class="col-md-6">
+						<div class="col-xs-6 col-md-6">
 							<?php echo $langs->trans('PastTime'); ?> : <span rel="spent_time"></span>
 						</div>
-						<div class="col-md-6">
+						<div class="col-xs-6 col-md-6">
 							<?php echo $langs->trans('Progress'); ?> : <span rel="progress"></span> %
 						</div>
-						<div class="col-md-6">
+						<div class="col-xs-6 col-md-6">
 							<?php echo $langs->trans('Priority'); ?> : <span rel="priority"></span>
 						</div>
 					</div>

@@ -14,3 +14,7 @@ ul li.active a {
 .list-group .running div.container-fluid,.list-group .running a {
 	color:#000;
 }
+
+body {
+	padding-top:70px;
+}

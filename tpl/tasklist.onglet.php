@@ -1,4 +1,5 @@
-<div class="collapse navbar-collapse" id="menu-tasklist">
+<nav class="navbar navbar-default navbar-fixed-top">
+<div class="collapse navbar-collapse " id="menu-tasklist">
     <ul class="nav nav-tabs navbar-nav" role="tablist">
 	  <li class="active"><a href="#list-task-user" role="tab" data-toggle="tab"><?php echo $langs->trans('Users'); ?></a></li>
 	  <?php if($conf->workstation->enabled && $user->rights->workstation->all->read){ ?><li><a href="#list-task-workstation" id="onglet2"  role="tab" data-toggle="tab"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
@@ -43,3 +44,4 @@ else {
 			</li>
 	</ul>
 </div>
+</nav>
