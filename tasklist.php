@@ -21,14 +21,14 @@
 	$accessOF = ($conf->asset->enabled && $user->rights->asset->of->lire)||($conf->of->enabled && $user->rights->of->of->lire); 
 	
 	$PDOdb = new TPDOdb;
-?>
-<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
+	
+?><!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
 <!DOCTYPE html>
 <html>
 	<head>
 		<title>Dolibarr - <?php echo $langs->trans('Tasklist'); ?></title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<link rel="stylesheet" href="css/style.css"/>
 		<link rel="stylesheet" href="lib/normalize.css"/>
 		<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
