@@ -208,7 +208,16 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 		        $task->timespent_duration = $time;
 		        //$task->timespent_fk_user = $user->id;
 		        $task->timespent_fk_user = $id_user_selected;
-				$ttemp = $task->getSummaryOfTimeSpent();
+				
+				if((float)DOL_VERSION >= 3.7){
+					$ttemp = $task->getSummaryOfTimeSpent();
+				} else {
+					$q = 'SELECT SUM(t.task_duration) as total_duration FROM '.MAIN_DB_PREFIX.'projet_task_time as t WHERE t.fk_task = '.$task->id;
+					$resqll = $db->query($q);
+					$ress = $db->fetch_object($resqll);
+					$ttemp['total_duration'] = $ress->total_duration;
+				}
+				
 				if($task->planned_workload>0) $task->progress = round($ttemp['total_duration'] / $task->planned_workload * 100, 2);
 				
 				$task->addTimeSpent($user);
@@ -489,7 +498,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	
 		foreach($TRes as &$res){
 			$static_task->fetch($res->rowid);
-			$static_task->fetch_optionals();
+			$static_task->fetch_optionals($static_task->id);
 			
 			$charset = mb_detect_encoding($res->taskLabel);
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
@@ -516,10 +525,29 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			$res->taskLabel.=' '.$res->progress.'%';
 
 			$res->planned_workload = convertSecondToTime($res->planned_workload,'allhourmin');
-			$TSummary = $static_task->getSummaryOfTimeSpent($res->rowid);
+			
+			// TODO j'ai un peu l'impression que les tableaux $TSummary && $ttemp contiennent la même chose, mais pas sûr et pas le temps de vérif
+			if((float)DOL_VERSION >= 3.7){
+				// la fonction getSummaryOfTimeSpent existe qu'à partir de doli 3.7 
+				$TSummary = $static_task->getSummaryOfTimeSpent($res->rowid);
+			} else {
+				$q = 'SELECT SUM(t.task_duration) as total_duration FROM '.MAIN_DB_PREFIX.'projet_task_time as t WHERE t.fk_task = '.$res->rowid;
+				$resqll = $db->query($q);
+				$ress = $db->fetch_object($resqll);
+				$TSummary['total_duration'] = $ress->total_duration;
+			}
+			
 			$res->spent_time = convertSecondToTime($TSummary['total_duration'],'allhourmin');
 
-			$ttemp = $static_task->getSummaryOfTimeSpent();
+			if((float)DOL_VERSION >= 3.7){
+				$ttemp = $static_task->getSummaryOfTimeSpent();
+			} else {
+				$q = 'SELECT SUM(t.task_duration) as total_duration FROM '.MAIN_DB_PREFIX.'projet_task_time as t WHERE t.fk_task = '.$static_task->id;
+				$resqll = $db->query($q);
+				$ress = $db->fetch_object($resqll);
+				$ttemp['total_duration'] = $ress->total_duration;
+			}
+
 			if($static_task->planned_workload>0) $res->progress = round($ttemp['total_duration'] / $static_task->planned_workload * 100, 2);
 			
 			if($res->dateo === '0000-00-00 00:00:00') $res->dateo_aff = 'N/A';
