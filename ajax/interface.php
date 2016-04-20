@@ -364,7 +364,7 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	 FROM ".MAIN_DB_PREFIX."projet_task t 
 	 	LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields tex ON (tex.fk_object=t.rowid)
 		LEFT JOIN ".MAIN_DB_PREFIX."projet p ON (t.fk_projet=p.rowid)
-	 WHERE t.progress < 100  AND tex.fk_of>0 AND p.entity IN(0,".$conf->entity.")";
+	 WHERE t.progress < 100  AND tex.fk_of>0 AND p.entity IN(".getEntity('project',1).")";
 	
 	//echo $sql;
 	if($fk_user>0 && empty($static_user->rights->projet->all->lire)) {
@@ -412,7 +412,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$sql.=" FROM ".MAIN_DB_PREFIX."projet_task as t 
 				LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = t.fk_projet)
 				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid) 
-			WHERE t.progress != 100 AND p.entity IN(0,".$conf->entity.")";
+			WHERE t.progress != 100 AND p.entity IN(".getEntity('project',1).")";
 	
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 	
