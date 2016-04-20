@@ -349,7 +349,7 @@ function _openProdOF(&$PDOdb, &$db, &$task)
 }
 
 function _list_of(&$PDOdb, $fk_user=0) {
-	global $db, $user, $conf;
+	global $db, $user, $conf, $mc;
 	//echo "1";
 	
 	if(!class_exists('TAssetOF')) return false;
@@ -383,7 +383,28 @@ function _list_of(&$PDOdb, $fk_user=0) {
 				$of=new TAssetOF;
 				$of->withChild = false;
 				$of->load($PDOdb, $res->fk_of);
-				$TOF[$of->getId()] = $of->numero;
+				
+				if($conf->entity != $of->entity) {
+
+					if(empty($TEntity) && !empty($mc->dao)) {
+
+						$mc->dao->getEntities();
+						$TEntity=array();
+						foreach ($mc->dao->entities as $entity)
+						{
+							if ($entity->active == 1)
+							{
+							$TEntity[$entity->id] = $entity->label; 
+							}
+						}
+					}
+
+					$TOF[$of->getId()] = $of->numero.' ('.$TEntity[$of->entity].')';
+				}
+				else {
+					$TOF[$of->getId()] = $of->numero;
+
+				}
                 
 		
 	}
@@ -393,13 +414,13 @@ function _list_of(&$PDOdb, $fk_user=0) {
 }
 
 function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
-	global $db, $user, $conf;
+	global $db, $user, $conf,$mc;
 	//echo "1";
 	$TRes = array();
 	$static_task = new Task($db);
 	$static_user = new User($db);
 	
-	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, p.ref as projetRef, p.title as projetLabel, t.planned_workload
+	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, p.ref as projetRef, p.title as projetLabel, t.planned_workload,p.entity
 			, t.progress, t.priority, t.tasklist_time_start";
 			
 	if($conf->scrumboard->enabled) {
@@ -523,6 +544,25 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			}
 			
 			$res->taskLabel.=' '.$res->progress.'%';
+
+			if($conf->entity !=  $res->entity) {
+
+                                 if(empty($TEntity) && !empty($mc->dao)) {
+
+                                                $mc->dao->getEntities();
+                                                $TEntity=array();
+                                                foreach ($mc->dao->entities as $entity)
+                                                {
+                                                        if ($entity->active == 1)
+                                                        {
+                                                        $TEntity[$entity->id] = $entity->label; 
+                                                        }
+                                                }
+                                  }
+
+                                 $res->taskLabel.=' ('.$TEntity[$res->entity].')';
+                        }
+
 
 			$res->planned_workload = convertSecondToTime($res->planned_workload,'allhourmin');
 			

@@ -189,6 +189,7 @@ function close_task(id_task,onglet,hour,minutes){
 			   ,minutes : minutes
 			   ,json : 1
 			   ,id_user_selected : $('#search_user').val()
+
 		}
 	})
 	.then(function (data){
@@ -383,7 +384,9 @@ function reload_liste_tache(type, id){
 			
 			break;
 		case "of": //Ordre de fabrication
-			if(id==null) id = $('#search_of').val();
+			
+			if(id==null) id = $('#liste-of>li.active').attr('fk-of');
+			//if(id==null) id = $('#search_of').val();
 			
 			break;
 	}
