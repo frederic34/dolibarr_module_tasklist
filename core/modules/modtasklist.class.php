@@ -243,6 +243,19 @@ class modtasklist extends DolibarrModules
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
 		
+		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=project',			                // Put 0 if this is a top menu
+								'type'=>'left',			                // This is a Top menu entry
+								'titre'=>$langs->trans('Tasklist'),
+								'mainmenu'=>'tasklist',
+								'leftmenu'=>'tasklist',
+								'url'=>'/tasklist/tasklist.php',
+								'langs'=>'tasklist@tasklist',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
+								'position'=>100,
+								'enabled'=>'$conf->tasklist->enabled',	// Define condition to show or hide menu entry. Use '$conf->tasklist->enabled' if entry must be visible if module is enabled.
+								'perms'=>'$user->rights->tasklist->all->read',			                // Use 'perms'=>'$user->rights->tasklist->level1->level2' if you want your menu with a permission rules
+								'target'=>'',
+								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
+		$r++;
 		
 		//
 		// Example to declare a Left Menu entry into an existing Top menu entry:
