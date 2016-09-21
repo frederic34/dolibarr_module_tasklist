@@ -229,7 +229,7 @@ class modtasklist extends DolibarrModules
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
 		*/
-		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=gpao',			                // Put 0 if this is a top menu
+		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=of',			                // Put 0 if this is a top menu
 								'type'=>'left',			                // This is a Top menu entry
 								'titre'=>$langs->trans('Tasklist'),
 								'mainmenu'=>'tasklist',
