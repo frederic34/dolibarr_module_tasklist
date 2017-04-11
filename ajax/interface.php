@@ -423,7 +423,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, p.ref as projetRef, p.title as projetLabel, t.planned_workload,p.entity
 			, t.progress, t.priority, t.tasklist_time_start";
 			
-	if($conf->scrumboard->enabled) {
+	if (!empty($conf->ordo->enabled)) {
 		$sql .= " ,t.date_estimated_start as dateo,t.date_estimated_end as datee";
 	}
 	else{
@@ -437,7 +437,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 	
-	if($conf->scrumboard->enabled) {
+	if (!empty($conf->ordo->enabled)) {
 		$sql .= " AND t.date_estimated_start < '".$date_deb."'
 		";
 	}
@@ -503,7 +503,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		}
 	}
 	
-	if($conf->scrumboard->enabled) {
+	if (!empty($conf->ordo->enabled)) {
 		$sql .= " ORDER BY t.date_estimated_start ASC";
 	}
 	else{
