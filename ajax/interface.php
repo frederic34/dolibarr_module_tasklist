@@ -442,7 +442,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		";
 	}
 	else{
-		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')." AND '".$date_deb."'";
+		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')."' AND '".$date_deb."'";
 	}
 	
 	
