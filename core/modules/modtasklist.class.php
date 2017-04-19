@@ -44,6 +44,7 @@ class modtasklist extends DolibarrModules
 
         $this->db = $db;
 
+		$this->editor_name = 'ATM-Consulting';
 		// Id for module (must be unique).
 		// Use here a free id (See in Home -> System information -> Dolibarr for list of used modules id).
 		$this->numero = 104590; // 104000 to 104999 for ATM CONSULTING

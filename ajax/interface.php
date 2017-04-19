@@ -430,7 +430,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, p.ref as projetRef, p.title as projetLabel, t.planned_workload,p.entity
 			, t.progress, t.priority, t.tasklist_time_start";
 			
-	if($conf->scrumboard->enabled) {
+	if (!empty($conf->ordo->enabled)) {
 		$sql .= " ,t.date_estimated_start as dateo,t.date_estimated_end as datee";
 	}
 	else{
@@ -444,13 +444,12 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 	
-	if($conf->scrumboard->enabled) {
+	if (!empty($conf->ordo->enabled)) {
 		$sql .= " AND t.date_estimated_start < '".$date_deb."'
 		";
 	}
 	else{
-		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')."<'".$date_deb."'
-		";
+		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')."' AND '".$date_deb."'";
 	}
 	
 	
@@ -510,7 +509,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		}
 	}
 	
-	if($conf->scrumboard->enabled) {
+	if (!empty($conf->ordo->enabled)) {
 		$sql .= " ORDER BY t.date_estimated_start ASC";
 	}
 	else{
@@ -530,6 +529,16 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			
 			$charset = mb_detect_encoding($res->taskLabel);
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
+
+
+			if(!empty($conf->global->TASKLIST_SHOW_REF_PROJECT)) {
+				dol_include_once('/projet/class/project.class.php');
+				$project = new Project($db);
+				$project->fetch($static_task->fk_project);
+				if(!empty($project->ref)) {
+					$res->taskRef=$project->ref.'/'.$res->taskRef;
+				}
+			}
 
 			if($static_task->array_options['options_fk_of']>0) {
 				
