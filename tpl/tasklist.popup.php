@@ -46,3 +46,28 @@
 	    </div>
     </div>
 </div>
+
+<div id="modal-alert"  class="modal" role="dialog">
+    <div class="modal-dialog">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+		        <h4 class="modal-title"><?php echo $langs->trans('Info'); ?></h4>
+		    </div>
+		    <div class="modal-body">
+				
+	       </div>
+	       <div class="modal-footer">
+		       	<a class="btn btn-default"  data-dismiss="modal" aria-hidden="true">Ok</a>
+	       	</div>  
+	    </div>
+    </div>
+</div>
+<script type="text/javascript">
+(function() {
+  var proxied = window.alert;
+  window.alert = function() {
+    $("#modal-alert .modal-body").text(arguments[0]);
+    $("#modal-alert").modal('show');
+  };
+})();
+</script>

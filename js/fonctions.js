@@ -314,6 +314,9 @@ function _draw_of_product(fk_of){
 					,dataType:'json'
 				}).done(function(data){
 					console.log(data);
+					
+					window.alert('Lignes modifiées');
+					
 					$bt.html(originalText);
 				});
 			});
@@ -364,7 +367,9 @@ function reload_liste_of() {
 		$li.empty();
 		for(x in data) {
 			
-			$li.append('<li class="list-group-item" fk-of="'+x+'"><a href="javascript:openOF('+x+',\''+data[x]+'\')">'+data[x]+'</a></li>');
+			var OF = data[x]; 
+			
+			$li.append('<li class="list-group-item" fk-of="'+x+'"><a href="javascript:openOF('+x+',\''+data[x]+'\')">'+OF.label+ ' [' + OF.statut +']</a></li>');
 			
 		}
 

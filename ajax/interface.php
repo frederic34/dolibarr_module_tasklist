@@ -86,7 +86,7 @@ function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
 	$assetOf = new TAssetOF;
 	$assetOf->load($PDOdb, $fk_of);
 	
-	$TLineUpdated=array();
+	$TLineUpdated=array('ids'=>array(),'errrors'=>array());
 	
 	if($assetOf->getId() && !empty($TLine)){
 		
@@ -95,16 +95,16 @@ function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
 			$lineOF->load($PDOdb, $line['lineid']);
 			
 			if($lineOF->getId()){
-				if($lineOF->type == 'NEEDED') $lineOF->qty_used = $line['qty_use'];
-				else $lineOF->qty = $line['qty_use'];
+				$lineOF->qty_used = $line['qty_use'];
 				$lineOF->save($PDOdb);
 				
-				$TLineUpdated[] = $lineOF->getId();
+				$TLineUpdated['ids'][] = $lineOF->getId();
+				
+				if(!empty($lineOF->errors)) $TLineUpdated['errors'] = array_merge($TLineUpdated['errors'], $lineOF->errors);
 				
 			}
 		}
 	}
-	
 	
 	return $TLineUpdated;
 }
@@ -349,7 +349,7 @@ function _openProdOF(&$PDOdb, &$db, &$task)
 }
 
 function _list_of(&$PDOdb, $fk_user=0) {
-	global $db, $user, $conf, $mc;
+	global $db, $user, $conf, $mc, $langs;
 	//echo "1";
 	
 	if(!class_exists('TAssetOF')) return false;
@@ -378,6 +378,8 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	$TOF=array();
 	$Tab = $PDOdb->ExecuteAsArray($sql);
 	
+	$TTransStatus = array_map(array($langs, 'trans'), TAssetOf::$TStatus);
+	
 	foreach($Tab as &$res) {
 		
 				$of=new TAssetOF;
@@ -399,13 +401,18 @@ function _list_of(&$PDOdb, $fk_user=0) {
 						}
 					}
 
-					$TOF[$of->getId()] = $of->numero.' ('.$TEntity[$of->entity].')';
+					$label = $of->numero.' ('.$TEntity[$of->entity].')';
 				}
 				else {
-					$TOF[$of->getId()] = $of->numero;
+					$label = $of->numero;
 
 				}
                 
+				$TOF[$of->getId()] = array(
+					'label'=>$label	
+						,'statut'=>$TTransStatus[$of->status]
+				);
+				
 		
 	}
 	
