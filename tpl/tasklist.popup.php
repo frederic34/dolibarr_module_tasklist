@@ -30,12 +30,12 @@
 				              <span class="input-group-addon" style="width:50%;" id="minute-addon" >Minute(s)</span>
 			             </div>
 		              	
-		              <?php } ?>
+		              <?php }
 		              
-		               
-		             
-		             
-		             
+		              	$hookmanager->initHooks(array('tasklistcard'));
+		              	$reshook = $hookmanager->executeHooks('doActionsCloseTask', $parameters, $object, $action);
+		              
+		              ?>
 		             
 		            </div>
 		        </form> 
