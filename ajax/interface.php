@@ -423,6 +423,12 @@ function _list_of(&$PDOdb, $fk_user=0) {
 function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	global $db, $user, $conf,$mc;
 	//echo "1";
+	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	$formfile = new FormFile($db);
+	
 	$TRes = array();
 	$static_task = new Task($db);
 	$static_user = new User($db);
@@ -529,8 +535,32 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			
 			$charset = mb_detect_encoding($res->taskLabel);
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
+			
+			if (!empty($conf->global->TASKLIST_SHOW_DOCPREVIEW))
+			{
+				$docpreview='';
+				$commande_origin = _getCommandeFromProjectId($static_task->fk_project);
+				if ($commande_origin)
+				{
+					$modulepart=$commande_origin->element; // commande
+					$modulesubdir=dol_sanitizeFileName($commande_origin->ref);
+					$filedir=$conf->commande->dir_output . '/' . $modulesubdir;
 
+					$file_list=dol_dir_list($filedir,'files',0,'','(\.meta|_preview.*.*\.png)$','date',SORT_DESC);
+					// Loop on each file found
+					if (is_array($file_list))
+					{
+						foreach($file_list as $file)
+						{
+							$relativepath = $modulesubdir."/".$file["name"];
+							$docpreview.= $formfile->showPreview($file,$modulepart,$relativepath,0,'').'&nbsp;';
+						}
+					}
+				}
 
+				$res->docpreview = json_encode($docpreview);
+			}
+			
 			if(!empty($conf->global->TASKLIST_SHOW_REF_PROJECT)) {
 				dol_include_once('/projet/class/project.class.php');
 				$project = new Project($db);
@@ -619,4 +649,42 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	}
 
 	return $TRes;
+}
+
+
+function _getCommandeFromProjectId($fk_project)
+{
+	global $db,$conf,$TCommande;
+	
+	if (empty($TCommande)) $TCommande = array();
+	
+	if (!empty($TCommande[$fk_project]))
+	{
+		$commande = $TCommande[$fk_project];
+		return $commande;
+	}
+	else
+	{
+		$sql = 'SELECT rowid FROM ' .MAIN_DB_PREFIX.'commande WHERE fk_projet = '.$fk_project.' AND entity = '.$conf->entity;
+		$resql = $db->query($sql);
+		if ($resql)
+		{
+			if ($obj = $db->fetch_object($resql))
+			{
+				$commande = new Commande($db);
+				if ($commande->fetch($obj->rowid) > 0)
+				{
+					$TCommande[$fk_project] = $commande;
+					return $commande;
+				}
+				
+			}
+		}
+		else
+		{
+			dol_print_error($db);
+		}
+	}
+	
+	return false;
 }
