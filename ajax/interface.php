@@ -21,7 +21,8 @@
 	$put = isset($_REQUEST['put'])?$_REQUEST['put']:'';
 	
 	_get($PDOdb,$get);
-	_put($PDOdb,$put);
+	//_put($PDOdb,$put);
+	_more($PDOdb, $_REQUEST, !empty($get) ? $get : $put);
 
 function _get(&$PDOdb,$case) {
 	switch ($case) {
@@ -78,6 +79,24 @@ function _put(&$PDOdb,$case) {
 			
 			break;
 	}
+}
+
+function _more(&$PDOdb, $TParams_get, $action) {
+	
+	global $db, $hookmanager;
+	
+	$object= new Task($db);
+	
+	$Tid = explode('_', $TParams_get['id']);
+	$id = array_pop($Tid);
+	
+	$object->fetch($id);
+	$parameters['TParams_get'] = $TParams_get;
+	$parameters['TPDOdb'] = &$PDOdb;
+	
+	$hookmanager->initHooks(array('tasklistcard'));
+	$reshook = $hookmanager->executeHooks('doActionsInterface', $parameters, $object, $action);
+	
 }
 
 function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
