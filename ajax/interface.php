@@ -21,7 +21,7 @@
 	$put = isset($_REQUEST['put'])?$_REQUEST['put']:'';
 	
 	_get($PDOdb,$get);
-	//_put($PDOdb,$put);
+	_put($PDOdb,$put);
 	_more($PDOdb, $_REQUEST, !empty($get) ? $get : $put);
 
 function _get(&$PDOdb,$case) {
