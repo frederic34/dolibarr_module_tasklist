@@ -33,7 +33,7 @@
 		              <?php }
 		              
 		              	$hookmanager->initHooks(array('tasklistcard'));
-		              	$reshook = $hookmanager->executeHooks('doActionsCloseTask', $parameters, $object, $action);
+		              	$reshook = $hookmanager->executeHooks('formObjectOptionsCloseTask', $parameters, $object, $action);
 		              
 		              ?>
 		             

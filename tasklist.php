@@ -100,7 +100,7 @@
 		<?php
 		
 			$hookmanager->initHooks(array('tasklistcard'));
-			$reshook = $hookmanager->executeHooks('endActions', $parameters, $object, $action);
+			$reshook = $hookmanager->executeHooks('formObjectOptionsEnd', $parameters, $object, $action);
 		
 		?>
 		
