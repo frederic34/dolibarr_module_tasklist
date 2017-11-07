@@ -96,5 +96,13 @@
 			<?php require('./tpl/tasklist.popup.php'); ?>
 		</div>
 		<script src="js/fonctions.js" type="text/javascript"></script>
+		
+		<?php
+		
+			$hookmanager->initHooks(array('tasklistcard'));
+			$reshook = $hookmanager->executeHooks('formObjectOptionsEnd', $parameters, $object, $action);
+		
+		?>
+		
 	</body>
 </html>
