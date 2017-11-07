@@ -22,7 +22,7 @@
 	
 	_get($PDOdb,$get);
 	_put($PDOdb,$put);
-	_more($PDOdb, $_REQUEST, !empty($get) ? $get : $put);
+	_more($PDOdb, !empty($get) ? $get : $put);
 
 function _get(&$PDOdb,$case) {
 	switch ($case) {
@@ -81,18 +81,16 @@ function _put(&$PDOdb,$case) {
 	}
 }
 
-function _more(&$PDOdb, $TParams_get, $action) {
+function _more(&$PDOdb, $action) {
 	
 	global $db, $hookmanager;
 	
 	$object= new Task($db);
 	
-	$Tid = explode('_', $TParams_get['id']);
+	$Tid = explode('_', GETPOST('id'));
 	$id = array_pop($Tid);
 	
 	$object->fetch($id);
-	$parameters['TParams_get'] = $TParams_get;
-	$parameters['TPDOdb'] = &$PDOdb;
 	
 	$hookmanager->initHooks(array('tasklistcard'));
 	$reshook = $hookmanager->executeHooks('doActionsInterface', $parameters, $object, $action);
