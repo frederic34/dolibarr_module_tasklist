@@ -35,6 +35,9 @@
 						<div class="col-xs-6 col-md-6">
 							<?php echo $langs->trans('Priority'); ?> : <span rel="priority"></span>
 						</div>
+						<div class="col-xs-6 col-md-6">
+							<?php echo $langs->trans('Description'); ?> : <span rel="desc"></span>
+						</div>
 					</div>
 					<div class="row">
 							<label rel="compteur"></label>

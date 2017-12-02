@@ -438,6 +438,7 @@ function refresh_liste_tache(data,type){
 		clone.find('[rel=spent_time]').append(task.spent_time);
 		clone.find('[rel=progress]').append(task.progress);
 		clone.find('[rel=priority]').append(task.priority);
+		clone.find('[rel=desc]').append(task.taskDesc);
 		
 		if(task.taskOF!='') clone.find('[rel=link-of]').html(task.taskOF);
 		

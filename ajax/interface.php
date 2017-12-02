@@ -450,7 +450,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$static_task = new Task($db);
 	$static_user = new User($db);
 	
-	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, p.ref as projetRef, p.title as projetLabel, t.planned_workload,p.entity
+	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, t.description as taskDesc, p.ref as projetRef, p.title as projetLabel, t.planned_workload,p.entity
 			, t.progress, t.priority, t.tasklist_time_start";
 			
 	if (!empty($conf->ordo->enabled)) {
@@ -552,6 +552,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			
 			$charset = mb_detect_encoding($res->taskLabel);
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
+			$res->taskDesc=iconv($charset,'UTF-8', $res->taskDesc);
 			
 			if (!empty($conf->global->TASKLIST_SHOW_DOCPREVIEW))
 			{
