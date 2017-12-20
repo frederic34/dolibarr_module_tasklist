@@ -451,7 +451,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$static_user = new User($db);
 	
 	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, t.description as taskDesc, p.ref as projetRef, p.title as projetLabel, t.planned_workload,p.entity
-			, t.progress, t.priority, t.tasklist_time_start";
+			, t.progress, t.priority, t.tasklist_time_start, s.nom as client";
 			
 	if (!empty($conf->ordo->enabled)) {
 		$sql .= " ,t.date_estimated_start as dateo,t.date_estimated_end as datee";
@@ -463,6 +463,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$sql.=" FROM ".MAIN_DB_PREFIX."projet_task as t 
 				LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = t.fk_projet)
 				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid) 
+				LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON (p.fk_soc = s.rowid)
 			WHERE t.progress != 100 AND p.entity IN(".getEntity('project',1).")";
 	
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
@@ -552,7 +553,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			
 			$charset = mb_detect_encoding($res->taskLabel);
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
-			$res->taskDesc=iconv($charset,'UTF-8', $res->taskDesc);
+			$res->taskDesc=iconv($charset,'UTF-8', nl2br($res->taskDesc));
 			
 			if (!empty($conf->global->TASKLIST_SHOW_DOCPREVIEW))
 			{

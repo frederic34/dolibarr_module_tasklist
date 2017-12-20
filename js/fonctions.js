@@ -432,13 +432,14 @@ function refresh_liste_tache(data,type){
 		clone.find('div.collapse').attr("id",'task_content_'+type+'_'+task.rowid);
 		//Refresh des datas
 		clone.find('[rel=taskRef]').html(task.taskRef+' '+task.taskLabel);
+		clone.find('[rel=client]').append(task.client);
 		clone.find('[rel=dateo]').append(task.dateo_aff);
 		clone.find('[rel=datee]').append(task.datee_aff);
 		clone.find('[rel=planned_workload]').append(task.planned_workload);
 		clone.find('[rel=spent_time]').append(task.spent_time);
 		clone.find('[rel=progress]').append(task.progress);
 		clone.find('[rel=priority]').append(task.priority);
-		clone.find('[rel=desc]').append(task.taskDesc);
+		clone.find('[rel=desc]').append('<br/>' + task.taskDesc);
 		
 		if(task.taskOF!='') clone.find('[rel=link-of]').html(task.taskOF);
 		

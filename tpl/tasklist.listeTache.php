@@ -18,6 +18,9 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-xs-6 col-md-6">
+							<?php echo $langs->trans('Customer'); ?> : <span rel="client"></span>
+						</div>
+						<div class="col-xs-6 col-md-6">
 							<?php echo $langs->trans('DateStart'); ?> : <span rel="dateo"></span>
 						</div>
 						<div class="col-xs-6 col-md-6">
@@ -35,7 +38,7 @@
 						<div class="col-xs-6 col-md-6">
 							<?php echo $langs->trans('Priority'); ?> : <span rel="priority"></span>
 						</div>
-						<div class="col-xs-6 col-md-6">
+						<div class="col-xs-12 col-md-12">
 							<?php echo $langs->trans('Description'); ?> : <span rel="desc"></span>
 						</div>
 					</div>
