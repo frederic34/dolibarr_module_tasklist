@@ -18,9 +18,9 @@
     if($conf->workstation->enabled) $langs->load('workstation@workstation');
 	if($conf->asset->enabled) $langs->load('asset@asset');
 	
-	$accessOF = ($conf->asset->enabled && $user->rights->asset->of->lire)||($conf->of->enabled && $user->rights->of->of->lire); 
+	$accessOF = ($conf->asset->enabled && $user->rights->asset->of->lire) //TODO AA remove old def
+					||($conf->of->enabled && $user->rights->of->of->lire); 
 	
-	$PDOdb = new TPDOdb;
 	
 ?><!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
 <!DOCTYPE html>

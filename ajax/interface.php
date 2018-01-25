@@ -237,6 +237,8 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 				
 				if($task->planned_workload>0) $task->progress = round($ttemp['total_duration'] / $task->planned_workload * 100, 2);
 				
+				$task->add_contact($user->id, 180, 'internal');
+				
 				$task->addTimeSpent($user);
 				
 				$PDOdb->Execute("UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '0000-00-00 00:00:00' WHERE rowid = ".$task->id);
@@ -463,7 +465,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$sql.=" FROM ".MAIN_DB_PREFIX."projet_task as t 
 				LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = t.fk_projet)
 				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid) 
-			WHERE t.progress != 100 AND p.entity IN(".getEntity('project',1).")";
+			WHERE 1 AND p.entity IN(".getEntity('project',1).")";
 	
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 	
@@ -472,10 +474,10 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		";
 	}
 	else{
-		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')."' AND '".$date_deb."'";
+		$sql .= " AND t.dateo <= '".$date_deb."'";
 	}
 	
-	
+	$sql.=" AND (t.progress < 100 OR t.progress IS NULL) ";
 	
 	//echo $sql;
 	

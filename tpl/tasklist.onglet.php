@@ -25,8 +25,10 @@
 						<div class="button-group">
 					        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <span id="user-name"><?php echo $user->login ?></span> <span class="caret"></span></a>
 							<input id="search_user" type="hidden" value="<?php echo $user->id ?>" />
-							
 								<ul class="dropdown-menu" id="select-user-list">
+								<li class="filter">
+									<input id="search_user_text" type="text" value=""  placeholder="<?php echo $langs->trans('Filter'); ?>"/>
+								</li>
 		<?php
 			global $conf;
 			
@@ -36,13 +38,23 @@
 					WHERE u.statut = 1 AND u.entity IN (0,".$conf->entity.")
 					ORDER BY login";
 			
-			$TUser = $PDOdb->ExecuteAsArray($sql);
-			foreach($TUser as $obj) {
+			$resUser = $db->query($sql);
+			while($obj = $db->fetch_object($resUser)) {
 				echo '<li class="btn" login="'.$obj->login.'" user-id="'.$obj->rowid.'" onclick="changeUser('.$obj->rowid.')">'. $obj->login .'</li>';	
 			}
 		
 		?>
 								</ul>
+<script type="text/javascript">
+$(document).ready(function(){			
+	$("#search_user_text").on("keyup", function() {
+    	var value = $(this).val().toLowerCase();
+    	$("#select-user-list li:not(.filter)").filter(function() {
+      		$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    	});
+  	});
+});
+</script>
 						
 						</div>
 		<?php

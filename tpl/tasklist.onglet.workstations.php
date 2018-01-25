@@ -3,6 +3,7 @@
 	//Récupération de la liste des postes de travail
 	$disabled = ($user->rights->workstation->all->lire) ? 0 : 1;
 	
+	$PDOdb=new TPDOdb;
 	$TWorkstation = array(-1=>'Tous') + TWorkstation::getWorstations($PDOdb);
     /*
 	//pre($TWorkstation,true);exit;
