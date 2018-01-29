@@ -383,7 +383,8 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	 FROM ".MAIN_DB_PREFIX."projet_task t 
 	 	LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields tex ON (tex.fk_object=t.rowid)
 		LEFT JOIN ".MAIN_DB_PREFIX."projet p ON (t.fk_projet=p.rowid)
-	 WHERE t.progress < 100  AND tex.fk_of>0 AND p.entity IN(".getEntity('project',1).")";
+		LEFT JOIN ".MAIN_DB_PREFIX."assetOf of ON (tex.fk_of=of.rowid)
+	 WHERE of.status!='DRAFT' AND of.status!='CLOSE' AND  (t.progress < 100 OR t.progress IS NULL) AND tex.fk_of>0 AND p.entity IN(".getEntity('project',1).")";
 	
 	//echo $sql;
 	if($fk_user>0 && empty($static_user->rights->projet->all->lire)) {
