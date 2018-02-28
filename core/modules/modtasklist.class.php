@@ -95,7 +95,7 @@ class modtasklist extends DolibarrModules
 		$this->dirs = array();
 
 		// Config pages. Put here list of php page, stored into tasklist/admin directory, to use to setup module.
-		$this->config_page_url = false;
+		$this->config_page_url = 'tasklist_setup.php@tasklist';
 
 		// Dependencies
 		$this->hidden = false;			// A condition to hide module

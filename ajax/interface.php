@@ -449,7 +449,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		";
 	}
 	else{
-		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')."' AND '".$date_deb."'";
+		$sql .= " AND t.dateo < '".$date_deb."'";
 	}
 	
 	
@@ -520,6 +520,23 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 
 	$TOf = array();
 
+	$extrafields= new ExtraFields($db);
+	$extrafields->fetch_name_optionals_label($static_task->table_element);
+	if(!empty($conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM)) {
+	    $TIn = explode(',', $conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM);
+	    
+	    foreach($extrafields->attribute_label as $field=>$data) {
+	        
+	        if(!in_array($field, $TIn)) {
+	            unset($extrafields->attribute_label[$field]);
+	            
+	        }
+	        
+	    }
+	    
+	}
+	
+	
 	if($PDOdb->Execute($sql)){
 		$TRes = $PDOdb->Get_All();
 	
@@ -530,7 +547,12 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			$charset = mb_detect_encoding($res->taskLabel);
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
 
-
+			if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
+			     $res->extrafields = '<table class="table table-striped table-bordered" >'.$static_task->showOptionals($extrafields,'view',array('style'=>'oddeven','colspan'=>1)).'</table>';
+			}
+			else {
+			    $res->extrafields='';
+			}
 			if(!empty($conf->global->TASKLIST_SHOW_REF_PROJECT)) {
 				dol_include_once('/projet/class/project.class.php');
 				$project = new Project($db);

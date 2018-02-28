@@ -20,3 +20,6 @@ Priority = Priorité
 Start = Démarrer
 Pause = Mettre en pause
 Close = Terminer
+
+TASKLIST_SHOW_EXTRAFIELDS=Afficher les extrafields des tâches
+TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM=Limiter l'affichage au extrafield suivant

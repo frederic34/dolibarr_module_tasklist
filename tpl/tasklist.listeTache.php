@@ -31,6 +31,11 @@
 						</div>
 					</div>
 					<div class="row">
+						<div class="col-xs-12 col-md-12" rel="extrafields">
+						
+						</div>
+					</div>
+					<div class="row">
 							<label rel="compteur"></label>
 						
 					</div>
