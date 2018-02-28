@@ -22,6 +22,7 @@
 	
 	_get($PDOdb,$get);
 	_put($PDOdb,$put);
+	_more($PDOdb, !empty($get) ? $get : $put);
 
 function _get(&$PDOdb,$case) {
 	switch ($case) {
@@ -78,6 +79,22 @@ function _put(&$PDOdb,$case) {
 			
 			break;
 	}
+}
+
+function _more(&$PDOdb, $action) {
+	
+	global $db, $hookmanager;
+	
+	$object= new Task($db);
+	
+	$Tid = explode('_', GETPOST('id'));
+	$id = array_pop($Tid);
+	
+	$object->fetch($id);
+	
+	$hookmanager->initHooks(array('tasklistcard'));
+	$reshook = $hookmanager->executeHooks('doActionsInterface', $parameters, $object, $action);
+	
 }
 
 function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
@@ -219,6 +236,8 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 				}
 				
 				if($task->planned_workload>0) $task->progress = round($ttemp['total_duration'] / $task->planned_workload * 100, 2);
+				
+				$task->add_contact($user->id, 180, 'internal');
 				
 				$task->addTimeSpent($user);
 				
@@ -364,7 +383,8 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	 FROM ".MAIN_DB_PREFIX."projet_task t 
 	 	LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields tex ON (tex.fk_object=t.rowid)
 		LEFT JOIN ".MAIN_DB_PREFIX."projet p ON (t.fk_projet=p.rowid)
-	 WHERE t.progress < 100  AND tex.fk_of>0 AND p.entity IN(".getEntity('project',1).")";
+		LEFT JOIN ".MAIN_DB_PREFIX."assetOf of ON (tex.fk_of=of.rowid)
+	 WHERE of.status!='DRAFT' AND of.status!='CLOSE' AND  (t.progress < 100 OR t.progress IS NULL) AND tex.fk_of>0 AND p.entity IN(".getEntity('project',1).")";
 	
 	//echo $sql;
 	if($fk_user>0 && empty($static_user->rights->projet->all->lire)) {
@@ -423,6 +443,12 @@ function _list_of(&$PDOdb, $fk_user=0) {
 function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	global $db, $user, $conf,$mc;
 	//echo "1";
+	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	$formfile = new FormFile($db);
+	
 	$TRes = array();
 	$static_task = new Task($db);
 	$static_user = new User($db);
@@ -440,7 +466,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$sql.=" FROM ".MAIN_DB_PREFIX."projet_task as t 
 				LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = t.fk_projet)
 				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid) 
-			WHERE t.progress != 100 AND p.entity IN(".getEntity('project',1).")";
+			WHERE 1 AND p.entity IN(".getEntity('project',1).")";
 	
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 	
@@ -449,10 +475,10 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		";
 	}
 	else{
-		$sql .= " AND t.dateo < '".$date_deb."'";
+		$sql .= " AND t.dateo <= '".$date_deb."'";
 	}
 	
-	
+	$sql.=" AND (t.progress < 100 OR t.progress IS NULL) ";
 	
 	//echo $sql;
 	
@@ -535,8 +561,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	    }
 	    
 	}
-	
-	
+
 	if($PDOdb->Execute($sql)){
 		$TRes = $PDOdb->Get_All();
 	
@@ -546,13 +571,39 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			
 			$charset = mb_detect_encoding($res->taskLabel);
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
-
+			
 			if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
 			     $res->extrafields = '<table class="table table-striped table-bordered" >'.$static_task->showOptionals($extrafields,'view',array('style'=>'oddeven','colspan'=>1)).'</table>';
 			}
 			else {
 			    $res->extrafields='';
 			}
+
+			if (!empty($conf->global->TASKLIST_SHOW_DOCPREVIEW))
+			{
+				$docpreview='';
+				$commande_origin = _getCommandeFromProjectId($static_task->fk_project);
+				if ($commande_origin)
+				{
+					$modulepart=$commande_origin->element; // commande
+					$modulesubdir=dol_sanitizeFileName($commande_origin->ref);
+					$filedir=$conf->commande->dir_output . '/' . $modulesubdir;
+
+					$file_list=dol_dir_list($filedir,'files',0,'','(\.meta|_preview.*.*\.png)$','date',SORT_DESC);
+					// Loop on each file found
+					if (is_array($file_list))
+					{
+						foreach($file_list as $file)
+						{
+							$relativepath = $modulesubdir."/".$file["name"];
+							$docpreview.= $formfile->showPreview($file,$modulepart,$relativepath,0,'').'&nbsp;';
+						}
+					}
+				}
+
+				$res->docpreview = json_encode($docpreview);
+			}
+			
 			if(!empty($conf->global->TASKLIST_SHOW_REF_PROJECT)) {
 				dol_include_once('/projet/class/project.class.php');
 				$project = new Project($db);
@@ -641,4 +692,42 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	}
 
 	return $TRes;
+}
+
+
+function _getCommandeFromProjectId($fk_project)
+{
+	global $db,$conf,$TCommande;
+	
+	if (empty($TCommande)) $TCommande = array();
+	
+	if (!empty($TCommande[$fk_project]))
+	{
+		$commande = $TCommande[$fk_project];
+		return $commande;
+	}
+	else
+	{
+		$sql = 'SELECT rowid FROM ' .MAIN_DB_PREFIX.'commande WHERE fk_projet = '.$fk_project.' AND entity = '.$conf->entity;
+		$resql = $db->query($sql);
+		if ($resql)
+		{
+			if ($obj = $db->fetch_object($resql))
+			{
+				$commande = new Commande($db);
+				if ($commande->fetch($obj->rowid) > 0)
+				{
+					$TCommande[$fk_project] = $commande;
+					return $commande;
+				}
+				
+			}
+		}
+		else
+		{
+			dol_print_error($db);
+		}
+	}
+	
+	return false;
 }

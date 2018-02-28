@@ -5,7 +5,13 @@
 
 		<div id="task_list_clone" class="list-group-item" style="display:none">
 			<div class="container-fluid">
+				<?php if (!empty($conf->global->TASKLIST_SHOW_DOCPREVIEW)) { ?>
+				<div class="col-md-1 col-sm-1 col-xs-1" rel="docpreview"></div>
+				<a data-toggle="collapse" href="#" class="col-md-8 col-sm-8 col-xs-8"><h4 class="md-col-9" rel="taskRef"></h4></a>
+				<?php } else { ?>
 				<a data-toggle="collapse" href="#" class="col-md-9 col-sm-9 col-xs-9"><h4 class="md-col-9" rel="taskRef"></h4></a>
+				<?php } ?>
+				
 				<span class="col-sm-3 col-md-3 col-xs-3" rel="link-of"></span>
 			</div>
 			<div class="collapse">

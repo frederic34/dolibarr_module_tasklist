@@ -95,7 +95,7 @@ class modtasklist extends DolibarrModules
 		$this->dirs = array();
 
 		// Config pages. Put here list of php page, stored into tasklist/admin directory, to use to setup module.
-		$this->config_page_url = 'tasklist_setup.php@tasklist';
+		$this->config_page_url = array("tasklist_setup.php@tasklist");
 
 		// Dependencies
 		$this->hidden = false;			// A condition to hide module
@@ -240,7 +240,7 @@ class modtasklist extends DolibarrModules
 								'position'=>1031,
 								'enabled'=>'$conf->tasklist->enabled',	// Define condition to show or hide menu entry. Use '$conf->tasklist->enabled' if entry must be visible if module is enabled.
 								'perms'=>'$user->rights->tasklist->all->read',			                // Use 'perms'=>'$user->rights->tasklist->level1->level2' if you want your menu with a permission rules
-								'target'=>'',
+								'target'=>'_blank',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
 		
@@ -254,7 +254,7 @@ class modtasklist extends DolibarrModules
 								'position'=>1030,
 								'enabled'=>'$conf->tasklist->enabled',	// Define condition to show or hide menu entry. Use '$conf->tasklist->enabled' if entry must be visible if module is enabled.
 								'perms'=>'$user->rights->tasklist->all->read',			                // Use 'perms'=>'$user->rights->tasklist->level1->level2' if you want your menu with a permission rules
-								'target'=>'',
+								'target'=>'_blank',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
 		

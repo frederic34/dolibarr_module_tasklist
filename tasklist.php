@@ -18,9 +18,9 @@
     if($conf->workstation->enabled) $langs->load('workstation@workstation');
 	if($conf->asset->enabled) $langs->load('asset@asset');
 	
-	$accessOF = ($conf->asset->enabled && $user->rights->asset->of->lire)||($conf->of->enabled && $user->rights->of->of->lire); 
+	$accessOF = ($conf->asset->enabled && $user->rights->asset->of->lire) //TODO AA remove old def
+					||($conf->of->enabled && $user->rights->of->of->lire); 
 	
-	$PDOdb = new TPDOdb;
 	
 ?><!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
 <!DOCTYPE html>
@@ -32,10 +32,24 @@
 		<link rel="stylesheet" href="css/style.css"/>
 		<link rel="stylesheet" href="lib/normalize.css"/>
 		<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.4.custom.min.css" />
 		
 		<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
-		<script src="js/jquery-ui-1.10.2.custom.min.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
 		<script src="lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+		
+		
+		<script src="<?php echo DOL_URL_ROOT; ?>/core/js/lib_head.js.php" type="text/javascript"></script>
+		<script type="text/javascript">
+			TASKLIST_SHOW_DOCPREVIEW = <?php echo (int) $conf->global->TASKLIST_SHOW_DOCPREVIEW; ?>;
+			initPreview = function() {
+				$(".documentpreview").click(function () {
+					console.log("We click on preview for element with href="+$(this).attr('href')+" mime="+$(this).attr('mime'));
+					document_preview($(this).attr('href'), $(this).attr('mime'), '<?php echo dol_escape_js($langs->transnoentities("Preview")); ?>');
+					return false;
+				});
+			};
+		</script>
 		
 	</head>
 	<body>		
@@ -95,6 +109,15 @@
 	        
 			<?php require('./tpl/tasklist.popup.php'); ?>
 		</div>
+		<div id="dialogforpopup" style="display: none;"></div>
 		<script src="js/fonctions.js" type="text/javascript"></script>
+		
+		<?php
+		
+			$hookmanager->initHooks(array('tasklistcard'));
+			$reshook = $hookmanager->executeHooks('formObjectOptionsEnd', $parameters, $object, $action);
+		
+		?>
+		
 	</body>
 </html>

@@ -427,6 +427,7 @@ function refresh_liste_tache(data,type){
 	$.each(data,function(i,task){
 		var clone = $('#task_list_clone').clone();
 		clone.attr('id','task_list_'+task.rowid);
+		if (TASKLIST_SHOW_DOCPREVIEW) clone.find('div[rel=docpreview]').append(JSON.parse(task.docpreview));
 		clone.find('a[data-toggle="collapse"]').attr("data-target",'#task_content_'+type+'_'+task.rowid);
 		clone.find('div.collapse').attr("id",'task_content_'+type+'_'+task.rowid);
 		//Refresh des datas
@@ -465,8 +466,7 @@ function refresh_liste_tache(data,type){
 		clone.show();
 	});
 	
-	
-
+	if (TASKLIST_SHOW_DOCPREVIEW) initPreview();
 	
 }
 
