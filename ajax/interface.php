@@ -22,6 +22,7 @@
 	
 	_get($PDOdb,$get);
 	_put($PDOdb,$put);
+	_more($PDOdb, !empty($get) ? $get : $put);
 
 function _get(&$PDOdb,$case) {
 	switch ($case) {
@@ -78,6 +79,22 @@ function _put(&$PDOdb,$case) {
 			
 			break;
 	}
+}
+
+function _more(&$PDOdb, $action) {
+	
+	global $db, $hookmanager;
+	
+	$object= new Task($db);
+	
+	$Tid = explode('_', GETPOST('id'));
+	$id = array_pop($Tid);
+	
+	$object->fetch($id);
+	
+	$hookmanager->initHooks(array('tasklistcard'));
+	$reshook = $hookmanager->executeHooks('doActionsInterface', $parameters, $object, $action);
+	
 }
 
 function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
@@ -219,6 +236,8 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 				}
 				
 				if($task->planned_workload>0) $task->progress = round($ttemp['total_duration'] / $task->planned_workload * 100, 2);
+				
+				$task->add_contact($user->id, 180, 'internal');
 				
 				$task->addTimeSpent($user);
 				
@@ -364,7 +383,8 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	 FROM ".MAIN_DB_PREFIX."projet_task t 
 	 	LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields tex ON (tex.fk_object=t.rowid)
 		LEFT JOIN ".MAIN_DB_PREFIX."projet p ON (t.fk_projet=p.rowid)
-	 WHERE t.progress < 100  AND tex.fk_of>0 AND p.entity IN(".getEntity('project',1).")";
+		LEFT JOIN ".MAIN_DB_PREFIX."assetOf of ON (tex.fk_of=of.rowid)
+	 WHERE of.status!='DRAFT' AND of.status!='CLOSE' AND  (t.progress < 100 OR t.progress IS NULL) AND tex.fk_of>0 AND p.entity IN(".getEntity('project',1).")";
 	
 	//echo $sql;
 	if($fk_user>0 && empty($static_user->rights->projet->all->lire)) {
@@ -446,7 +466,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$sql.=" FROM ".MAIN_DB_PREFIX."projet_task as t 
 				LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = t.fk_projet)
 				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid) 
-			WHERE t.progress != 100 AND p.entity IN(".getEntity('project',1).")";
+			WHERE 1 AND p.entity IN(".getEntity('project',1).")";
 	
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 	
@@ -455,10 +475,10 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		";
 	}
 	else{
-		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')."' AND '".$date_deb."'";
+		$sql .= " AND t.dateo <= '".$date_deb."'";
 	}
 	
-	
+	$sql.=" AND (t.progress < 100 OR t.progress IS NULL) ";
 	
 	//echo $sql;
 	
@@ -526,6 +546,22 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 
 	$TOf = array();
 
+	$extrafields= new ExtraFields($db);
+	$extrafields->fetch_name_optionals_label($static_task->table_element);
+	if(!empty($conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM)) {
+	    $TIn = explode(',', $conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM);
+	    
+	    foreach($extrafields->attribute_label as $field=>$data) {
+	        
+	        if(!in_array($field, $TIn)) {
+	            unset($extrafields->attribute_label[$field]);
+	            
+	        }
+	        
+	    }
+	    
+	}
+
 	if($PDOdb->Execute($sql)){
 		$TRes = $PDOdb->Get_All();
 	
@@ -536,6 +572,13 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			$charset = mb_detect_encoding($res->taskLabel);
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
 			
+			if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
+			     $res->extrafields = '<table class="table table-striped table-bordered" >'.$static_task->showOptionals($extrafields,'view',array('style'=>'oddeven','colspan'=>1)).'</table>';
+			}
+			else {
+			    $res->extrafields='';
+			}
+
 			if (!empty($conf->global->TASKLIST_SHOW_DOCPREVIEW))
 			{
 				$docpreview='';

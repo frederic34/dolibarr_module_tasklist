@@ -439,6 +439,8 @@ function refresh_liste_tache(data,type){
 		clone.find('[rel=progress]').append(task.progress);
 		clone.find('[rel=priority]').append(task.priority);
 		
+		clone.find('[rel=extrafields]').append(task.extrafields);
+		
 		if(task.taskOF!='') clone.find('[rel=link-of]').html(task.taskOF);
 		
 		//Refresh des actions
