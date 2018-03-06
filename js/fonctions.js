@@ -165,9 +165,9 @@ function stop_task(id_task,onglet,hour,minutes){
 			   ,id_user_selected : $('#search_user').val()
 		}
 	})
-	.then(function (time){
+	.then(function (data){
 		//console.log(data);
-		refresh_time_spent($li.find('span[rel=spent_time]'), time);
+		refresh_time_spent($li, data);
 		$li.removeClass('running');
 	});
 }
@@ -198,9 +198,12 @@ function close_task(id_task,onglet,hour,minutes){
 	});
 }
 
-function refresh_time_spent(obj, time)
+function refresh_time_spent($obj, data)
 {
-	$(obj).text(time);
+	$obj.find('span[rel=progress]').text(data.progress);
+	$obj.find('span[rel=spent_time]').text(data.time);
+	$obj.find('span[rel=calculate_progress]').text(data.progress_calculated);
+	
 }
 
 function openOF(fk_of, numero) {
@@ -431,12 +434,13 @@ function refresh_liste_tache(data,type){
 		clone.find('a[data-toggle="collapse"]').attr("data-target",'#task_content_'+type+'_'+task.rowid);
 		clone.find('div.collapse').attr("id",'task_content_'+type+'_'+task.rowid);
 		//Refresh des datas
-		clone.find('[rel=taskRef]').html(task.taskRef+' '+task.taskLabel);
+		
+		clone.find('[rel=taskRef]').html(task.taskRef+' '+task.taskLabel+' <span rel="progress">'+(task.progress ? task.progress+'</span>%' : ''));
 		clone.find('[rel=dateo]').append(task.dateo_aff);
 		clone.find('[rel=datee]').append(task.datee_aff);
 		clone.find('[rel=planned_workload]').append(task.planned_workload);
 		clone.find('[rel=spent_time]').append(task.spent_time);
-		clone.find('[rel=progress]').append(task.progress);
+		clone.find('[rel=calculate_progress]').append(task.calculate_progress);
 		clone.find('[rel=priority]').append(task.priority);
 		
 		clone.find('[rel=extrafields]').append(task.extrafields);

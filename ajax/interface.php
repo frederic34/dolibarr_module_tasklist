@@ -235,7 +235,12 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 					$ttemp['total_duration'] = $ress->total_duration;
 				}
 				
-				if($task->planned_workload>0) $task->progress = round($ttemp['total_duration'] / $task->planned_workload * 100, 2);
+				$ttemp['total_duration']+= $task->timespent_duration;
+				
+				if($task->planned_workload>0) {
+				    $task->progress = round(round($ttemp['total_duration'] / $task->planned_workload * 100) / 5) * 5;
+				    if($task->progress < 5) $task->progress = 5;
+				}
 				
 				$task->add_contact($user->id, 180, 'internal');
 				
@@ -243,12 +248,12 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 				
 				$PDOdb->Execute("UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '0000-00-00 00:00:00' WHERE rowid = ".$task->id);
 				
-				return convertSecondToTime($ttemp['total_duration']+$time);
+				return array('time'=> convertSecondToTime($ttemp['total_duration']),'progress_calculated'=>round($ttemp['total_duration'] / $task->planned_workload * 100,2), 'progress'=>$task->progress);
 			}
 		}
 	}
 	
-	return 0;
+	return array('time'=>0, 'progress'=>0);
 }
 
 function _getTimeSpent(&$PDOdb,$taskId,$action){
@@ -536,10 +541,10 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	}
 	
 	if (!empty($conf->ordo->enabled)) {
-		$sql .= " ORDER BY t.date_estimated_start ASC";
+		$sql .= " ORDER BY t.progress DESC, t.date_estimated_start ASC,t.rowid ASC";
 	}
 	else{
-		$sql .= " ORDER BY t.dateo ASC";
+		$sql .= " ORDER BY t.progress DESC, t.dateo ASC,t.rowid ASC";
 	}
 
 	$sql.=" LIMIT 20";
@@ -573,7 +578,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
 			
 			if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
-			     $res->extrafields = '<table class="table table-striped table-bordered" >'.$static_task->showOptionals($extrafields,'view',array('style'=>'oddeven','colspan'=>1)).'</table>';
+			     $res->extrafields = '<table class="table table-hover" >'.$static_task->showOptionals($extrafields,'view',array('style'=>'style="background-color:rgb(91, 192, 222); color:#000;"','colspan'=>1)).'</table>';
 			}
 			else {
 			    $res->extrafields='';
@@ -632,8 +637,6 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				$res->taskOF = '';	
 			}
 			
-			$res->taskLabel.=' '.$res->progress.'%';
-
 			if($conf->entity !=  $res->entity) {
 
                                  if(empty($TEntity) && !empty($mc->dao)) {
@@ -655,19 +658,6 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 
 			$res->planned_workload = convertSecondToTime($res->planned_workload,'allhourmin');
 			
-			// TODO j'ai un peu l'impression que les tableaux $TSummary && $ttemp contiennent la même chose, mais pas sûr et pas le temps de vérif
-			if((float)DOL_VERSION >= 3.7){
-				// la fonction getSummaryOfTimeSpent existe qu'à partir de doli 3.7 
-				$TSummary = $static_task->getSummaryOfTimeSpent($res->rowid);
-			} else {
-				$q = 'SELECT SUM(t.task_duration) as total_duration FROM '.MAIN_DB_PREFIX.'projet_task_time as t WHERE t.fk_task = '.$res->rowid;
-				$resqll = $db->query($q);
-				$ress = $db->fetch_object($resqll);
-				$TSummary['total_duration'] = $ress->total_duration;
-			}
-			
-			$res->spent_time = convertSecondToTime($TSummary['total_duration'],'allhourmin');
-
 			if((float)DOL_VERSION >= 3.7){
 				$ttemp = $static_task->getSummaryOfTimeSpent();
 			} else {
@@ -677,7 +667,9 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				$ttemp['total_duration'] = $ress->total_duration;
 			}
 
-			if($static_task->planned_workload>0) $res->progress = round($ttemp['total_duration'] / $static_task->planned_workload * 100, 2);
+			$res->spent_time = convertSecondToTime($ttemp['total_duration'],'allhourmin');
+			
+			if($static_task->planned_workload>0) $res->calculate_progress = round($ttemp['total_duration'] / $static_task->planned_workload * 100, 2);
 			
 			if($res->dateo === '0000-00-00 00:00:00') $res->dateo_aff = 'N/A';
 			else $res->dateo_aff = dol_print_date($res->dateo,'dayhour');

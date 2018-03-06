@@ -30,7 +30,7 @@
 							<?php echo $langs->trans('PastTime'); ?> : <span rel="spent_time"></span>
 						</div>
 						<div class="col-xs-6 col-md-6">
-							<?php echo $langs->trans('Progress'); ?> : <span rel="progress"></span> %
+							<?php echo $langs->trans('ProgressCalculated'); ?> : <span rel="calculate_progress"></span> %
 						</div>
 						<div class="col-xs-6 col-md-6">
 							<?php echo $langs->trans('Priority'); ?> : <span rel="priority"></span>
