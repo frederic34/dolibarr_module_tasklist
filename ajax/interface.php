@@ -578,7 +578,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
 			
 			if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
-			     $res->extrafields = '<table class="table table-hover" >'.$static_task->showOptionals($extrafields,'view',array('style'=>'style="background-color:rgb(91, 192, 222); color:#000;"','colspan'=>1)).'</table>';
+			     $res->extrafields = '<table class="table table-hover" >'.$static_task->showOptionals($extrafields,'view',array('style'=>'style="background-color:rgb(91, 192, 222); color:#000; font-size:15px;"','colspan'=>1)).'</table>';
 			}
 			else {
 			    $res->extrafields='';
