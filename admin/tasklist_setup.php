@@ -59,7 +59,7 @@ if (preg_match('/set_(.*)/',$action,$reg))
 		dol_print_error($db);
 	}
 }
-	
+
 if (preg_match('/del_(.*)/',$action,$reg))
 {
 	$code=$reg[1];
@@ -132,7 +132,7 @@ print '</form>';
 print '</td></tr>';
 
 if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
-    
+
     $var=!$var;
     print '<tr '.$bc[$var].'>';
     print '<td>'.$langs->trans("TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM").'</td>';
@@ -145,8 +145,22 @@ if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
     print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
     print '</form>';
     print '</td></tr>';
-    
+
 }
+
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("TASKLIST_OF_LINK_TO_DOLIBARR").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_TASKLIST_OF_LINK_TO_DOLIBARR">';
+print ajax_constantonoff('TASKLIST_OF_LINK_TO_DOLIBARR');
+print '</form>';
+print '</td></tr>';
+
 print '</table>';
 
 llxFooter();
