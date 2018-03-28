@@ -75,10 +75,30 @@ function _put(&$PDOdb,$case) {
 		case 'close_task':
 			__out(_closeTask($PDOdb,$_REQUEST['id'],$_REQUEST['hour'],$_REQUEST['minutes'],$_REQUEST['id_user_selected']));
 			break;
+		case 'progress_task':
+		    __out(_progressTask($_REQUEST['id'],$_REQUEST['progress']));
+		    break;
 		default:
 
 			break;
 	}
+}
+
+function _progressTask($fk_task, $progress) {
+    global $db,$user;
+    $t=new Task($db);
+    $t->fetch($fk_task);
+
+    $t->progress = (int)$progress;
+
+    $res=$t->update($user);
+    if($res<=0) {
+        var_dump($res,$t);
+        exit;
+    }
+
+    return 'OK';
+
 }
 
 function _more(&$PDOdb, $action) {
@@ -434,7 +454,7 @@ function _list_of(&$PDOdb, $fk_user=0) {
 				}
 
 				$TOF[$of->getId()] = array(
-					'label'=>$label
+				    'label'=>$labelprogress_task
 						,'statut'=>$TTransStatus[$of->status]
 				);
 
@@ -685,6 +705,12 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 
 			if($res->tasklist_time_start === '0000-00-00 00:00:00') $res->tasklist_time_start = '';
 			else $res->tasklist_time_start = dol_print_date($res->tasklist_time_start,'dayhour');
+
+			if(!empty($user->rights->tasklist->all->AllowToChangeTaskPercent)) {
+			     dol_include_once('/core/class/html.formother.class.php');
+			     $formother = new FormOther($db);
+			     $res->select_progress = $formother->select_percent($res->progress,'progress_declared_'.$res->rowid,0,5,0,100,0);
+			}
 
 		}
 	}

@@ -25,3 +25,4 @@ TASKLIST_SHOW_DOCPREVIEW=Afficher les icônes de prévisualisations des document
 TASKLIST_SHOW_EXTRAFIELDS=Afficher les extrafields des tâches
 TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM=Limiter l'affichage au extrafield suivant
 TASKLIST_OF_LINK_TO_DOLIBARR=Le lien OF redirige sur la fiche dolibarr standard
+AllowToChangeTaskPercent=Permettre de changer le pourcentage des tâches

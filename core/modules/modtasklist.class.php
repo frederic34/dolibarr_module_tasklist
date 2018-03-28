@@ -186,20 +186,28 @@ class modtasklist extends DolibarrModules
 		$this->rights[$r][3] = 0; 					// Permission by default for new user (0/1)
 		$this->rights[$r][4] = 'all';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
 		$this->rights[$r][5] = 'read';				// In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-		
+
         $r++;
         $this->rights[$r][0] = $this->numero + $r;  // Permission id (must not be already used)
         $this->rights[$r][1] = 'Saisir des temps'; // Permission label
         $this->rights[$r][3] = 0;                   // Permission by default for new user (0/1)
         $this->rights[$r][4] = 'all';               // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
         $this->rights[$r][5] = 'write';              // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
-        
+
         $r++;
         $this->rights[$r][0] = $this->numero + $r;  // Permission id (must not be already used)
         $this->rights[$r][1] = 'Sélectionner les tâches d\'autres utilisateur'; // Permission label
         $this->rights[$r][3] = 0;                   // Permission by default for new user (0/1)
         $this->rights[$r][4] = 'user';               // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
         $this->rights[$r][5] = 'read';              // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+
+        $r++;
+        $this->rights[$r][0] = $this->numero . $r;  // Permission id (must not be already used)
+        $this->rights[$r][1] = 'AllowToChangeTaskPercent'; // Permission label
+        $this->rights[$r][3] = 0;                   // Permission by default for new user (0/1)
+        $this->rights[$r][4] = 'all';               // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+        $this->rights[$r][5] = 'AllowToChangeTaskPercent';              // In php code, permission will be checked by test if ($user->rights->permkey->level1->level2)
+
         /*
 		$r++;
 		$this->rights[$r][0] = $this->numero + $r;	// Permission id (must not be already used)
@@ -243,7 +251,7 @@ class modtasklist extends DolibarrModules
 								'target'=>'_blank',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
-		
+
 		$this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=project',			                // Put 0 if this is a top menu
 								'type'=>'left',			                // This is a Top menu entry
 								'titre'=>$langs->trans('Tasklist'),
@@ -257,7 +265,7 @@ class modtasklist extends DolibarrModules
 								'target'=>'_blank',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
-		
+
 		//
 		// Example to declare a Left Menu entry into an existing Top menu entry:
 		// $this->menu[$r]=array(	'fk_menu'=>'fk_mainmenu=xxx',		    // Use 'fk_mainmenu=xxx' or 'fk_mainmenu=xxx,fk_leftmenu=yyy' where xxx is mainmenucode and yyy is a leftmenucode
@@ -304,7 +312,7 @@ class modtasklist extends DolibarrModules
 	function init($options='')
 	{
 		$sql = array();
-		
+
 		define('INC_FROM_DOLIBARR',true);
 
 		dol_include_once('/tasklist/config.php');

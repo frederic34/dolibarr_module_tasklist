@@ -445,6 +445,36 @@ function refresh_liste_tache(data,type){
 		
 		clone.find('[rel=extrafields]').append(task.extrafields);
 		
+		if(task.select_progress) {
+			clone.find('[rel=select-progress]').append(task.select_progress).attr('fk-task',task.rowid).change(function() {
+				
+				var $select = $(this).find('select');
+				var id_task = $(this).attr('fk-task');
+				
+				$.ajax({
+					url: "ajax/interface.php",
+					dataType: "json",
+					crossDomain: true,
+					async : true,
+					data: {
+						   put:'progress_task'
+						   ,id : id_task
+						   ,progress:$select.val()
+						   ,json : 1
+					}
+				})
+				.then(function (data){
+					
+					if(data == 'OK'){
+						$("#task_list_"+id_task+" [rel=progress]").html($select.val());
+					}
+				});
+				
+				
+			});	
+			
+		}
+		
 		if(task.taskOF!='') clone.find('[rel=link-of]').html(task.taskOF);
 		
 		//Refresh des actions

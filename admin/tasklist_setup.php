@@ -161,6 +161,7 @@ print ajax_constantonoff('TASKLIST_OF_LINK_TO_DOLIBARR');
 print '</form>';
 print '</td></tr>';
 
+
 print '</table>';
 
 llxFooter();
