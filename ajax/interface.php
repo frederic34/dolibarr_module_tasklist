@@ -454,8 +454,8 @@ function _list_of(&$PDOdb, $fk_user=0) {
 				}
 
 				$TOF[$of->getId()] = array(
-				    'label'=>$labelprogress_task
-						,'statut'=>$TTransStatus[$of->status]
+				    'label'=>$label
+					,'statut'=>$TTransStatus[$of->status]
 				);
 
 
@@ -648,7 +648,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 					$TOf[$fk_of]->load($PDOdb, $static_task->array_options['options_fk_of']);
 				}
 
-				if(!empty($conf->global->TASKLIST_OF_LINK_TO_DOLIBARR)) {
+				if(!empty($user->rights->tasklist->user->AllowToUseDolibarrOFRedirection)) { //!empty($conf->global->TASKLIST_OF_LINK_TO_DOLIBARR) &&
 				    $link_of = dol_buildpath('/of/fiche_of.php',1).'?id='.$TOf[$fk_of]->id;
 				}
 				else {

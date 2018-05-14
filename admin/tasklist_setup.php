@@ -149,7 +149,7 @@ if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
 }
 
 
-$var=!$var;
+/*$var=!$var;
 print '<tr '.$bc[$var].'>';
 print '<td>'.$langs->trans("TASKLIST_OF_LINK_TO_DOLIBARR").'</td>';
 print '<td align="center" width="20">&nbsp;</td>';
@@ -160,7 +160,7 @@ print '<input type="hidden" name="action" value="set_TASKLIST_OF_LINK_TO_DOLIBAR
 print ajax_constantonoff('TASKLIST_OF_LINK_TO_DOLIBARR');
 print '</form>';
 print '</td></tr>';
-
+*/
 
 print '</table>';
 

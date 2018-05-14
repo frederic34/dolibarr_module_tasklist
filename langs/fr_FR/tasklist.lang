@@ -24,5 +24,6 @@ Close = Terminer
 TASKLIST_SHOW_DOCPREVIEW=Afficher les icônes de prévisualisations des documents associés à la commande d'origine sur la liste des tâches
 TASKLIST_SHOW_EXTRAFIELDS=Afficher les extrafields des tâches
 TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM=Limiter l'affichage au extrafield suivant
-TASKLIST_OF_LINK_TO_DOLIBARR=Le lien OF redirige sur la fiche dolibarr standard
+TASKLIST_OF_LINK_TO_DOLIBARR=Le lien OF redirige sur la fiche dolibarr standard (si droit possédé par l'utilisateur)
+AllowToUseDolibarrOFRedirection=Rediriger sur la fiche OF de Dolibarr
 AllowToChangeTaskPercent=Permettre de changer le pourcentage des tâches
