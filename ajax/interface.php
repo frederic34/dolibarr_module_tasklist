@@ -513,14 +513,17 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		switch ($type) {
 			case 'user':
 				//On ne prends que les tâches assignées à l'utilisateurtask
-				$static_user->fetch( $fk_user > 0 ? $fk_user : $id);
+			    $id_user =  $fk_user > 0 ? $fk_user : $id;
+			    if(empty($id_user))$id_user=$user->id;
+
+				$static_user->fetch($id_user);
 				$static_user->getrights('projet');
 
-				if(empty($static_user->rights->projet->all->lire)) {
+				if(empty($static_user->rights->projet->all->lire) && empty($user->admin)) {
 
 					$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
 					$TTaskIds = implode(',',array_keys($TRoles));
-					if(!empty($id) && $id>=0) $sql .= " AND t.rowid IN (".$TTaskIds.") "; // TODO le IN est limité, attention au nombre d'itération testé
+					$sql .= " AND t.rowid IN (".$TTaskIds.") "; // TODO le IN est limité, attention au nombre d'itération testé
 
 				}
 				break;

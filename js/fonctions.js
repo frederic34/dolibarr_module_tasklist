@@ -194,7 +194,11 @@ function close_task(id_task,onglet,hour,minutes){
 	})
 	.then(function (data){
 		//alert(onglet);
-		reload_liste_tache(onglet);
+		//reload_liste_tache(onglet);
+		ajax_get_liste_task(0,'user');
+		ajax_get_liste_task(0,'workstation');
+		ajax_get_liste_task(0,'of');
+		reload_liste_of();
 	});
 }
 
@@ -367,7 +371,9 @@ function reload_liste_of() {
 	
 		$li = $('ul#liste-of');
 		
+		$('#list-task-of table.product-list').remove();
 		$li.empty();
+		
 		for(x in data) {
 			
 			var OF = data[x]; 
@@ -395,7 +401,6 @@ function reload_liste_tache(type, id){
 			
 			if(id==null) id = $('#liste-of>li.active').attr('fk-of');
 			//if(id==null) id = $('#search_of').val();
-			
 			break;
 	}
 	
