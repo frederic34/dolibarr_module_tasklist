@@ -10,7 +10,7 @@
 	dol_include_once('/user/class/usergroup.class.php');
 	dol_include_once('/core/lib/date.lib.php');
 
-	if($conf->of->enabled) $resOF = dol_include_once('/of/ordre_fabrication_asset.class.php');
+	if($conf->of->enabled) $resOF = dol_include_once('/of/class/ordre_fabrication_asset.class.php');
 	else if($conf->{ ATM_ASSET_NAME }->enabled) $resOF = dol_include_once('/' . ATM_ASSET_NAME . '/class/ordre_fabrication_asset.class.php');
 
 	ob_clean();
