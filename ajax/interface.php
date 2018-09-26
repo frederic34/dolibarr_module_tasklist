@@ -10,8 +10,8 @@
 	dol_include_once('/user/class/usergroup.class.php');
 	dol_include_once('/core/lib/date.lib.php');
 
-	if($conf->of->enabled) $resOF = dol_include_once('/of/class/ordre_fabrication_asset.class.php');
-	else if($conf->asset->enabled) $resOF = dol_include_once('/asset/class/ordre_fabrication_asset.class.php');
+	if($conf->of->enabled) $resOF = dol_include_once('/of/ordre_fabrication_asset.class.php');
+	else if($conf->{ ATM_ASSET_NAME }->enabled) $resOF = dol_include_once('/' . ATM_ASSET_NAME . '/class/ordre_fabrication_asset.class.php');
 
 	ob_clean();
 
@@ -353,7 +353,7 @@ function _startTask(&$PDOdb,$taskId){
 
 		$PDOdb->Execute($sql);
 
-		if ($conf->asset->enabled) _openProdOF($PDOdb, $db, $task);
+		if ($conf->{ ATM_ASSET_NAME }->enabled) _openProdOF($PDOdb, $db, $task);
 
 		return array('result'=>'OK', 'tasklist_time_start'=>dol_print_date(time(), 'dayhour'));
 	}
@@ -369,7 +369,7 @@ function _openProdOF(&$PDOdb, &$db, &$task)
 	if ($task->fk_project > 0)
 	{
 		dol_include_once('/projet/class/project.class.php');
-		dol_include_once('/asset/class/asset.class.php');
+		dol_include_once('/' . ATM_ASSET_NAME . '/class/asset.class.php');
 
 		$project = new Project($db);
 		$project->fetch($task->fk_project);
