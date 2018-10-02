@@ -10,15 +10,15 @@
     	accessforbidden();
 	}
 	
-	if($conf->of->enabled) dol_include_once('/of/asset/class/ordre_fabrication_asset.class.php');
+	if($conf->of->enabled) dol_include_once('/of/class/ordre_fabrication_asset.class.php');
 	if($conf->workstation->enabled) dol_include_once('/workstation/class/workstation.class.php');
 
     $conf->use_javascript_ajax = false; // 3.7 compatibility
     
     if($conf->workstation->enabled) $langs->load('workstation@workstation');
-	if($conf->asset->enabled) $langs->load('asset@asset');
+    if($conf->{ ATM_ASSET_NAME }->enabled) $langs->load(ATM_ASSET_NAME . '@' . ATM_ASSET_NAME);
 	
-	$accessOF = ($conf->asset->enabled && $user->rights->asset->of->lire) //TODO AA remove old def
+    $accessOF = ($conf->{ ATM_ASSET_NAME }->enabled && $user->rights->{ ATM_ASSET_NAME }->of->lire) //TODO AA remove old def
 					||($conf->of->enabled && $user->rights->of->of->lire); 
 	
 	
