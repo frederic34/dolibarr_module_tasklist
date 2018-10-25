@@ -221,7 +221,7 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 			if($time > 0){
 				
 				$task->timespent_date = date('Y-m-d');
-		        $task->timespent_datehour = date('Y-m-d H:i:s');;
+		        $task->timespent_datehour = date('Y-m-d H:i:s');
 		        $task->timespent_duration = $time;
 		        //$task->timespent_fk_user = $user->id;
 		        $task->timespent_fk_user = $id_user_selected;
@@ -234,8 +234,7 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 					$ress = $db->fetch_object($resqll);
 					$ttemp['total_duration'] = $ress->total_duration;
 				}
-				
-				if($task->planned_workload>0) $task->progress = round($ttemp['total_duration'] / $task->planned_workload * 100, 2);
+				if($task->planned_workload>0) $task->progress = round(($ttemp['total_duration']+$time) / $task->planned_workload * 100, 2);
 				
 				$task->addTimeSpent($user);
 				
@@ -634,7 +633,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			// TODO j'ai un peu l'impression que les tableaux $TSummary && $ttemp contiennent la même chose, mais pas sûr et pas le temps de vérif
 			if((float)DOL_VERSION >= 3.7){
 				// la fonction getSummaryOfTimeSpent existe qu'à partir de doli 3.7 
-				$TSummary = $static_task->getSummaryOfTimeSpent($res->rowid);
+				$TSummary = $static_task->getSummaryOfTimeSpent();
 			} else {
 				$q = 'SELECT SUM(t.task_duration) as total_duration FROM '.MAIN_DB_PREFIX.'projet_task_time as t WHERE t.fk_task = '.$res->rowid;
 				$resqll = $db->query($q);
