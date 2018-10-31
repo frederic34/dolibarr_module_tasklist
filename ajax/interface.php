@@ -476,7 +476,6 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	}
 	
 	
-	
 	//echo $sql;
 	
 	//if(!empty($id)) $id = 0;
@@ -552,8 +551,25 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			
 			$charset = mb_detect_encoding($res->taskLabel);
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
-			$res->taskDesc=iconv($charset,'UTF-8', nl2br($res->taskDesc));
 			
+			if(iconv($charset,'UTF-8', nl2br($res->taskDesc)) === false){
+				//function allowing to see which char is wrong
+				/* $convertString = '';
+				   $badChars = [];
+				   for($i = 0, $stringLength = mb_strlen($res->taskDesc); $i < $stringLength; $i++) {
+				    $char = mb_substr($res->taskDesc, $i, 1);
+					$convertChar = iconv($charset,'UTF-8', $char);
+
+					if ($convertChar === false) {
+						$badChars[$i] = $char;
+					} else {
+						$convertString .= $convertChar;
+					}   
+				}
+				var_dump($badChars, $convertString);*/
+				$res->taskDesc=nl2br($res->taskDesc);
+			}
+			else $res->taskDesc=iconv($charset,'UTF-8', nl2br($res->taskDesc));
 			if (!empty($conf->global->TASKLIST_SHOW_DOCPREVIEW))
 			{
 				$docpreview='';
