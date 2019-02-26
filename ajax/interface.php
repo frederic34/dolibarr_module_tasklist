@@ -752,7 +752,7 @@ function _getCommandeFromProjectId($fk_project)
 	return false;
 }
 
-function _btOF($PDOdb, $TOf, $fk_of, $res){
+function _btOF(&$PDOdb, &$TOf, $fk_of, &$res){
 
     global $user;
 
