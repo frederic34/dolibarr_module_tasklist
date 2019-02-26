@@ -650,8 +650,10 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
                 $res->taskOF = '';
                 if(empty($conf->global->ASSET_CUMULATE_PROJECT_TASK))_btOF( $PDOdb, $TOf, $static_task->array_options['options_fk_of'], $res);
                 else {
-                    foreach($static_task->linkedObjectsIds['tassetof'] as $fk_of) {
-                        _btOF($PDOdb, $TOf, $fk_of, $res);
+                    if(!empty($static_task->linkedObjectsIds['tassetof'])) {
+                        foreach($static_task->linkedObjectsIds['tassetof'] as $fk_of) {
+                            _btOF($PDOdb, $TOf, $fk_of, $res);
+                        }
                     }
                 }
 			}
