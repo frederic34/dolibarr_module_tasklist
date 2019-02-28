@@ -132,10 +132,14 @@ function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
 			$lineOF->load($PDOdb, $line['lineid']);
 
 			if($lineOF->getId()){
-				$lineOF->qty_used = $line['qty_use'];
-				$lineOF->save($PDOdb);
+                $lineOF->qty_used = $line['qty_use'];
+                if($conf->global->OF_MANAGE_NON_COMPLIANT && ($assetOf->status=='OPEN' || $assetOf->status == 'CLOSE')){
+                    if(!empty($line['qty_compliant']))$lineOF->qty_compliant=$line['qty_compliant'];
+                    if(!empty($line['qty_non_compliant']))$lineOF->qty_non_compliant=$line['qty_non_compliant'];
+                }
+                $lineOF->save($PDOdb);
 
-				$TLineUpdated['ids'][] = $lineOF->getId();
+                $TLineUpdated['ids'][] = $lineOF->getId();
 
 				if(!empty($lineOF->errors)) $TLineUpdated['errors'] = array_merge($TLineUpdated['errors'], $lineOF->errors);
 
@@ -175,6 +179,8 @@ function _getProductTaskOF(&$PDOdb, $fk_of) {
                 ,'qty_used'=>$line->qty_used
                 ,'lineid'=>$line->getId()
 				,'type'=>$line->type
+                ,'qty_compliant'=> $line->qty_compliant
+                ,'qty_non_compliant'=> $line->qty_non_compliant
             );
         }
         else{
@@ -194,8 +200,8 @@ function _getProductTaskOF(&$PDOdb, $fk_of) {
 
 
     }
-
-
+    $Tab['conf'] = $conf;
+    $Tab['of'] = $of;
     return $Tab;
 
 
