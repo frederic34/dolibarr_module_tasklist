@@ -410,13 +410,24 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	$static_user->fetch($fk_user);
 	$static_user->getrights('projet');
 
-	$sql="SELECT DISTINCT tex.fk_of
-	 FROM ".MAIN_DB_PREFIX."projet_task t
-	 	LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields tex ON (tex.fk_object=t.rowid)
-		LEFT JOIN ".MAIN_DB_PREFIX."projet p ON (t.fk_projet=p.rowid)
-		LEFT JOIN ".MAIN_DB_PREFIX."assetOf of ON (tex.fk_of=of.rowid)
-	 WHERE of.status!='DRAFT' AND of.status!='CLOSE' AND  (t.progress < 100 OR t.progress IS NULL) AND tex.fk_of>0 AND p.entity IN(".getEntity('project',1).")";
+	if(!empty($conf->global->ASSET_CUMULATE_PROJECT_TASK)){
+        $sql = "SELECT DISTINCT ee.fk_source as fk_of
+         FROM " . MAIN_DB_PREFIX . "projet_task t
+            LEFT JOIN " . MAIN_DB_PREFIX . "element_element ee ON (ee.fk_target=t.rowid AND targettype='project_task' AND sourcetype='tassetof')
+            LEFT JOIN " . MAIN_DB_PREFIX . "projet p ON (t.fk_projet=p.rowid)
+            LEFT JOIN " . MAIN_DB_PREFIX . "assetOf of ON (ee.fk_source=of.rowid)
+         WHERE of.status!='DRAFT' AND of.status!='CLOSE' AND  (t.progress < 100 OR t.progress IS NULL) AND ee.fk_source>0 AND p.entity IN(" . getEntity('project', 1) . ")";
 
+
+    }else {
+
+        $sql = "SELECT DISTINCT tex.fk_of
+         FROM " . MAIN_DB_PREFIX . "projet_task t
+            LEFT JOIN " . MAIN_DB_PREFIX . "projet_task_extrafields tex ON (tex.fk_object=t.rowid)
+            LEFT JOIN " . MAIN_DB_PREFIX . "projet p ON (t.fk_projet=p.rowid)
+            LEFT JOIN " . MAIN_DB_PREFIX . "assetOf of ON (tex.fk_of=of.rowid)
+         WHERE of.status!='DRAFT' AND of.status!='CLOSE' AND  (t.progress < 100 OR t.progress IS NULL) AND tex.fk_of>0 AND p.entity IN(" . getEntity('project', 1) . ")";
+    }
 	//echo $sql;
 	if($fk_user>0 && empty($static_user->rights->projet->all->lire)) {
 
@@ -496,8 +507,11 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 
 	$sql.=" FROM ".MAIN_DB_PREFIX."projet_task as t
 				LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = t.fk_projet)
-				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid)
-			WHERE 1 AND p.entity IN(".getEntity('project',1).")";
+				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid)";
+	if(!empty($conf->global->ASSET_CUMULATE_PROJECT_TASK)){
+        $sql.= "LEFT JOIN ".MAIN_DB_PREFIX."element_element as ee ON (ee.fk_target=t.rowid AND targettype='project_task' AND sourcetype='tassetof')";
+    }
+	$sql.= " WHERE 1 AND p.entity IN(".getEntity('project',1).")";
 
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 
@@ -551,7 +565,10 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				break;
 			case 'of':
 				//On ne prends que les tâches liées à l'Ordre de Fabrication
-				if(!empty($id) && $id>=0) $sql .= " AND te.fk_of = ".$id." ";
+				if(!empty($id) && $id>=0){
+				    if(empty($conf->global->ASSET_CUMULATE_PROJECT_TASK))$sql .= " AND te.fk_of = ".$id." ";
+				    else $sql .= " AND ee.fk_source = ".$id." ";
+                }
 
 				if($fk_user>0) {
 					$static_user->fetch($fk_user);
@@ -602,7 +619,11 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		foreach($TRes as &$res){
 			$static_task->fetch($res->rowid);
 			$static_task->fetch_optionals($static_task->id);
-
+            if( !empty($conf->global->ASSET_CUMULATE_PROJECT_TASK) ) {
+                if (!isset($conf->tassetof))$conf->tassetof = new \stdClass(); // for warning
+                $conf->tassetof->enabled = 1; // pour fetchobjectlinked
+                $static_task->fetchObjectLinked(0,'tassetof',$static_task->id,$static_task->element,'OR',1,'sourcetype',0);
+            }
 			$charset = mb_detect_encoding($res->taskLabel);
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
 
@@ -647,26 +668,17 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				}
 			}
 
-			if($static_task->array_options['options_fk_of']>0) {
 
-				$fk_of = $static_task->array_options['options_fk_of'];
-
-				if(!isset($TOf[$fk_of])) {
-					$TOf[$fk_of]=new TAssetOF;
-					$TOf[$fk_of]->withChild = false;
-					$TOf[$fk_of]->load($PDOdb, $static_task->array_options['options_fk_of']);
-				}
-
-				if(!empty($user->rights->tasklist->user->AllowToUseDolibarrOFRedirection)) { //!empty($conf->global->TASKLIST_OF_LINK_TO_DOLIBARR) &&
-				    $link_of = dol_buildpath('/of/fiche_of.php',1).'?id='.$TOf[$fk_of]->id;
-				}
-				else {
-				    $link_of = 'javascript:openOF('.$TOf[$fk_of]->getId().',\''.$TOf[$fk_of]->numero.'\');';
-				}
-
-
-				$res->taskOF=' <a href="'.$link_of.'" class="btn btn-default">'.$TOf[$fk_of]->numero.'</a>';
-
+			if((!empty($conf->global->ASSET_CUMULATE_PROJECT_TASK) && !empty($static_task->linkedObjectsIds['tassetof'])) || $static_task->array_options['options_fk_of']>0) {
+                $res->taskOF = '';
+                if(empty($conf->global->ASSET_CUMULATE_PROJECT_TASK))_btOF( $PDOdb, $TOf, $static_task->array_options['options_fk_of'], $res);
+                else {
+                    if(!empty($static_task->linkedObjectsIds['tassetof'])) {
+                        foreach($static_task->linkedObjectsIds['tassetof'] as $fk_of) {
+                            _btOF($PDOdb, $TOf, $fk_of, $res);
+                        }
+                    }
+                }
 			}
 			else {
 				$res->taskOF = '';
@@ -763,4 +775,25 @@ function _getCommandeFromProjectId($fk_project)
 	}
 
 	return false;
+}
+
+function _btOF(&$PDOdb, &$TOf, $fk_of, &$res){
+
+    global $user;
+
+    if(!isset($TOf[$fk_of])) {
+        $TOf[$fk_of]=new TAssetOF;
+        $TOf[$fk_of]->withChild = false;
+        $TOf[$fk_of]->load($PDOdb, $fk_of);
+    }
+
+    if(!empty($user->rights->tasklist->user->AllowToUseDolibarrOFRedirection)) { //!empty($conf->global->TASKLIST_OF_LINK_TO_DOLIBARR) &&
+        $link_of = dol_buildpath('/of/fiche_of.php',1).'?id='.$TOf[$fk_of]->id;
+    }
+    else {
+        $link_of = 'javascript:openOF('.$TOf[$fk_of]->getId().',\''.$TOf[$fk_of]->numero.'\');';
+    }
+
+
+    $res->taskOF.=' <a href="'.$link_of.'" class="btn btn-default">'.$TOf[$fk_of]->numero.'</a> &nbsp;';
 }
