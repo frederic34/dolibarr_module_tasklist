@@ -586,7 +586,11 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		}
 	}
 
-	if (!empty($conf->ordo->enabled)) {
+    if(!empty($conf->global->ASSET_CUMULATE_PROJECT_TASK)){
+        $sql .= " GROUP BY ee.fk_target ";
+    }
+
+    if (!empty($conf->ordo->enabled)) {
 		$sql .= " ORDER BY t.progress DESC, t.date_estimated_start ASC,t.rowid ASC";
 	}
 	else{
