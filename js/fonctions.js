@@ -276,10 +276,9 @@ function _draw_of_product(fk_of){
 					}
 					,method:'post'
 					,dataType:'json'
-				}).done(function(rdata){
-					console.log(rdata);
+				}).done(function(datatask){
+					console.log(datatask);
 
-					
 					reload_liste_tache('of', fk_of);
 					_draw_of_product(fk_of);
 					window.alert('Lignes modifiées');
