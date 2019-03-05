@@ -246,67 +246,8 @@ function _draw_of_product(fk_of){
 		var tomake=false;
 		
 		if(data.productOF.length>0) {
-			
-			$table = $('<table id="product-list-of" class="table table-striped table-condensed product-list"></table> ');
-			
-			$table.append('<thead><tr><th class="col-md-8">Produit Nécessaire</th><th class="col-md-2">Quantité prévue</th><th class="col-md-2">Utilisée</th></tr></thead><tbody></tbody>');
-			
-			for(x in data.productOF) {
-				
-				line = data.productOF[x]; 
-				
-				if(line.type == 'NEEDED'){
-					$tr = $('<tr />');
-					$tr.append('<td>'+line.label+'</td>');
-					$tr.append('<td>'+line.qty+'</td>');
-					
-					$tr.append('<td><input rel="prod-qty-used" line-id="'+line.lineid+'" type="text" value="'+line.qty_used+'" size="5" /></td>');
-					$table.find('tbody').append($tr);
-					
-					needed = true;
-				}
-			}
-			
-			$table2 = $('<table id="product-list-of-tomake" class="table table-striped table-condensed product-list"></table> ');
-			console.log(data.conf.global.OF_MANAGE_NON_COMPLIANT, data.of.status);
-			if(data.conf.global.OF_MANAGE_NON_COMPLIANT ==1&& (data.of.status=='OPEN' || data.of.status == 'CLOSE')){
-				$compliantTHead =  '<th class="col-md-2">Conforme</th><th class="col-md-2">Non Conforme</th>';
-			} else {
-				$compliantTHead = '';
-			}
 
-			$table2.append('<thead><tr><th class="col-md-8">Produit Fabriqué</th><th class="col-md-2">Quantité prévue</th><th class="col-md-2">Fabriquée</th>'+$compliantTHead+'</tr></thead><tbody></tbody>');
-			
-			for(x in data.productOF) {
-				
-				line = data.productOF[x]; 
-				
-				if(line.type == 'TO_MAKE'){
-					$tr = $('<tr />');
-					$tr.append('<td>'+line.label+'</td>');
-					$tr.append('<td>'+line.qty+'</td>');
-					
-					$tr.append('<td><input rel="prod-qty-used" line-id="'+line.lineid+'" type="text" value="'+line.qty_used+'" size="5" /></td>');
-
-					if(data.conf.global.OF_MANAGE_NON_COMPLIANT ==1&& (data.of.status=='OPEN' || data.of.status == 'CLOSE')){
-						$tr.append('<td><input rel="prod-qty-compliant" line-id="'+line.lineid+'" type="text" value="'+line.qty_compliant+'" size="5" /></td>');
-						$tr.append('<td><input rel="prod-qty-non-compliant" line-id="'+line.lineid+'" type="text" value="'+line.qty_non_compliant+'" size="5" /></td>');
-					}
-					$table2.find('tbody').append($tr);
-					
-					tomake = true;
-				}
-			}
-			
-			if(needed || tomake) {
-				if(data.conf.global.OF_MANAGE_NON_COMPLIANT ==1&& (data.of.status=='OPEN' || data.of.status == 'CLOSE') && tomake){
-					$colspan = 5;
-				}else $colspan = 3;
-				$table2.append('<tr><td align="right" colspan="'+$colspan+'"><button class="btn btn-default" id="retour-atelier">Enregistrer</button></td></tr>');
-				$('#list-task-of div#liste_tache_of').before($table);
-				$('#list-task-of div#liste_tache_of').before($table2);
-
-			}
+			reload_tomake_needed(data);
 			
 			$('#retour-atelier').click(function() {
 				
@@ -335,11 +276,14 @@ function _draw_of_product(fk_of){
 					}
 					,method:'post'
 					,dataType:'json'
-				}).done(function(data){
-					console.log(data);
+				}).done(function(rdata){
+					console.log(rdata);
+
 					
+					reload_liste_tache('of', fk_of);
+					_draw_of_product(fk_of);
 					window.alert('Lignes modifiées');
-					
+
 					$bt.html(originalText);
 				});
 			});
@@ -367,6 +311,69 @@ function _draw_of_product(fk_of){
 		
 	});
 	
+}
+
+function reload_tomake_needed(data){
+	$table = $('<table id="product-list-of" class="table table-striped table-condensed product-list"></table> ');
+
+	$table.append('<thead><tr><th class="col-md-8">Produit Nécessaire</th><th class="col-md-2">Quantité prévue</th><th class="col-md-2">Utilisée</th></tr></thead><tbody></tbody>');
+
+	for(x in data.productOF) {
+
+		line = data.productOF[x];
+
+		if(line.type == 'NEEDED'){
+			$tr = $('<tr />');
+			$tr.append('<td>'+line.label+'</td>');
+			$tr.append('<td>'+line.qty+'</td>');
+
+			$tr.append('<td><input rel="prod-qty-used" line-id="'+line.lineid+'" type="text" value="'+line.qty_used+'" size="5" /></td>');
+			$table.find('tbody').append($tr);
+
+			needed = true;
+		}
+	}
+
+	$table2 = $('<table id="product-list-of-tomake" class="table table-striped table-condensed product-list"></table> ');
+	console.log(data.conf.global.OF_MANAGE_NON_COMPLIANT, data.of.status);
+	if(data.conf.global.OF_MANAGE_NON_COMPLIANT ==1&& (data.of.status=='OPEN' || data.of.status == 'CLOSE')){
+		$compliantTHead =  '<th class="col-md-2">Conforme</th><th class="col-md-2">Non Conforme</th>';
+	} else {
+		$compliantTHead = '';
+	}
+
+	$table2.append('<thead><tr><th class="col-md-8">Produit Fabriqué</th><th class="col-md-2">Quantité prévue</th><th class="col-md-2">Fabriquée</th>'+$compliantTHead+'</tr></thead><tbody></tbody>');
+
+	for(x in data.productOF) {
+
+		line = data.productOF[x];
+
+		if(line.type == 'TO_MAKE'){
+			$tr = $('<tr />');
+			$tr.append('<td>'+line.label+'</td>');
+			$tr.append('<td>'+line.qty+'</td>');
+
+			$tr.append('<td><input rel="prod-qty-used" line-id="'+line.lineid+'" type="text" value="'+line.qty_used+'" size="5" /></td>');
+
+			if(data.conf.global.OF_MANAGE_NON_COMPLIANT ==1&& (data.of.status=='OPEN' || data.of.status == 'CLOSE')){
+				$tr.append('<td><input rel="prod-qty-compliant" line-id="'+line.lineid+'" type="text" value="'+line.qty_compliant+'" size="5" /></td>');
+				$tr.append('<td><input rel="prod-qty-non-compliant" line-id="'+line.lineid+'" type="text" value="'+line.qty_non_compliant+'" size="5" /></td>');
+			}
+			$table2.find('tbody').append($tr);
+
+			tomake = true;
+		}
+	}
+
+	if(needed || tomake) {
+		if(data.conf.global.OF_MANAGE_NON_COMPLIANT ==1&& (data.of.status=='OPEN' || data.of.status == 'CLOSE') && tomake){
+			$colspan = 5;
+		}else $colspan = 3;
+		$table2.append('<tr><td align="right" colspan="'+$colspan+'"><button class="btn btn-default" id="retour-atelier">Enregistrer</button></td></tr>');
+		$('#list-task-of div#liste_tache_of').before($table);
+		$('#list-task-of div#liste_tache_of').before($table2);
+
+	}
 }
 
 function reload_liste_of() {
