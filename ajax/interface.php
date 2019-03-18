@@ -134,8 +134,8 @@ function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
 			if($lineOF->getId()){
                 $lineOF->qty_used = $line['qty_use'];
                 if($conf->global->OF_MANAGE_NON_COMPLIANT && ($assetOf->status=='OPEN' || $assetOf->status == 'CLOSE')){
-                    if(!empty($line['qty_compliant']))$lineOF->qty_compliant=$line['qty_compliant'];
-                    if(!empty($line['qty_non_compliant']))$lineOF->qty_non_compliant=$line['qty_non_compliant'];
+                    $lineOF->qty_compliant=$line['qty_compliant'];
+                    $lineOF->qty_non_compliant=$line['qty_non_compliant'];
                 }
                 $lineOF->save($PDOdb);
 
@@ -586,7 +586,11 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		}
 	}
 
-	if (!empty($conf->ordo->enabled)) {
+    if(!empty($conf->global->ASSET_CUMULATE_PROJECT_TASK)){
+        $sql .= " GROUP BY ee.fk_target ";
+    }
+
+    if (!empty($conf->ordo->enabled)) {
 		$sql .= " ORDER BY t.progress DESC, t.date_estimated_start ASC,t.rowid ASC";
 	}
 	else{
