@@ -316,7 +316,8 @@ function reload_tomake_needed(data){
 	$table = $('<table id="product-list-of" class="table table-striped table-condensed product-list"></table> ');
 
 	$table.append('<thead><tr><th class="col-md-8">Produit Nécessaire</th><th class="col-md-2">Quantité prévue</th><th class="col-md-2">Utilisée</th></tr></thead><tbody></tbody>');
-
+	needed = false;
+	tomake = false;
 	for(x in data.productOF) {
 
 		line = data.productOF[x];
