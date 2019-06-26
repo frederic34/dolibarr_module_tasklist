@@ -261,7 +261,6 @@ function _draw_of_product(fk_of){
 					TLine.push({
 						'lineid':$(item).find('input[rel=prod-qty-used]').attr('line-id')
 						,'qty_use':$(item).find('input[rel=prod-qty-used]').val()
-						,'qty_compliant':$(item).find('input[rel=prod-qty-compliant]').val()
 						,'qty_non_compliant':$(item).find('input[rel=prod-qty-non-compliant]').val()
 					});
 				});
@@ -339,10 +338,10 @@ function reload_tomake_needed(data){
 	if(data.conf.global.OF_MANAGE_NON_COMPLIANT ==1&& (data.of.status=='OPEN' || data.of.status == 'CLOSE')){
 		$compliantTHead =  '<th class="col-md-2">Conforme</th><th class="col-md-2">Non Conforme</th>';
 	} else {
-		$compliantTHead = '';
+		$compliantTHead = '<th class="col-md-2">Fabriquée</th>';
 	}
 
-	$table2.append('<thead><tr><th class="col-md-8">Produit Fabriqué</th><th class="col-md-2">Quantité prévue</th><th class="col-md-2">Fabriquée</th>'+$compliantTHead+'</tr></thead><tbody></tbody>');
+	$table2.append('<thead><tr><th class="col-md-8">Produit Fabriqué</th><th class="col-md-2">Quantité prévue</th>'+$compliantTHead+'</tr></thead><tbody></tbody>');
 
 	for(x in data.productOF) {
 
@@ -356,7 +355,6 @@ function reload_tomake_needed(data){
 			$tr.append('<td><input rel="prod-qty-used" line-id="'+line.lineid+'" type="text" value="'+line.qty_used+'" size="5" /></td>');
 
 			if(data.conf.global.OF_MANAGE_NON_COMPLIANT ==1&& (data.of.status=='OPEN' || data.of.status == 'CLOSE')){
-				$tr.append('<td><input rel="prod-qty-compliant" line-id="'+line.lineid+'" type="text" value="'+line.qty_compliant+'" size="5" /></td>');
 				$tr.append('<td><input rel="prod-qty-non-compliant" line-id="'+line.lineid+'" type="text" value="'+line.qty_non_compliant+'" size="5" /></td>');
 			}
 			$table2.find('tbody').append($tr);
@@ -367,7 +365,7 @@ function reload_tomake_needed(data){
 
 	if(needed || tomake) {
 		if(data.conf.global.OF_MANAGE_NON_COMPLIANT ==1&& (data.of.status=='OPEN' || data.of.status == 'CLOSE') && tomake){
-			$colspan = 5;
+			$colspan = 4;
 		}else $colspan = 3;
 		$table2.append('<tr><td align="right" colspan="'+$colspan+'"><button class="btn btn-default" id="retour-atelier">Enregistrer</button></td></tr>');
 		$('#list-task-of div#liste_tache_of').before($table);
