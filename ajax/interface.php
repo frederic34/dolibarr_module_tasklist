@@ -78,6 +78,9 @@ function _put(&$PDOdb,$case) {
 		case 'progress_task':
 		    __out(_progressTask($_REQUEST['id'],$_REQUEST['progress']));
 		    break;
+		case 'set-of-rank':
+		    __out(_setOfRank($PDOdb, $_REQUEST['fk_of'],$_REQUEST['new_rank']));
+		    break;
 		default:
 
 			break;
@@ -98,6 +101,15 @@ function _progressTask($fk_task, $progress) {
     }
 
     return 'OK';
+
+}
+function _setOfRank($PDOdb, $fk_of, $new_rank) {
+
+   $of = new TAssetOF;
+   $of->load($PDOdb,$fk_of);
+   $of->rank = $new_rank;
+   return $of->save($PDOdb);
+
 
 }
 
@@ -426,6 +438,7 @@ function _list_of(&$PDOdb, $fk_user=0) {
             LEFT JOIN " . MAIN_DB_PREFIX . "assetOf of ON (tex.fk_of=of.rowid)
          WHERE of.status!='DRAFT' AND of.status!='CLOSE' AND  (t.progress < 100 OR t.progress IS NULL) AND tex.fk_of>0 AND p.entity IN(" . getEntity('project', 1) . ")";
     }
+
 	//echo $sql;
 	if($fk_user>0 && empty($static_user->rights->projet->all->lire)) {
 
@@ -436,6 +449,7 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	}
 
 	$TOF=array();
+    if(!empty($conf->global->OF_RANK_PRIOR_BY_LAUNCHING_DATE))$sql .= ' ORDER BY of.date_lancement ASC, of.rank ASC, of.rowid DESC';
 	$Tab = $PDOdb->ExecuteAsArray($sql);
 
 	$TTransStatus = array_map(array($langs, 'trans'), TAssetOf::$TStatus);
@@ -468,14 +482,17 @@ function _list_of(&$PDOdb, $fk_user=0) {
 
 				}
 
-				$TOF[$of->getId()] = array(
+				$TOF[] = array(
 				    'label'=>$label
 					,'statut'=>$TTransStatus[$of->status]
+					,'date_lancement'=>$of->date_lancement
+					,'rank'=>$of->rank
+					,'fk_of'=>$of->getId()
 				);
 
 
 	}
-
+    $TOF['conf'] = $conf;
 	return $TOF;
 
 }
