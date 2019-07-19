@@ -404,7 +404,7 @@ function reload_liste_of() {
 				var date = new Date(OF.date_lancement*1000);
 				more = ' ('+date.getDay()+'/'+date.getMonth()+'/'+date.getFullYear()+') ';
 			}
-			$li.append('<li class="list-group-item" data-rank="'+OF.rank+'" data-launching_date="'+OF.date_lancement+'" fk-of="'+OF.fk_of+'"><a href="javascript:openOF('+OF.fk_of+',\''+data[x]+'\')">'+OF.label+ ' [' + OF.statut +']'+more+'</a></li>');
+			$li.append('<li class="list-group-item" data-rank="'+OF.rank+'" data-launching_date="'+OF.date_lancement+'" fk-of="'+OF.fk_of+'"><a href="javascript:openOF('+OF.fk_of+',\''+data[x]+'\')">'+OF.label+ ' [' + OF.statut +']'+more+'</a>&nbsp;&nbsp;&nbsp;<span onclick="showDocument('+OF.fk_of+')"><i class="fa fa-download" aria-hidden="true"></i></span></li>');
 
 		}
 

@@ -39,8 +39,12 @@
 		<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
 		<script src="lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-		
-		
+
+       <?php if (! defined('DISABLE_FONT_AWSOME'))
+        {
+        print '<!-- Includes CSS for font awesome -->'."\n";
+        print '<link rel="stylesheet" type="text/css" href="'.DOL_URL_ROOT.'/theme/common/fontawesome/css/font-awesome.min.css">'."\n";
+        } ?>
 		<script src="<?php echo DOL_URL_ROOT; ?>/core/js/lib_head.js.php" type="text/javascript"></script>
 		<script type="text/javascript">
 			TASKLIST_SHOW_DOCPREVIEW = <?php echo (int) $conf->global->TASKLIST_SHOW_DOCPREVIEW; ?>;
