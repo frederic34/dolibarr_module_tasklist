@@ -9,6 +9,7 @@
 	dol_include_once('/projet/class/projet.class.php');
 	dol_include_once('/user/class/usergroup.class.php');
 	dol_include_once('/core/lib/date.lib.php');
+	dol_include_once('/core/lib/files.lib.php');
 
 	if($conf->of->enabled) $resOF = dol_include_once('/of/class/ordre_fabrication_asset.class.php');
 	else if($conf->{ ATM_ASSET_NAME }->enabled) $resOF = dol_include_once('/' . ATM_ASSET_NAME . '/class/ordre_fabrication_asset.class.php');
@@ -46,6 +47,10 @@ function _get(&$PDOdb,$case) {
 
 		case 'time_spent':
 			__out(_getTimeSpent($PDOdb,$_REQUEST['id'],$_REQUEST['action']));
+			break;
+
+		case 'of-documents':
+			_showDocuments($PDOdb,$_REQUEST['id']);
 			break;
 
 		case 'logged-status':
@@ -495,6 +500,23 @@ function _list_of(&$PDOdb, $fk_user=0) {
     $TOF['conf'] = $conf;
 	return $TOF;
 
+}
+
+function _showDocuments($PDOdb, $fk_of) {
+    global $conf;
+    if(!empty($fk_of)) {
+        $of = new TAssetOF;
+        $of->load($PDOdb, $fk_of);
+        $upload_dir = $conf->of->multidir_output[$of->entity] . '/' . get_exdir(0, 0, 0, 0, $of, 'tassetof') . dol_sanitizeFileName($of->ref);
+        $TFiles = dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', 0, 0, 1);
+
+        print '<table width="100%" class="list-doc-of flat-table flat-table-1">';
+        print '<thead><th>OF</th></thead>';
+        foreach($TFiles as $file) {
+            print '<tr><td><a href="'.dol_buildpath("/document.php?modulepart=of&entity=".$of->entity."&file=".urlencode($of->ref.'/'.$file['name']),1).'">'.$file['name'].'</a></td></tr>';
+        }
+        print '</table>';
+    }
 }
 
 function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
