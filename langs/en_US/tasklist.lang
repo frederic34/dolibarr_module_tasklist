@@ -5,3 +5,5 @@ ATMAbout = This module has been developed by <a href="http://www.atm-consulting.
 
 tasklistSetup = tasklist module setup
 tasklistAbout = About tasklist
+
+TASKLIST_SHOW_DESCRIPTION_TASK=Show task description

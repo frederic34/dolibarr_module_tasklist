@@ -510,7 +510,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$static_task = new Task($db);
 	$static_user = new User($db);
 
-	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, p.ref as projetRef, p.title as projetLabel, t.planned_workload,p.entity
+	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, t.description as taskDescription, p.ref as projetRef, p.title as projetLabel, t.planned_workload,p.entity
 			, t.progress, t.priority, t.tasklist_time_start";
 
 	if (!empty($conf->ordo->enabled)) {
@@ -677,14 +677,18 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 
 				$res->docpreview = json_encode($docpreview);
 			}
-
+			
 			if(!empty($conf->global->TASKLIST_SHOW_REF_PROJECT)) {
-				dol_include_once('/projet/class/project.class.php');
-				$project = new Project($db);
-				$project->fetch($static_task->fk_project);
-				if(!empty($project->ref)) {
-					$res->taskRef=$project->ref.'/'.$res->taskRef;
-				}
+			    dol_include_once('/projet/class/project.class.php');
+			    $project = new Project($db);
+			    $project->fetch($static_task->fk_project);
+			    if(!empty($project->ref)) {
+			        $res->taskRef=$project->ref.'/'.$res->taskRef;
+			    }
+			}
+			
+			if(!empty($conf->global->TASKLIST_SHOW_DESCRIPTION_TASK)) {
+			    $res->taskDescription=nl2br($res->taskDescription);
 			}
 
 

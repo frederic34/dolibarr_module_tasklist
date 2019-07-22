@@ -27,3 +27,4 @@ TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM=Limiter l'affichage au extrafield 
 TASKLIST_OF_LINK_TO_DOLIBARR=Le lien OF redirige sur la fiche dolibarr standard (si droit possédé par l'utilisateur)
 AllowToUseDolibarrOFRedirection=Rediriger sur la fiche OF de Dolibarr
 AllowToChangeTaskPercent=Permettre de changer le pourcentage des tâches
+TASKLIST_SHOW_DESCRIPTION_TASK=Afficher la description des tâches

@@ -131,6 +131,7 @@ print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">'
 print '</form>';
 print '</td></tr>';
 
+
 if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
 
     $var=!$var;
@@ -147,6 +148,18 @@ if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
     print '</td></tr>';
 
 }
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("TASKLIST_SHOW_DESCRIPTION_TASK").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_TASKLIST_SHOW_DESCRIPTION_TASK">';
+print ajax_constantonoff('TASKLIST_SHOW_DESCRIPTION_TASK');
+print '</form>';
+print '</td></tr>';
 
 
 /*$var=!$var;
