@@ -45,6 +45,15 @@
 						<?php
 
 						}
+						if(!empty($conf->global->TASKLIST_SHOW_DESCRIPTION_TASK)) {
+						    
+						?>
+						<div class="col-xs-12 col-md-12">
+							<?php echo $langs->trans('Description'); ?> : <p rel="description"></p>
+						</div>
+						<?php
+						
+						}
 						?>
 					</div>
 					<div class="row">

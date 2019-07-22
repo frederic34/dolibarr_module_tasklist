@@ -447,6 +447,7 @@ function refresh_liste_tache(data,type){
 		clone.find('[rel=spent_time]').append(task.spent_time);
 		clone.find('[rel=calculate_progress]').append(task.calculate_progress);
 		clone.find('[rel=priority]').append(task.priority);
+		clone.find('[rel=description]').append(task.taskDescription);
 		
 		clone.find('[rel=extrafields]').append(task.extrafields);
 		
