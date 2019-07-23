@@ -503,22 +503,78 @@ function _list_of(&$PDOdb, $fk_user=0) {
 }
 
 function _showDocuments($PDOdb, $fk_of) {
-    global $conf;
-    if(!empty($fk_of)) {
-        $of = new TAssetOF;
-        $of->load($PDOdb, $fk_of);
-        $upload_dir = $conf->of->multidir_output[$of->entity] . '/' . get_exdir(0, 0, 0, 0, $of, 'tassetof') . dol_sanitizeFileName($of->ref);
-        $TFiles = dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', 0, 0, 1);
+    global $conf, $langs, $db;
 
-        print '<table width="100%" class="list-doc-of flat-table flat-table-1">';
-        print '<thead><th>OF</th></thead>';
-        foreach($TFiles as $file) {
-            print '<tr><td><a href="'.dol_buildpath("/document.php?modulepart=of&entity=".$of->entity."&file=".urlencode($of->ref.'/'.$file['name']),1).'">'.$file['name'].'</a></td></tr>';
+    if(!empty($fk_of)) {
+        $object = new TAssetOF;
+        $object->load($PDOdb, $fk_of);
+        $upload_dir = $conf->of->multidir_output[$object->entity] . '/' . get_exdir(0, 0, 0, 0, $object, 'tassetof') . dol_sanitizeFileName($object->ref);
+        _printTableFiles($upload_dir, $object, $langs->trans('OFAsset').' : <strong>'.$object->ref.'</strong>', 'of', 'flat-table flat-table-1');
+
+        //commande
+        if(!empty($conf->global->OF_SHOW_ORDER_DOCUMENTS)) {
+            dol_include_once('/commande/class/commande.class.php');
+            $langs->load('orders');
+            $TCommandes = array();
+            if(!empty($conf->global->OF_MANAGE_ORDER_LINK_BY_LINE)) {
+                $displayOrders = '';
+                $TLine_to_make = $object->getLinesProductToMake();
+
+                foreach($TLine_to_make as $line) {
+                    if(!empty($line->fk_commandedet)) {
+                        $commande = new Commande($db);
+                        $orderLine = new OrderLine($db);
+                        $orderLine->fetch($line->fk_commandedet);
+                        $commande->fetch($orderLine->fk_commande);
+                        $TCommandes[$orderLine->fk_commande] = $commande;
+                    }
+                }
+                if(!empty($TCommandes)) {
+                    foreach($TCommandes as $commande) {
+                        $upload_dir = $conf->commande->dir_output . "/" . dol_sanitizeFileName($commande->ref);
+                        _printTableFiles($upload_dir, $commande, $langs->trans('Order'), 'commande',  'flat-table flat-table-2');
+                    }
+                }
+            }
+            else if(!empty($object->fk_commande)) {
+                $commande = new Commande($db);
+                $commande->fetch($object->fk_commande);
+                $upload_dir = $conf->commande->dir_output . "/" . dol_sanitizeFileName($commande->ref);
+                _printTableFiles($upload_dir, $commande, $langs->trans('Order').' : <strong>'.$commande->ref.'</strong>', 'commande', $class = 'flat-table flat-table-2');
+            }
         }
-        print '</table>';
+
+        //Product
+        if(!empty($conf->global->OF_SHOW_PRODUCT_DOCUMENTS) && !empty($object->TAssetOFLine)) {
+            foreach($object->TAssetOFLine as $line) {
+                if(!empty($line->fk_product)) {
+                    $product = new Product($db);
+                    $product->fetch($line->fk_product);
+                    if(!empty($conf->product->enabled)) $upload_dir = $conf->product->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
+                    else if(!empty($conf->service->enabled)) $upload_dir = $conf->service->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
+
+                    _printTableFiles($upload_dir, $product, $langs->trans('Product').' : <strong>'.$product->ref.'</strong> '.$product->label, 'product', $class = 'flat-table flat-table-3');
+                }
+            }
+        }
     }
 }
+function _printTableFiles($upload_dir, $object, $title, $modulepart, $class='flat-table flat-table-1') {
 
+    $TFiles = dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', 0, 0, 1);
+
+    print '<table width="100%" class="list-doc-of '.$class.'">';
+    print '<thead><th nowrap="nowrap">'.$title.'</th></thead>';
+    foreach($TFiles as $file) {
+        $previewurl = getAdvancedPreviewUrl($modulepart, $object->ref.'/'.$file['name'], 0, '');
+        $preview  ='';
+        if(!empty($previewurl)) {
+             $preview='&nbsp;&nbsp;&nbsp;<a href="'.$previewurl.'"><i class="fa fa-search" aria-hidden="true"></i></a>';
+        }
+        print '<tr><td nowrap="nowrap"><a href="'.dol_buildpath("/document.php?modulepart=".$modulepart."&entity=".$object->entity."&file=".urlencode($object->ref.'/'.$file['name']),1).'">'.$file['name'].'</a>'.$preview.'</td></tr>';
+    }
+    print '</table>';
+}
 function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	global $db, $user, $conf,$mc;
 	//echo "1";

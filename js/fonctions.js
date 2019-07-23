@@ -461,7 +461,7 @@ function printShowDocumentsIcon(fk_of) {
 	return '<span class="hover-cursor" onclick="showDocuments('+fk_of+')"><i class="fa fa-download" aria-hidden="true"></i></span>'+div;
 }
 function showDocuments(fk_of) {
-	if(!$('#doc-of-'+fk_of).hasClass('ui-dialog-content')) $('#doc-of-'+fk_of).dialog();
+	if(!$('#doc-of-'+fk_of).hasClass('ui-dialog-content')) $('#doc-of-'+fk_of).dialog({minWidth: 500});
 	$('#doc-of-'+fk_of).dialog('open');
 }
 function reload_liste_tache(type, id){
