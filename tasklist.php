@@ -35,10 +35,12 @@
 		<link rel="stylesheet" href="lib/normalize.css"/>
 		<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.4.custom.min.css" />
-		
-		<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
-		<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
-		<script src="lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+        <!-- Il faut mettre le js bootstrap avant jquery sinon il y a certains bugs jquery (exemple : il n'y a plus de croix sur les dialogs) -->
+        <script src="lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
+
 
        <?php if (! defined('DISABLE_FONT_AWSOME'))
         {
