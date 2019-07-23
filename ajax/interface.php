@@ -50,7 +50,7 @@ function _get(&$PDOdb,$case) {
 			break;
 
 		case 'of-documents':
-			_showDocuments($PDOdb,$_REQUEST['id']);
+			print _showDocuments($PDOdb,$_REQUEST['id']);
 			break;
 
 		case 'logged-status':
@@ -504,12 +504,12 @@ function _list_of(&$PDOdb, $fk_user=0) {
 
 function _showDocuments($PDOdb, $fk_of) {
     global $conf, $langs, $db;
-
+    $out =  '';
     if(!empty($fk_of)) {
         $object = new TAssetOF;
         $object->load($PDOdb, $fk_of);
         $upload_dir = $conf->of->multidir_output[$object->entity] . '/' . get_exdir(0, 0, 0, 0, $object, 'tassetof') . dol_sanitizeFileName($object->ref);
-        _printTableFiles($upload_dir, $object, $langs->trans('OFAsset') . ' : <strong>' . $object->ref . '</strong>', 'of', 'flat-table flat-table-1');
+        $out .= _printTableFiles($upload_dir, $object, $langs->trans('OFAsset') . ' : <strong>' . $object->ref . '</strong>', 'of', 'flat-table flat-table-1');
 
         //commande
         if(!empty($conf->global->OF_SHOW_ORDER_DOCUMENTS)) {
@@ -532,7 +532,7 @@ function _showDocuments($PDOdb, $fk_of) {
                 if(!empty($TCommandes)) {
                     foreach($TCommandes as $commande) {
                         $upload_dir = $conf->commande->dir_output . "/" . dol_sanitizeFileName($commande->ref);
-                        _printTableFiles($upload_dir, $commande, $langs->trans('Order'), 'commande', 'flat-table flat-table-2');
+                        $out .= _printTableFiles($upload_dir, $commande, $langs->trans('Order'), 'commande', 'flat-table flat-table-2');
                     }
                 }
             }
@@ -540,7 +540,7 @@ function _showDocuments($PDOdb, $fk_of) {
                 $commande = new Commande($db);
                 $commande->fetch($object->fk_commande);
                 $upload_dir = $conf->commande->dir_output . "/" . dol_sanitizeFileName($commande->ref);
-                _printTableFiles($upload_dir, $commande, $langs->trans('Order') . ' : <strong>' . $commande->ref . '</strong>', 'commande', $class = 'flat-table flat-table-2');
+                $out .= _printTableFiles($upload_dir, $commande, $langs->trans('Order') . ' : <strong>' . $commande->ref . '</strong>', 'commande', $class = 'flat-table flat-table-2');
             }
         }
 
@@ -553,20 +553,21 @@ function _showDocuments($PDOdb, $fk_of) {
                     if(!empty($conf->product->enabled)) $upload_dir = $conf->product->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
                     else if(!empty($conf->service->enabled)) $upload_dir = $conf->service->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
 
-                    _printTableFiles($upload_dir, $product, $langs->trans('Product') . ' : <strong>' . $product->ref . '</strong> ' . $product->label, 'product', $class = 'flat-table flat-table-3');
+                    $out .= _printTableFiles($upload_dir, $product, $langs->trans('Product') . ' : <strong>' . $product->ref . '</strong> ' . $product->label, 'product', $class = 'flat-table flat-table-3');
                 }
             }
         }
     }
+    return $out;
 }
 
 function _printTableFiles($upload_dir, $object, $title, $modulepart, $class = 'flat-table flat-table-1') {
     global $langs;
     $langs->load('mails');
     $TFiles = dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', 0, 0, 1);
-
-    print '<table width="100%" class="list-doc-of ' . $class . '">';
-    print '<thead><th nowrap="nowrap">' . $title . '</th></thead>';
+    $out = '';
+    $out .= '<table width="100%" class="list-doc-of ' . $class . '">';
+    $out .= '<thead><th nowrap="nowrap">' . $title . '</th></thead>';
     if(!empty($TFiles)) {
         foreach($TFiles as $file) {
             $previewurl = getAdvancedPreviewUrl($modulepart, $object->ref . '/' . $file['name'], 0, '');
@@ -574,14 +575,20 @@ function _printTableFiles($upload_dir, $object, $title, $modulepart, $class = 'f
             if(!empty($previewurl)) {
                 $preview = '&nbsp;&nbsp;&nbsp;<a href="' . $previewurl . '"><i class="fa fa-search" aria-hidden="true"></i></a>';
             }
-            print '<tr><td nowrap="nowrap"><a href="' . dol_buildpath("/document.php?modulepart=" . $modulepart . "&entity=" . $object->entity . "&file=" . urlencode($object->ref . '/' . $file['name']), 1) . '">' . $file['name'] . '</a>' . $preview . '</td></tr>';
+            $out .= '<tr><td nowrap="nowrap"><a href="' . dol_buildpath("/document.php?modulepart=" . $modulepart . "&entity=" . $object->entity . "&file=" . urlencode($object->ref . '/' . $file['name']), 1) . '">' . $file['name'] . '</a>' . $preview . '</td></tr>';
         }
     }
     else {
-        print '<tr><td nowrap="nowrap">' . $langs->trans('NoAttachedFiles') . '</td></tr>';
+        $out .= '<tr><td nowrap="nowrap">' . $langs->trans('NoAttachedFiles') . '</td></tr>';
     }
-    print '</table>';
+    $out .= '</table>';
+    return $out;
 }
+
+function _printShowDocumentsIcon($PDOdb, $fk_of){
+    return '<span class="hover-cursor" onclick="showDocuments('.$fk_of.')"><i class="fa fa-download" aria-hidden="true"></i></span><div id="doc-of-'.$fk_of.'" style="display: none;">'._showDocuments($PDOdb, $fk_of).'</div>';
+}
+
 function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	global $db, $user, $conf,$mc;
 	//echo "1";
@@ -899,5 +906,5 @@ function _btOF(&$PDOdb, &$TOf, $fk_of, &$res){
     }
 
 
-    $res->taskOF.=' <a href="'.$link_of.'" class="btn btn-default">'.$TOf[$fk_of]->numero.'</a> &nbsp;';
+    $res->taskOF.=' <div class="btn btn-default" ><a href="'.$link_of.'" >'.$TOf[$fk_of]->numero.'</a>&nbsp;&nbsp;&nbsp;'._printShowDocumentsIcon($PDOdb, $fk_of).'</div> ';
 }
