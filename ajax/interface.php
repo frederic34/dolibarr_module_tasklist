@@ -468,8 +468,8 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 	
 	if (!empty($conf->ordo->enabled)) {
-		$sql .= " AND t.date_estimated_start < '".$date_deb."'
-		";
+		/*$sql .= " AND t.date_estimated_start < '".$date_deb."'
+		";*/
 	}
 	else{
 		$sql .= " AND t.dateo BETWEEN '".date('Y-m-d')."' AND '".$date_deb."'";
@@ -532,7 +532,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	}
 	
 	if (!empty($conf->ordo->enabled)) {
-		$sql .= " ORDER BY t.date_estimated_start ASC";
+		$sql .= " ORDER BY t.grid_row ASC";
 	}
 	else{
 		$sql .= " ORDER BY t.dateo ASC";
