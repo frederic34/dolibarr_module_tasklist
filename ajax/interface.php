@@ -463,7 +463,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = t.fk_projet)
 				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid) 
 				LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON (p.fk_soc = s.rowid)
-			WHERE t.progress != 100 AND p.entity IN(".getEntity('project',1).")";
+			WHERE t.progress < 100 AND p.entity IN(".getEntity('project',1).")";
 	
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 	
