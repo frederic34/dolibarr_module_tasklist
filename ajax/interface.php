@@ -509,7 +509,7 @@ function _showDocuments($PDOdb, $fk_of) {
         $object = new TAssetOF;
         $object->load($PDOdb, $fk_of);
         $upload_dir = $conf->of->multidir_output[$object->entity] . '/' . get_exdir(0, 0, 0, 0, $object, 'tassetof') . dol_sanitizeFileName($object->ref);
-        $out .= _printTableFiles($upload_dir, $object, $langs->trans('OFAsset') . ' : <strong>' . $object->ref . '</strong>', 'of', 'flat-table flat-table-1');
+        $out .= _printTableFiles($upload_dir, $object, $langs->trans('OFAsset') . ' : <strong>' . $object->ref . '</strong>', 'of', 'flat-table flat-table-1', true);
 
         //commande
         if(!empty($conf->global->OF_SHOW_ORDER_DOCUMENTS)) {
@@ -561,14 +561,15 @@ function _showDocuments($PDOdb, $fk_of) {
     return $out;
 }
 
-function _printTableFiles($upload_dir, $object, $title, $modulepart, $class = 'flat-table flat-table-1') {
+function _printTableFiles($upload_dir, $object, $title, $modulepart, $class = 'flat-table flat-table-1', $display_if_empty=false) {
     global $langs;
     $langs->load('mails');
     $TFiles = dol_dir_list($upload_dir, "files", 0, '', '(\.meta|_preview.*\.png)$', 0, 0, 1);
     $out = '';
-    $out .= '<table width="100%" class="list-doc-of ' . $class . '">';
-    $out .= '<thead><th nowrap="nowrap">' . $title . '</th></thead>';
+
     if(!empty($TFiles)) {
+		$out .= '<table width="100%" class="list-doc-of ' . $class . '">';
+		$out .= '<thead><th nowrap="nowrap">' . $title . '</th></thead>';
         foreach($TFiles as $file) {
             $previewurl = getAdvancedPreviewUrl($modulepart, $object->ref . '/' . $file['name'], 0, '');
             $preview = '';
@@ -577,11 +578,15 @@ function _printTableFiles($upload_dir, $object, $title, $modulepart, $class = 'f
             }
             $out .= '<tr><td nowrap="nowrap"><a href="' . dol_buildpath("/document.php?modulepart=" . $modulepart . "&entity=" . $object->entity . "&file=" . urlencode($object->ref . '/' . $file['name']), 1) . '">' . $file['name'] . '</a>' . $preview . '</td></tr>';
         }
+		$out .= '</table>';
     }
-    else {
+    else if ($display_if_empty) {
+		$out .= '<table width="100%" class="list-doc-of ' . $class . '">';
+		$out .= '<thead><th nowrap="nowrap">' . $title . '</th></thead>';
         $out .= '<tr><td nowrap="nowrap">' . $langs->trans('NoAttachedFiles') . '</td></tr>';
+		$out .= '</table>';
     }
-    $out .= '</table>';
+
     return $out;
 }
 
