@@ -288,8 +288,9 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 				$task->addTimeSpent($user);
 
 				$PDOdb->Execute("UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '0000-00-00 00:00:00' WHERE rowid = ".$task->id);
-
-				return array('time'=> convertSecondToTime($ttemp['total_duration']),'progress_calculated'=>round($ttemp['total_duration'] / $task->planned_workload * 100,2), 'progress'=>$task->progress);
+				if(!empty($task->planned_workload)) $progress_calculated = round($ttemp['total_duration'] / $task->planned_workload * 100,2);
+				else $progress_calculated = 0;
+				return array('time'=> convertSecondToTime($ttemp['total_duration']),'progress_calculated'=>$progress_calculated, 'progress'=>$task->progress);
 			}
 		}
 	}
@@ -774,7 +775,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 
 				$res->docpreview = json_encode($docpreview);
 			}
-			
+
 			if(!empty($conf->global->TASKLIST_SHOW_REF_PROJECT)) {
 			    dol_include_once('/projet/class/project.class.php');
 			    $project = new Project($db);
@@ -783,7 +784,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			        $res->taskRef=$project->ref.'/'.$res->taskRef;
 			    }
 			}
-			
+
 			if(!empty($conf->global->TASKLIST_SHOW_DESCRIPTION_TASK)) {
 			    $res->taskDescription=nl2br($res->taskDescription);
 			}
