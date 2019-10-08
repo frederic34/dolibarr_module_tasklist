@@ -504,7 +504,7 @@ function _list_of(&$PDOdb, $fk_user=0) {
 }
 
 function _showDocuments($PDOdb, $fk_of) {
-    global $conf, $langs, $db;
+    global $conf, $langs, $db, $user;
     $out =  '';
     if(!empty($fk_of)) {
         $object = new TAssetOF;
@@ -530,7 +530,7 @@ function _showDocuments($PDOdb, $fk_of) {
                         $TCommandes[$orderLine->fk_commande] = $commande;
                     }
                 }
-                if(!empty($TCommandes)) {
+                if(!empty($TCommandes) && !empty($user->rights->commande->lire)) {
                     foreach($TCommandes as $commande) {
                         $upload_dir = $conf->commande->dir_output . "/" . dol_sanitizeFileName($commande->ref);
                         $out .= _printTableFiles($upload_dir, $commande, $langs->trans('Order'), 'commande', 'flat-table flat-table-2');
@@ -755,7 +755,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			{
 				$docpreview='';
 				$commande_origin = _getCommandeFromProjectId($static_task->fk_project);
-				if ($commande_origin)
+				if ($commande_origin && !empty($user->rights->commande->lire))
 				{
 					$modulepart=$commande_origin->element; // commande
 					$modulesubdir=dol_sanitizeFileName($commande_origin->ref);
