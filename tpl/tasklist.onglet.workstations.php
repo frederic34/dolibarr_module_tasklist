@@ -4,7 +4,7 @@
 	$disabled = ($user->rights->workstation->all->lire) ? 0 : 1;
 	
 	$PDOdb=new TPDOdb;
-	$TWorkstation = array(-1=>'Tous') + TWorkstation::getWorstations($PDOdb);
+	$TWorkstation = array(-1=>$langs->trans('All')) + TWorkstation::getWorstations($PDOdb);
     /*
 	//pre($TWorkstation,true);exit;
 	$form = new TFormCore;
