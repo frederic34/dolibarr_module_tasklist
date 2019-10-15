@@ -20,6 +20,7 @@ Priority = Priorité
 Start = Démarrer
 Pause = Mettre en pause
 Close = Terminer
+All=Tous
 
 TASKLIST_SHOW_DOCPREVIEW=Afficher les icônes de prévisualisations des documents associés à la commande d'origine sur la liste des tâches
 TASKLIST_SHOW_EXTRAFIELDS=Afficher les extrafields des tâches
