@@ -118,7 +118,7 @@
 			<?php require('./tpl/tasklist.popup.php'); ?>
 		</div>
 		<div id="dialogforpopup" style="display: none;"></div>
-		<script src="js/fonctions.js" type="text/javascript"></script>
+		<script src="js/functions.js" type="text/javascript"></script>
 		
 		<?php
 		
