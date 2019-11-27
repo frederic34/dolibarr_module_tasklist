@@ -198,7 +198,8 @@ function close_task(id_task,onglet,hour,minutes){
 		ajax_get_liste_task(0,'user');
 		ajax_get_liste_task(0,'workstation');
 		ajax_get_liste_task(0,'of');
-		reload_liste_of();
+		// reload_liste_of();
+		reload_liste_tache('of');
 	});
 }
 
