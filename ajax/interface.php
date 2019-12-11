@@ -279,9 +279,7 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 				$ttemp['total_duration']+= $task->timespent_duration;
 
 				if($task->planned_workload>0) {
-				    $task->progress = round(round($ttemp['total_duration'] / $task->planned_workload * 100) / 5) * 5;
-				    if($task->progress < 5) $task->progress = 5;
-				    else if ($task->progress > 100) $task->progress = 100;
+				    if ($task->progress === null) $task->progress = 0;
 				}
 
 				$task->add_contact($user->id, 180, 'internal');
