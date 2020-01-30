@@ -7,3 +7,4 @@ tasklistSetup = tasklist module setup
 tasklistAbout = About tasklist
 
 TASKLIST_SHOW_DESCRIPTION_TASK=Show task description
+TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Only admin can change user in tasklist screen

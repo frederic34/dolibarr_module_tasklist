@@ -20,7 +20,7 @@
 			<ul class="nav navbar-nav navbar-right">	
 					<li>
 		<?php
-		if($user->rights->tasklist->user->read) {
+		if($user->rights->tasklist->user->read && (empty($GLOBALS->TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER) OR $user->admin == 1)) {
 		?>
 						<div class="button-group">
 					        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <span id="user-name"><?php echo $user->login ?></span> <span class="caret"></span></a>
