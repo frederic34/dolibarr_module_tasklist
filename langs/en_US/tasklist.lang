@@ -6,25 +6,25 @@ ATMAbout = This module has been developed by <a href="http://www.atm-consulting.
 tasklistSetup = tasklist module setup
 tasklistAbout = About tasklist
 
-TASKLIST_SHOW_DESCRIPTION_TASK=Show task description
+TASKLIST_SHOW_DESCRIPTION_TASK = Show task description
 #
 # MISSING TRANSLATION FROM fr_FR
 #
-Tasklist=Tasks to perform
-Task=Task
-Tasks=Tasks
-DateStart=Start date
-DateEnd=End date
-ExpectedTime=Estimated time (h)
-PastTime=Time spent (h)
-Progress=Progress
-Priority=Priority
-Start=Start
-Pause=Pause
-Close=AllTous
-TASKLIST_SHOW_DOCPREVIEW=Show preview icons of the documents associated with the original order on the task list
-TASKLIST_SHOW_EXTRAFIELDS=Show task extrafields
-TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM=Limit display to the next extrafield
-TASKLIST_OF_LINK_TO_DOLIBARR=The PO link redirects to the standard dolibarr card (if the user has the right)
-AllowToUseDolibarrOFRedirection=Redirect to the Dolibarr  PO card
-AllowToChangeTaskPercent=Allow to change the percentage of tasks
+Tasklist = Tasks to perform
+Task = Task
+Tasks = Tasks
+DateStart = Start date
+DateEnd = End date
+ExpectedTime = Estimated time (h)
+PastTime = Time spent (h)
+Progress = Progress
+Priority = Priority
+Start = Start
+Pause = Pause
+Close = Close
+TASKLIST_SHOW_DOCPREVIEW = Show preview icons of the documents associated with the original order on the task list
+TASKLIST_SHOW_EXTRAFIELDS = Show task extrafields
+TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM = Limit display to the next extrafield
+TASKLIST_OF_LINK_TO_DOLIBARR = The PO link redirects to the standard dolibarr card (if the user has the right)
+AllowToUseDolibarrOFRedirection = Redirect to the Dolibarr  PO card
+AllowToChangeTaskPercent = Allow to change the percentage of tasks
