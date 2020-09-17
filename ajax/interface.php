@@ -538,7 +538,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		$sql .= " ORDER BY t.dateo ASC";
 	}
 
-	$sql.=" LIMIT 20";
+	$sql.=" LIMIT 50";
 
 	$TOf = array();
 
