@@ -259,8 +259,6 @@ function _getTimeSpent(&$PDOdb,$taskId,$action){
 	$task->fetch($id);
 	//echo "UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '".date('Y-m-d h:i:s')."' WHERE rowid = ".$task->id;
 	if($task->id){
-		if($action == 'stop')
-		{
 			$PDOdb->Execute("SELECT tasklist_time_start FROM ".MAIN_DB_PREFIX."projet_task  WHERE rowid = ".$task->id);
 	
 			if($PDOdb->Get_line()){
@@ -279,28 +277,6 @@ function _getTimeSpent(&$PDOdb,$taskId,$action){
 				return $heures.':'.$minutes;
 				
 			}
-		} else {
-			// CAS CLOSE
-			
-			$PDOdb->Execute("SELECT COUNT(task_duration) FROM ".MAIN_DB_PREFIX."projet_task_time  WHERE fk_task = ".$task->id);
-	
-			if($PDOdb->Get_line()){
-				
-				$t_start = new DateTime($PDOdb->Get_field("tasklist_time_start"));
-				$t_end = new DateTime(date('Y-m-d H:i:s'));
-				
-				$interval = $t_start->diff($t_end);
-				
-				$heures = $interval->h;
-				$minutes = ($interval->i > 0) ? $interval->i : 1;
-				
-				$heures = str_pad($heures, 2, '0', STR_PAD_LEFT);
-				$minutes = str_pad($minutes, 2, '0', STR_PAD_LEFT);
-				
-				return $heures.':'.$minutes;
-				
-			}
-		}
 	}
 	return '00:00';
 
