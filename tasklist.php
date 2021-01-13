@@ -33,6 +33,10 @@
 		<link rel="stylesheet" href="lib/normalize.css"/>
 		<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/jquery-ui-1.10.4.custom.min.css" />
+
+		<!-- Includes CSS for font awesome -->
+		<link rel="stylesheet" type="text/css" href="/client/srv54/eprolor/dolibarr/htdocs/theme/common/fontawesome-5/css/all.min.css?layout=classic&amp;version=12.0.4">
+		<link rel="stylesheet" type="text/css" href="/client/srv54/eprolor/dolibarr/htdocs/theme/common/fontawesome-5/css/v4-shims.min.css?layout=classic&amp;version=12.0.4">
 		
 		<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.10.4.custom.min.js"></script>
