@@ -31,6 +31,7 @@ if (! $res) {
 // Libraries
 require_once DOL_DOCUMENT_ROOT . "/core/lib/admin.lib.php";
 require_once '../lib/tasklist.lib.php';
+require_once DOL_DOCUMENT_ROOT . "/projet/class/task.class.php";
 
 // Translations
 $langs->load("tasklist@tasklist");
@@ -49,7 +50,10 @@ $action = GETPOST('action', 'alpha');
 if (preg_match('/set_(.*)/',$action,$reg))
 {
 	$code=$reg[1];
-	if (dolibarr_set_const($db, $code, GETPOST($code), 'chaine', 0, '', $conf->entity) > 0)
+	$string = GETPOST($code);
+	if ($code == 'TASKLIST_HIDE_TASKS_FIELDS') $string = serialize($string);
+
+	if (dolibarr_set_const($db, $code, $string, 'chaine', 0, '', $conf->entity) > 0)
 	{
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
@@ -59,7 +63,7 @@ if (preg_match('/set_(.*)/',$action,$reg))
 		dol_print_error($db);
 	}
 }
-	
+
 if (preg_match('/del_(.*)/',$action,$reg))
 {
 	$code=$reg[1];
@@ -115,6 +119,30 @@ print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
 print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<input type="hidden" name="action" value="set_TASKLIST_SHOW_DOCPREVIEW">';
 print ajax_constantonoff('TASKLIST_SHOW_DOCPREVIEW');
+print '</form>';
+print '</td></tr>';
+
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("TASKLIST_HIDE_TASKS_FIELDS").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_TASKLIST_HIDE_TASKS_FIELDS">';
+$TFields = array (
+	"client" => $langs->trans('Customer'),
+	"dateo" => $langs->trans('DateStart'),
+	"datee" => $langs->trans('DateEnd'),
+	"planned_workload" => $langs->trans('ExpectedTime'),
+	"spent_time" => $langs->trans('PastTime'),
+	"progress" => $langs->trans('Progress'),
+	"priority" => $langs->trans('Priority'),
+	"desc" => $langs->trans('Description')
+);
+
+print $form->multiselectarray("TASKLIST_HIDE_TASKS_FIELDS", $TFields, unserialize($conf->global->TASKLIST_HIDE_TASKS_FIELDS));
+print '<input type="submit" value="'.$langs->trans('Modify').'">';
 print '</form>';
 print '</td></tr>';
 
