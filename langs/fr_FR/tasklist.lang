@@ -22,3 +22,4 @@ Pause = Mettre en pause
 Close = Terminer
 
 TASKLIST_SHOW_DOCPREVIEW=Afficher les icônes de prévisualisations des documents associés à la commande d'origine sur la liste des tâches
+TASKLIST_HIDE_TASKS_FIELDS=Informations des tâches à cacher sur l'écran d'atelier
