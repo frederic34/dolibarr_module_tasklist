@@ -657,6 +657,12 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			if($res->tasklist_time_start === '0000-00-00 00:00:00') $res->tasklist_time_start = '';
 			else $res->tasklist_time_start = dol_print_date($res->tasklist_time_start,'dayhour');
 			
+			dol_include_once('/clieprolor/lib/clieprolor.lib.php');
+			$res->date_prevue_livraison_la_plus_proche = getFirstDatePrevueLivraison($static_task);
+			if(!empty($res->date_prevue_livraison_la_plus_proche)) {
+				$res->date_prevue_livraison_la_plus_proche = dol_print_date($res->date_prevue_livraison_la_plus_proche, 'daytext');
+			}
+			else $res->date_prevue_livraison_la_plus_proche = 'N/A';
 		}
 	}
 

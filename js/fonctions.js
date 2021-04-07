@@ -433,6 +433,7 @@ function refresh_liste_tache(data,type){
 		//Refresh des datas
 		clone.find('[rel=taskRef]').html(task.taskRef+' '+task.taskLabel);
 		clone.find('[rel=client]').append(task.client);
+		clone.find('[rel=date_prevue_livraison_la_plus_proche]').append(task.date_prevue_livraison_la_plus_proche);
 		clone.find('[rel=dateo]').append(task.dateo_aff);
 		clone.find('[rel=datee]').append(task.datee_aff);
 		clone.find('[rel=planned_workload]').append(task.planned_workload);
