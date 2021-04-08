@@ -1,11 +1,13 @@
 		<!--
 			DIV caché clonée pour afficher la liste : sert de template de base
 		-->
+		<?php 
 
-		<?php
+		$langs->load('deliveries');
 
 		$TFields = array (
 			"client" => array('label' => $langs->trans('Customer'), 'class' => "col-xs-6 col-md-6"),
+			"date_prevue_livraison_la_plus_proche" => array('label' => $langs->trans('DeliveryDate'), 'class' => "col-xs-6 col-md-6"),
 			"dateo" => array('label' => $langs->trans('DateStart'), 'class' => "col-xs-6 col-md-6"),
 			"datee" => array('label' => $langs->trans('DateEnd'), 'class' => "col-xs-6 col-md-6"),
 			"planned_workload" => array('label' => $langs->trans('ExpectedTime'), 'class' => "col-xs-6 col-md-6"),

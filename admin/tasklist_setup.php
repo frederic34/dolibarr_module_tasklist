@@ -34,7 +34,7 @@ require_once '../lib/tasklist.lib.php';
 require_once DOL_DOCUMENT_ROOT . "/projet/class/task.class.php";
 
 // Translations
-$langs->load("tasklist@tasklist");
+$langs->loadLangs(array("tasklist@tasklist", "deliveries"));
 
 // Access control
 if (! $user->admin) {
@@ -132,6 +132,7 @@ print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
 print '<input type="hidden" name="action" value="set_TASKLIST_HIDE_TASKS_FIELDS">';
 $TFields = array (
 	"client" => $langs->trans('Customer'),
+	"date_prevue_livraison_la_plus_proche" => $langs->trans('DeliveryDate'),
 	"dateo" => $langs->trans('DateStart'),
 	"datee" => $langs->trans('DateEnd'),
 	"planned_workload" => $langs->trans('ExpectedTime'),
