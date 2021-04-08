@@ -441,7 +441,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON (p.fk_soc = s.rowid)
 			WHERE t.progress < 100 AND p.entity IN(".getEntity('project',1).")";
 	
-	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
+	$date_deb = date('Y-m-d H:i'/*,strtotime('+2 day')*/);
 	
 	if (!empty($conf->ordo->enabled)) {
 		/*$sql .= " AND t.date_estimated_start < '".$date_deb."'
