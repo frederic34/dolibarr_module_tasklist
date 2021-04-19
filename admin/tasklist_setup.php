@@ -161,6 +161,17 @@ print ajax_constantonoff('TASKLIST_SHOW_DESCRIPTION_TASK');
 print '</form>';
 print '</td></tr>';
 
+$var=!$var;
+print '<tr '.$bc[$var].'>';
+print '<td>'.$langs->trans("TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER").'</td>';
+print '<td align="center" width="20">&nbsp;</td>';
+print '<td align="right" width="300">';
+print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
+print '<input type="hidden" name="token" value="'.$_SESSION['newtoken'].'">';
+print '<input type="hidden" name="action" value="set_TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER">';
+print ajax_constantonoff('TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER');
+print '</form>';
+print '</td></tr>';
 
 /*$var=!$var;
 print '<tr '.$bc[$var].'>';
