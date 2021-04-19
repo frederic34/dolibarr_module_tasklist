@@ -1,43 +1,34 @@
 Module104590Name = tasklist
-Module104590Desc = tasklist Descripion
+Module104590Desc = Overview of manufacturing tasks
 
 ATMAbout = This module has been developed by <a href="http://www.atm-consulting.fr" target="_blank">ATM Consulting</a><br>You can find the documentation on our <a href="http://wiki.atm-consulting.fr/index.php/Accueil" target="_blank">wiki</a><br><br>For any question or feedback, contact us on <a href="mailto:support@atm-consulting.fr">support@atm-consulting.fr</a><br><br>For any commercial question, contact us on <a href="mailto:contact@atm-consulting.fr">contact@atm-consulting.fr</a> or at +33 9 77 19 50 70<br><br>Find our other modules on <a href="http://www.dolistore.com/search.php?orderby=position&orderway=desc&search_query=atm&submit_search=Rechercher" target="_blank">Dolistore</a>
 
-tasklistSetup = tasklist module setup
-tasklistAbout = About tasklist
+tasklistSetup = Tasklist module setup
+tasklistAbout = About Tasklist
 
-TASKLIST_SHOW_DESCRIPTION_TASK=Show task description
-TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Only admin can change user in tasklist screen
-
-Module104590Name = tasklist
-Module104590Desc = Vue dédiée à l'atelier
-
-ATMAbout = Ce module a été développé par <a href="http://www.atm-consulting.fr" target="_blank">ATM Consulting</a><br>Vous pouvez retrouver la documentation sur notre <a href="http://wiki.atm-consulting.fr/index.php/Accueil" target="_blank">wiki</a><br><br>Pour toute question technique ou retour, contactez-nous sur <a href="mailto:support@atm-consulting.fr">support@atm-consulting.fr</a><br><br>Pour toute question commerciale, contactez-nous sur <a href="mailto:contact@atm-consulting.fr">contact@atm-consulting.fr</a> ou au +33 9 77 19 50 70<br><br>Retrouvez nos autres modules sur <a href="http://www.dolistore.com/search.php?orderby=position&orderway=desc&search_query=atm&submit_search=Rechercher" target="_blank">Dolistore</a>
-
-tasklistSetup = Configuration du module tasklist
-tasklistAbout = A propos du module tasklist
-
-Tasklist = Tâches à réaliser
+Tasklist = Tasks to perform
 
 #Liste des tâches
-Task = Tâche
-Tasks=Tâches
-DateStart = Date début
-DateEnd = Date fin
-ExpectedTime = Temps prévu (h)
-PastTime = Temps passé (h)
-Progress = Progression
-Priority = Priorité
-Start = Démarrer
-Pause = Mettre en pause
-Close = Terminer
-All=Tous
+Task = Task
+Tasks = Tasks
+DateStart = Start date
+DateEnd = End date
+ExpectedTime = Estimated time (h)
+PastTime = Time spent (h)
+Progress = Progress
+Priority = Priority
+Start = Start
+Pause = Pause
+Close = Close
+All = All
 
-TASKLIST_SHOW_DOCPREVIEW=Afficher les icônes de prévisualisations des documents associés à la commande d'origine sur la liste des tâches
-TASKLIST_SHOW_EXTRAFIELDS=Afficher les extrafields des tâches
-TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM=Limiter l'affichage au extrafield suivant
+TASKLIST_SHOW_DOCPREVIEW = Show preview icons for the documents associated with the original order on the task list
+TASKLIST_SHOW_EXTRAFIELDS = Show task extrafields
+TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM = Only show the following extrafields:
 TASKLIST_OF_LINK_TO_DOLIBARR=Le lien OF redirige sur la fiche dolibarr standard (si droit possédé par l'utilisateur)
-AllowToUseDolibarrOFRedirection=Rediriger sur la fiche OF de Dolibarr
-AllowToChangeTaskPercent=Permettre de changer le pourcentage des tâches
-TASKLIST_SHOW_DESCRIPTION_TASK=Afficher la description des tâches
+TASKLIST_OF_LINK_TO_DOLIBARR = The PO link points to the standard Dolibarr card (if the user has the proper permission)
+AllowToUseDolibarrOFRedirection = Redirect to the Dolibarr PO card
+AllowToChangeTaskPercent = Enable user to to change the percentage of completion (progress) of tasks
+TASKLIST_SHOW_DESCRIPTION_TASK = Show task description
 TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Seuls les administrateurs peuvent changer d'utilisateur sur l'écran tasklist
+TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Only admins can switch users on the Tasklist view
