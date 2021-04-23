@@ -580,7 +580,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				}
 			}
 			// Spécifique eprolor : afficher le libellé projet plutôt que la ref tâche
-			$res->taskRef = $res->projetLabel;
+			$res->taskRef = $res->client.' - '.$res->projetLabel;
 
 			if($static_task->array_options['options_fk_of']>0) {
 				
