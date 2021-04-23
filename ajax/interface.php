@@ -235,7 +235,11 @@ function _stopTask(&$PDOdb,$taskId,$hour,$minutes,$id_user_selected=0){
 					$ttemp['total_duration'] = $ress->total_duration;
 				}
 				if($task->planned_workload>0) $task->progress = round(($ttemp['total_duration']+$time) / $task->planned_workload * 100, 2);
-				
+				//On arrondit toujours au multiple de 5 supérieur le plus proche, car en cas de valeur comme 4 ou 17 % d'avancement,
+				// le pourcentage d'avancement actuel n'est pas présélectionné sur la vue fullcalendar des tâches
+				if($task->progress > 0 && (($task->progress % 5) > 0)) $task->progress = $task->progress - ($task->progress % 5) + 5;
+				if($task->progress > 100) $task->progress = 100;
+
 				$task->addTimeSpent($user);
 				
 				$PDOdb->Execute("UPDATE ".MAIN_DB_PREFIX."projet_task SET tasklist_time_start = '0000-00-00 00:00:00' WHERE rowid = ".$task->id);
