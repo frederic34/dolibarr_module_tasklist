@@ -1,5 +1,6 @@
 <?php
 	ob_start();
+	if (!defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL', 1);
 
 	ini_set('display_errors','On');
 	error_reporting(E_ALL);
@@ -124,7 +125,7 @@ function _more(&$PDOdb, $action) {
 
 	$object= new Task($db);
 
-	$Tid = explode('_', GETPOST('id'));
+	$Tid = explode('_', GETPOST('id', 'alphanohtml'));
 	$id = array_pop($Tid);
 
 	$object->fetch($id);
