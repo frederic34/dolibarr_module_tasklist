@@ -418,7 +418,7 @@ function _list_of(&$PDOdb, $fk_user=0) {
 
 function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	global $db, $user, $conf,$mc;
-	//echo "1";
+
 	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
@@ -444,21 +444,18 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid) 
 				LEFT JOIN ".MAIN_DB_PREFIX."societe as s ON (p.fk_soc = s.rowid)
 			WHERE t.progress < 100 AND p.entity IN(".getEntity('project',1).")";
-	
-	$date_deb = date('Y-m-d 23:59:59'/*,strtotime('+2 day')*/);
-	
+
+    $nbDayToAdd = 2;
+    if(in_array(date('N'), array(5, 6))) $nbDayToAdd = 3;   // Si on est Vendredi ou Samedi on doit voir à +3 jours; date('N') renvoie un int entre 1 et 7 (1 pour Lundi, 7 pour Dimanche, etc.)
+    $date_deb = date('Y-m-d', strtotime('+'.$nbDayToAdd.' days'));
+
 	if (!empty($conf->ordo->enabled)) {
 		/*$sql .= " AND t.date_estimated_start < '".$date_deb."'
 		";*/
 	}
 	else{
-		$sql .= " AND t.dateo < '".$date_deb."'";
+		$sql .= " AND date_format(t.dateo, '%Y-%m-%d') <= '".$date_deb."'";
 	}
-	
-	
-	//echo $sql;
-	
-	//if(!empty($id)) $id = 0;
 
 	if(!empty($type)){
 		switch ($type) {
