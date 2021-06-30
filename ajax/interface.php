@@ -1,5 +1,6 @@
 <?php
-	ob_start();
+ob_start();
+	if (!defined("NOCSRFCHECK")) define('NOCSRFCHECK', 1);
 	if (!defined('NOTOKENRENEWAL')) define('NOTOKENRENEWAL', 1);
 
 	ini_set('display_errors','On');
