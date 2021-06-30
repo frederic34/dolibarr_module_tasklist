@@ -1,7 +1,9 @@
 # CHANGELOG FOR TASKLIST MODULE
 
 ## Not Released
-  
+
+- NEW : Compatibility with Workstation ATM for Dolibarr v14 *30/06/2021* - 3.0.0  
+  **requires WorkstationAtm 2.0**
 
 ## 2.3
 - Release note: the release branch called 2.0 is, in fact, already in v2.3.

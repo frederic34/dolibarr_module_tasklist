@@ -5,25 +5,25 @@
 	dol_include_once('/projet/class/projet.class.php');
 	dol_include_once('/user/class/usergroup.class.php');
 	dol_include_once('/core/lib/date.lib.php');
-	
+
 	if (!($user->admin || $user->rights->tasklist->all->read)) {
     	accessforbidden();
 	}
-	
+
 	if($conf->of->enabled) dol_include_once('/of/class/ordre_fabrication_asset.class.php');
-	if($conf->workstation->enabled) dol_include_once('/workstation/class/workstation.class.php');
+	if($conf->workstationatm->enabled) dol_include_once('/workstationatm/class/workstation.class.php');
 
     $conf->use_javascript_ajax = false; // 3.7 compatibility
-    
-    if($conf->workstation->enabled) $langs->load('workstation@workstation');
+
+    if($conf->workstationatm->enabled) $langs->load('workstationatm@workstationatm');
     if($conf->{ ATM_ASSET_NAME }->enabled) $langs->load(ATM_ASSET_NAME . '@' . ATM_ASSET_NAME);
-	
+
     $accessOF = ($conf->{ ATM_ASSET_NAME }->enabled && $user->rights->{ ATM_ASSET_NAME }->of->lire) //TODO AA remove old def
-					||($conf->of->enabled && $user->rights->of->of->lire); 
-	
-	
+					||($conf->of->enabled && $user->rights->of->of->lire);
+
+
 	$langs->load("projects");
-					
+
 ?><!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"> -->
 <!DOCTYPE html>
 <html>
@@ -58,9 +58,9 @@
 				});
 			};
 		</script>
-		
+
 	</head>
-	<body>		
+	<body>
 	    <div class="container-fluid">
 			<?php require('./tpl/tasklist.onglet.php'); ?>
 			<!-- Tab panes -->
@@ -68,15 +68,15 @@
 			  <div class="tab-pane active" id="list-task-user">
 			  		<div class="row">
 			  				<div id="liste_tache_user" class="list-group">
-								
+
 							</div>
 					</div>
-			  	
+
 			  </div>
 			  <div class="tab-pane" id="list-task-workstation">
 			  		<div class="row">
-			  		<?php 
-	                    if($conf->workstation->enabled && $user->rights->workstation->all->read){
+			  		<?php
+	                    if($conf->workstationatm->enabled && $user->rights->workstationatm->all->read){
 	                        ?>
 	                            <!-- Affichage de l'onglet "Postes de travail" -->
 	                            <div class="col-md-4">
@@ -87,14 +87,14 @@
 	                            </div>
 	                        <?php
 	                    }
-	
+
 	                ?>
 	               </div>
 			  </div>
 			  <div class="tab-pane" id="list-of">
-			  		<?php 
+			  		<?php
 	                   if($accessOF){
-	                   	
+
 						  ?> <div class="col-md-4">
                             	<?php require('./tpl/tasklist.onglet.of.php'); ?>
                             </div>
@@ -104,28 +104,28 @@
                             	</div>
                             </div>
 	                      <?php
-	                         
+
 	                    }
-	
+
 	                ?>
 	           </div>
-			 
+
 			</div>
-		    
-	        
+
+
 	        <?php require('./tpl/tasklist.listeTache.php'); ?>
-	        
+
 			<?php require('./tpl/tasklist.popup.php'); ?>
 		</div>
 		<div id="dialogforpopup" style="display: none;"></div>
 		<script src="js/functions.js" type="text/javascript"></script>
-		
+
 		<?php
-		
+
 			$hookmanager->initHooks(array('tasklistcard'));
 			$reshook = $hookmanager->executeHooks('formObjectOptionsEnd', $parameters, $object, $action);
-		
+
 		?>
-		
+
 	</body>
 </html>
