@@ -22,13 +22,12 @@ Pause = Pause
 Close = Close
 All = All
 
+AllowToUseDolibarrOFRedirection = Redirect to the Dolibarr PO card
+AllowToChangeTaskPercent = Enable user to to change the percentage of completion (progress) of tasks
+
+TASKLIST_OF_LINK_TO_DOLIBARR = The PO link points to the standard Dolibarr card (if the user has the proper permission)
+TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Only admins can switch users on the Tasklist view
+TASKLIST_SHOW_DESCRIPTION_TASK = Show task description
 TASKLIST_SHOW_DOCPREVIEW = Show preview icons for the documents associated with the original order on the task list
 TASKLIST_SHOW_EXTRAFIELDS = Show task extrafields
 TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM = Only show the following extrafields:
-TASKLIST_OF_LINK_TO_DOLIBARR=Le lien OF redirige sur la fiche dolibarr standard (si droit possédé par l'utilisateur)
-TASKLIST_OF_LINK_TO_DOLIBARR = The PO link points to the standard Dolibarr card (if the user has the proper permission)
-AllowToUseDolibarrOFRedirection = Redirect to the Dolibarr PO card
-AllowToChangeTaskPercent = Enable user to to change the percentage of completion (progress) of tasks
-TASKLIST_SHOW_DESCRIPTION_TASK = Show task description
-TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Seuls les administrateurs peuvent changer d'utilisateur sur l'écran tasklist
-TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Only admins can switch users on the Tasklist view
