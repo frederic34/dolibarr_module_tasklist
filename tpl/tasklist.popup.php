@@ -31,7 +31,8 @@
 			             </div>
 		              	
 		              <?php }
-		              
+
+                        $parameters = array();
 		              	$hookmanager->initHooks(array('tasklistcard'));
 		              	$reshook = $hookmanager->executeHooks('formObjectOptionsCloseTask', $parameters, $object, $action);
 		              
