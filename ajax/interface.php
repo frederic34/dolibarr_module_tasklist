@@ -13,8 +13,8 @@ ob_start();
 	dol_include_once('/core/lib/date.lib.php');
 	dol_include_once('/core/lib/files.lib.php');
 
-	if($conf->of->enabled) $resOF = dol_include_once('/of/class/ordre_fabrication_asset.class.php');
-	else if($conf->{ ATM_ASSET_NAME }->enabled) $resOF = dol_include_once('/' . ATM_ASSET_NAME . '/class/ordre_fabrication_asset.class.php');
+	if(!empty($conf->of->enabled)) $resOF = dol_include_once('/of/class/ordre_fabrication_asset.class.php');
+	else if(!empty($conf->{ ATM_ASSET_NAME }->enabled)) $resOF = dol_include_once('/' . ATM_ASSET_NAME . '/class/ordre_fabrication_asset.class.php');
 
 	ob_clean();
 
@@ -131,6 +131,7 @@ function _more(&$PDOdb, $action) {
 
 	$object->fetch($id);
 
+	$parameters = array();
 	$hookmanager->initHooks(array('tasklistcard'));
 	$reshook = $hookmanager->executeHooks('doActionsInterface', $parameters, $object, $action);
 

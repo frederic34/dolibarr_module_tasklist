@@ -4,6 +4,7 @@
 
 
 ## 3.0
+- FIX : PHP8 Warnings - *22/08/2022* - 3.0.2
 - FIX : COMPAT V16 - *13/06/2022* - 3.0.1  
 - NEW : Compatibility with Workstation ATM for Dolibarr v14 *30/06/2021* - 3.0.0  
   **requires WorkstationAtm 2.0**
