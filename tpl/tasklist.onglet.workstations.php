@@ -1,7 +1,7 @@
 <?php
 
 	//Récupération de la liste des postes de travail
-	$disabled = ($user->rights->workstationatm->all->lire) ? 0 : 1;
+	$disabled = (!empty($user->rights->workstationatm->all->lire)) ? 0 : 1;
 
 	$PDOdb=new TPDOdb;
 	$TWorkstation = array(-1=>$langs->trans('All')) + TWorkstation::getWorstations($PDOdb);

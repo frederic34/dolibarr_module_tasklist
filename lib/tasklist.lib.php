@@ -49,7 +49,7 @@ function tasklistAdminPrepareHead()
     //$this->tabs = array(
     //	'entity:-tabname:Title:@tasklist:/tasklist/mypage.php?id=__ID__'
     //); // to remove a tab
-    complete_head_from_modules($conf, $langs, $object, $head, $h, 'tasklist');
+    complete_head_from_modules($conf, $langs, null, $head, $h, 'tasklist');
 
     return $head;
 }
