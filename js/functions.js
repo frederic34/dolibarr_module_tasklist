@@ -503,7 +503,7 @@ function ajax_get_liste_task(id,type){
 		}
 	})
 	.then(function (data){
-		//console.log(data);
+		// console.log(data);
 		refresh_liste_tache(data,type);
 	});
 }
