@@ -694,17 +694,20 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 
 	$extrafields= new ExtraFields($db);
 	$extrafields->fetch_name_optionals_label($static_task->table_element);
+
 	if(!empty($conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM)) {
 	    $TIn = explode(',', $conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM);
 
-	    foreach($extrafields->attribute_label as $field=>$data) {
+		if(!empty($extrafields->attribute_label)) {
+			foreach ($extrafields->attribute_label as $field => $data) {
 
-	        if(!in_array($field, $TIn)) {
-	            unset($extrafields->attribute_label[$field]);
+				if (!in_array($field, $TIn)) {
+					unset($extrafields->attribute_label[$field]);
 
-	        }
+				}
 
-	    }
+			}
+		}
 
 	}
 
