@@ -32,3 +32,4 @@ AllowToChangeTaskPercent = Enable user to to change the percentage of completion
 TASKLIST_SHOW_DESCRIPTION_TASK = Show task description
 TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Seuls les administrateurs peuvent changer d'utilisateur sur l'écran tasklist
 TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Only admins can switch users on the Tasklist view
+ErrorTaskNotSaved = Task not saved

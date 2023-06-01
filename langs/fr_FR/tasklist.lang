@@ -30,3 +30,4 @@ AllowToUseDolibarrOFRedirection=Rediriger sur la fiche OF de Dolibarr
 AllowToChangeTaskPercent=Permettre de changer le pourcentage des tâches
 TASKLIST_SHOW_DESCRIPTION_TASK=Afficher la description des tâches
 TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Seuls les administrateurs peuvent changer d'utilisateur sur l'écran tasklist
+ErrorTaskNotSaved = Tâche non sauvegardée
