@@ -103,8 +103,8 @@ function _progressTask($fk_task, $progress) {
 
     $res=$t->update($user);
     if($res<=0) {
-        var_dump($res,$t);
-        exit;
+	dol_syslog("update action in _progressTask function  for ".$fk_task."  return  a result <= 0 ", LOG_WARNING);
+        return 'KO';
     }
 
     return 'OK';
