@@ -22,6 +22,16 @@ Pause = Mettre en pause
 Close = Terminer
 All = Tous
 
+TASKLIST_SHOW_DOCPREVIEW=Afficher les icônes de prévisualisations des documents associés à la commande d'origine sur la liste des tâches
+TASKLIST_SHOW_EXTRAFIELDS=Afficher les extrafields des tâches
+TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM=Afficher uniquement les champs complémentaires suivants :
+TASKLIST_OF_LINK_TO_DOLIBARR=Le lien OF redirige sur la fiche dolibarr standard (si droit possédé par l'utilisateur)
+AllowToUseDolibarrOFRedirection=Rediriger sur la fiche OF de Dolibarr
+AllowToChangeTaskPercent=Permettre de changer le pourcentage des tâches
+TASKLIST_SHOW_DESCRIPTION_TASK=Afficher la description des tâches
+TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Seuls les administrateurs peuvent changer d'utilisateur sur l'écran tasklist
+ErrorTaskNotSaved = Tâche non sauvegardée
+
 AllowToUseDolibarrOFRedirection= Rediriger sur la fiche OF de Dolibarr
 AllowToChangeTaskPercent= Permettre de changer le pourcentage des tâches
 

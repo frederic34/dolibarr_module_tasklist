@@ -27,6 +27,7 @@ AllowToChangeTaskPercent = Enable user to to change the percentage of completion
 
 TASKLIST_OF_LINK_TO_DOLIBARR = The PO link points to the standard Dolibarr card (if the user has the proper permission)
 TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER=Only admins can switch users on the Tasklist view
+ErrorTaskNotSaved = Task not saved
 TASKLIST_SHOW_DESCRIPTION_TASK = Show task description
 TASKLIST_SHOW_DOCPREVIEW = Show preview icons for the documents associated with the original order on the task list
 TASKLIST_SHOW_EXTRAFIELDS = Show task extrafields

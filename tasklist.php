@@ -118,6 +118,14 @@
 			<?php require('./tpl/tasklist.popup.php'); ?>
 		</div>
 		<div id="dialogforpopup" style="display: none;"></div>
+        <?php
+        $arrayForJs = array(
+                'langs' => array(
+                        'ErrorTaskNotSaved' => $langs->trans('ErrorTaskNotSaved')
+                )
+        );
+        ?>
+        <script type="text/javascript">window.TASKLIST_CONTEXT = <?php echo json_encode($arrayForJs) ?>;</script>
 		<script src="js/functions.js" type="text/javascript"></script>
 
 		<?php

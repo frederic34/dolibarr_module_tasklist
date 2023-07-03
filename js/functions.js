@@ -553,10 +553,20 @@ function refresh_liste_tache(data,type){
 
 					if(data == 'OK'){
 						$("#task_list_"+id_task+" [rel=progress]").html($select.val());
+					} else {
+						if (data.error) {
+							$.jnotify(
+								TASKLIST_CONTEXT.langs['ErrorTaskNotSaved'] + ' : ' + data.error,
+								"error"
+							);
+						} else {
+							$.jnotify(
+								TASKLIST_CONTEXT.langs['ErrorTaskNotSaved'],
+								"error"
+							);
+						}
 					}
 				});
-
-
 			});
 
 		}

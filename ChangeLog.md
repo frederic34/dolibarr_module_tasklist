@@ -5,6 +5,7 @@
 
 ## 3.0
 
+- FIX : Remove Vardump warnning - *03/07/2023* - 3.0.5
 - FIX : Compatibility 17 - *12/01/2023* - 3.0.4
 - FIX : Module icon - *30/09/2022* - 3.0.3
 - FIX : PHP8 Warnings - *22/08/2022* - 3.0.2
