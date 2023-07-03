@@ -94,7 +94,7 @@ function _put(&$PDOdb,$case) {
 	}
 }
 
-function _progressTask($fk_task, $progress) {
+    function _progressTask($fk_task, $progress) {
     global $db,$user;
     $t=new Task($db);
     $t->fetch($fk_task);
@@ -103,8 +103,9 @@ function _progressTask($fk_task, $progress) {
 
     $res=$t->update($user);
     if($res<=0) {
-        var_dump($res,$t);
-        exit;
+        return array(
+            "error" => implode(", ", $t->errors)
+        );
     }
 
     return 'OK';
