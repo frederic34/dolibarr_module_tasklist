@@ -133,7 +133,7 @@ print '</form>';
 print '</td></tr>';
 
 
-if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
+if(getDolGlobalString('TASKLIST_SHOW_EXTRAFIELDS')) {
 
     $var=!$var;
     print '<tr '.$bc[$var].'>';
@@ -143,7 +143,7 @@ if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
     print '<form method="POST" action="'.$_SERVER['PHP_SELF'].'">';
     print '<input type="hidden" name="token" value="'.$newToken.'">';
     print '<input type="hidden" name="action" value="set_TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM">';
-    print '<input name="TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM" value="'.(empty($conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM) ? '' : $conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM).'" />';
+    print '<input name="TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM" value="'.(!getDolGlobalString('TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM') ? '' : $conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM).'" />';
     print '<input type="submit" class="button" value="'.$langs->trans("Modify").'">';
     print '</form>';
     print '</td></tr>';

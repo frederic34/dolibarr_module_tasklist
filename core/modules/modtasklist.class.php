@@ -255,8 +255,8 @@ class modtasklist extends DolibarrModules
 								'url'=>'/tasklist/tasklist.php',
 								'langs'=>'tasklist@tasklist',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 								'position'=>1031,
-								'enabled'=>'$conf->tasklist->enabled',	// Define condition to show or hide menu entry. Use '$conf->tasklist->enabled' if entry must be visible if module is enabled.
-								'perms'=>'$user->rights->tasklist->all->read',			                // Use 'perms'=>'$user->rights->tasklist->level1->level2' if you want your menu with a permission rules
+								'enabled'=>'isset($conf->tasklist->enabled) && $conf->tasklist->enabled ',	// Define condition to show or hide menu entry. Use '$conf->tasklist->enabled' if entry must be visible if module is enabled.
+								'perms'=> '$user->hasRight("tasklist","all","read")' ,			                // Use 'perms'=>'$user->rights->tasklist->level1->level2' if you want your menu with a permission rules
 								'target'=>'_blank',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
@@ -269,8 +269,8 @@ class modtasklist extends DolibarrModules
 								'url'=>'/tasklist/tasklist.php',
 								'langs'=>'tasklist@tasklist',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 								'position'=>1030,
-								'enabled'=>'$conf->tasklist->enabled',	// Define condition to show or hide menu entry. Use '$conf->tasklist->enabled' if entry must be visible if module is enabled.
-								'perms'=>'$user->rights->tasklist->all->read',			                // Use 'perms'=>'$user->rights->tasklist->level1->level2' if you want your menu with a permission rules
+								'enabled'=>'isset($conf->tasklist->enabled) &&  $conf->tasklist->enabled',	// Define condition to show or hide menu entry. Use '$conf->tasklist->enabled' if entry must be visible if module is enabled.
+								'perms'=>'$user->hasRight("tasklist","all","read")',			                // Use 'perms'=>'$user->rights->tasklist->level1->level2' if you want your menu with a permission rules
 								'target'=>'_blank',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;

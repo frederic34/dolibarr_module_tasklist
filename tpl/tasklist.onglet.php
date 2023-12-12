@@ -13,14 +13,14 @@
 		<div class="collapse navbar-collapse " id="menu-tasklist">
 		    <ul class="nav navbar-nav" role="tablist">
 			  <li class="active"><a href="#list-task-user" role="tab" data-toggle="tab"><?php echo $langs->trans('Tasks'); ?></a></li>
-			  <?php if($conf->workstationatm->enabled && $user->rights->workstationatm->all->read){ ?><li><a href="#list-task-workstation" id="onglet2"  role="tab" data-toggle="tab"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
+			  <?php if(isset($conf->workstationatm->enabled) && $conf->workstationatm->enabled && $user->hasRight('workstationatm', 'all', 'read')){ ?><li><a href="#list-task-workstation" id="onglet2"  role="tab" data-toggle="tab"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
 		      <?php if($accessOF) { ?><li><a href="#list-of" id="onglet3" role="tab" data-toggle="tab"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">
 					<li>
 		<?php
-		if($user->rights->tasklist->user->read && (empty($conf->global->TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER) OR $user->admin == 1)) {
+		if($user->hasRight('tasklist', 'user', 'read') && (!getDolGlobalString('TASKLIST_ONLY_ADMIN_CAN_CHANGE_USER') OR $user->admin == 1)) {
 		?>
 						<div class="button-group">
 					        <a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <span id="user-name"><?php echo $user->login ?></span> <span class="caret"></span></a>
