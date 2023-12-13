@@ -13,8 +13,10 @@ ob_start();
 	dol_include_once('/core/lib/date.lib.php');
 	dol_include_once('/core/lib/files.lib.php');
 
-	if( isset($conf->of->enabled) &&  $conf->of->enabled) $resOF = dol_include_once('/of/class/ordre_fabrication_asset.class.php');
-	else if( isset($conf->{ ATM_ASSET_NAME }->enabled) &&  $conf->{ ATM_ASSET_NAME }->enabled) $resOF = dol_include_once('/' . ATM_ASSET_NAME . '/class/ordre_fabrication_asset.class.php');
+	if( isset($conf->of->enabled) &&  $conf->of->enabled)
+		$resOF = dol_include_once('/of/class/ordre_fabrication_asset.class.php');
+	else if( isset($conf->{ ATM_ASSET_NAME }->enabled) &&  $conf->{ ATM_ASSET_NAME }->enabled)
+		$resOF = dol_include_once('/' . ATM_ASSET_NAME . '/class/ordre_fabrication_asset.class.php');
 
 	ob_clean();
 
@@ -772,7 +774,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			}
 
 
-			if((getDolGlobalString('ASSET_CUMULATE_PROJECT_TASK') && !empty($static_task->linkedObjectsIds['tassetof'])) || $static_task->array_options['options_fk_of']>0) {
+			if((getDolGlobalString('ASSET_CUMULATE_PROJECT_TASK') && ( isset($static_task->linkedObjectsIds['tassetof']) && !empty($static_task->linkedObjectsIds['tassetof']))) || (isset ($static_task->array_options['options_fk_of']) && $static_task->array_options['options_fk_of']>0)) {
                 $res->taskOF = '';
                 if(!getDolGlobalString('ASSET_CUMULATE_PROJECT_TASK'))_btOF( $PDOdb, $TOf, $static_task->array_options['options_fk_of'], $res);
                 else {

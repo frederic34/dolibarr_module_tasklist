@@ -18,7 +18,7 @@
     if(isset($conf->workstationatm->enabled ) &&  $conf->workstationatm->enabled )  $langs->load('workstationatm@workstationatm');
     if(isset($conf->{ ATM_ASSET_NAME }->enabled)  && $conf->{ ATM_ASSET_NAME }->enabled ) $langs->load(ATM_ASSET_NAME . '@' . ATM_ASSET_NAME);
 
-    $accessOF = (isset($conf->{ ATM_ASSET_NAME }->enabled) && $conf->{ ATM_ASSET_NAME }->enabled && $user->hasRight({ATM_ASSET_NAME},'of','lire') ) //TODO AA remove old def
+    $accessOF = (isset($conf->{ ATM_ASSET_NAME }->enabled) && $conf->{ ATM_ASSET_NAME }->enabled && $user->hasRight( ATM_ASSET_NAME,'of','lire') ) //TODO AA remove old def
 					||( isset($conf->of->enabled) && $conf->of->enabled && $user->hasRight('of','of','lire'));
 
 
