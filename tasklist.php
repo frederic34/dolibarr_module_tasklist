@@ -49,7 +49,7 @@
         } ?>
 		<script src="<?php echo DOL_URL_ROOT; ?>/core/js/lib_head.js.php" type="text/javascript"></script>
 		<script type="text/javascript">
-			TASKLIST_SHOW_DOCPREVIEW = <?php echo (int) $conf->global->TASKLIST_SHOW_DOCPREVIEW; ?>;
+			TASKLIST_SHOW_DOCPREVIEW = <?php echo getDolGlobalInt('TASKLIST_SHOW_DOCPREVIEW'); ?>;
 			initPreview = function() {
 				$(".documentpreview").click(function () {
 					console.log("We click on preview for element with href="+$(this).attr('href')+" mime="+$(this).attr('mime'));

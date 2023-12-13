@@ -154,7 +154,7 @@ function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
 
 			if($lineOF->getId()){
                 $lineOF->qty_used = $line['qty_use'];
-                if($conf->global->OF_MANAGE_NON_COMPLIANT && ($assetOf->status=='OPEN' || $assetOf->status == 'CLOSE')){
+                if(getDolGlobalString('OF_MANAGE_NON_COMPLIANT') && ($assetOf->status=='OPEN' || $assetOf->status == 'CLOSE')){
                     $lineOF->qty_non_compliant=$line['qty_non_compliant'];
                 }
                 $lineOF->save($PDOdb);
