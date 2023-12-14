@@ -699,7 +699,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$extrafields->fetch_name_optionals_label($static_task->table_element);
 
 	if(getDolGlobalString('TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM')) {
-	    $TIn = explode(',', $conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM);
+	    $TIn = explode(',', getDolGlobalString('TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM'));
 
 		if(!empty($extrafields->attribute_label)) {
 			foreach ($extrafields->attribute_label as $field => $data) {
