@@ -1,7 +1,7 @@
 # CHANGELOG FOR TASKLIST MODULE
 
 ## Not Released
-
+- NEW : COMPATV19 - *13/12/2023* - 3.1.0
 
 ## 3.0
 

@@ -1,11 +1,11 @@
-		<!--
+<!--
 			DIV caché clonée pour afficher la liste : sert de template de base
 		-->
 
 
 		<div id="task_list_clone" class="list-group-item" style="display:none">
 			<div class="container-fluid">
-				<?php if (!empty($conf->global->TASKLIST_SHOW_DOCPREVIEW)) { ?>
+				<?php if (getDolGlobalString('TASKLIST_SHOW_DOCPREVIEW')) { ?>
 				<div class="col-md-1 col-sm-1 col-xs-1" rel="docpreview"></div>
 				<a data-toggle="collapse" href="#" class="col-md-8 col-sm-8 col-xs-8"><h4 class="md-col-9" rel="taskRef"></h4></a>
 				<?php } else { ?>
@@ -36,7 +36,7 @@
 							<?php echo $langs->trans('Priority'); ?> : <span rel="priority"></span>
 						</div>
 						<?php
-						if(!empty($user->rights->tasklist->all->AllowToChangeTaskPercent)) {
+						if($user->hasRight('tasklist', 'all', 'AllowToChangeTaskPercent')) {
 
 						?>
 						<div class="col-xs-6 col-md-6">
@@ -45,7 +45,7 @@
 						<?php
 
 						}
-						if(!empty($conf->global->TASKLIST_SHOW_DESCRIPTION_TASK)) {
+						if(getDolGlobalString('TASKLIST_SHOW_DESCRIPTION_TASK')) {
 						    
 						?>
 						<div class="col-xs-12 col-md-12">

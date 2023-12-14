@@ -9,7 +9,7 @@
 		        <form class="form-inline">
 		        	
 		        	<div class="form-group">
-		              <?php if ($user->rights->tasklist->all->write){ ?>
+		              <?php if ($user->hasRight('tasklist', 'all', 'write')){ ?>
 		              	
 		              	 <div class="input-group">
 				              <input id="heure" value="" placeholder="H" class="form-control" type="text" /> 

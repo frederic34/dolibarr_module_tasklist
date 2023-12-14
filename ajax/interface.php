@@ -13,8 +13,10 @@ ob_start();
 	dol_include_once('/core/lib/date.lib.php');
 	dol_include_once('/core/lib/files.lib.php');
 
-	if(!empty($conf->of->enabled)) $resOF = dol_include_once('/of/class/ordre_fabrication_asset.class.php');
-	else if(!empty($conf->{ ATM_ASSET_NAME }->enabled)) $resOF = dol_include_once('/' . ATM_ASSET_NAME . '/class/ordre_fabrication_asset.class.php');
+	if( isset($conf->of->enabled) &&  $conf->of->enabled)
+		$resOF = dol_include_once('/of/class/ordre_fabrication_asset.class.php');
+	else if( isset($conf->{ ATM_ASSET_NAME }->enabled) &&  $conf->{ ATM_ASSET_NAME }->enabled)
+		$resOF = dol_include_once('/' . ATM_ASSET_NAME . '/class/ordre_fabrication_asset.class.php');
 
 	ob_clean();
 
@@ -154,7 +156,7 @@ function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
 
 			if($lineOF->getId()){
                 $lineOF->qty_used = $line['qty_use'];
-                if($conf->global->OF_MANAGE_NON_COMPLIANT && ($assetOf->status=='OPEN' || $assetOf->status == 'CLOSE')){
+                if(getDolGlobalString('OF_MANAGE_NON_COMPLIANT') && ($assetOf->status=='OPEN' || $assetOf->status == 'CLOSE')){
                     $lineOF->qty_non_compliant=$line['qty_non_compliant'];
                 }
                 $lineOF->save($PDOdb);
@@ -354,7 +356,7 @@ function _startTask(&$PDOdb,$taskId){
 
 		$PDOdb->Execute($sql);
 
-		if ($conf->{ ATM_ASSET_NAME }->enabled) _openProdOF($PDOdb, $db, $task);
+		if (isset($conf->{ ATM_ASSET_NAME }->enabled) &&  $conf->{ ATM_ASSET_NAME }->enabled) _openProdOF($PDOdb, $db, $task);
 
 		return array('result'=>'OK', 'tasklist_time_start'=>dol_print_date(time(), 'dayhour'));
 	}
@@ -405,7 +407,7 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	$static_user->fetch($fk_user);
 	$static_user->getrights('projet');
 
-	if(!empty($conf->global->ASSET_CUMULATE_PROJECT_TASK)){
+	if(getDolGlobalString('ASSET_CUMULATE_PROJECT_TASK')){
         $sql = "SELECT DISTINCT ee.fk_source as fk_of
          FROM " . MAIN_DB_PREFIX . "projet_task t
             LEFT JOIN " . MAIN_DB_PREFIX . "element_element ee ON (ee.fk_target=t.rowid AND targettype='project_task' AND sourcetype='tassetof')
@@ -425,7 +427,7 @@ function _list_of(&$PDOdb, $fk_user=0) {
     }
 
 	//echo $sql;
-	if($fk_user>0 && empty($static_user->rights->projet->all->lire)) {
+	if($fk_user>0 && !$static_user->hasRight('projet', 'all', 'lire')) {
 
 		$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
 		$TTaskIds = implode(',',array_keys($TRoles));
@@ -434,7 +436,7 @@ function _list_of(&$PDOdb, $fk_user=0) {
 	}
 
 	$TOF=array();
-    if(!empty($conf->global->OF_RANK_PRIOR_BY_LAUNCHING_DATE))$sql .= ' ORDER BY of.date_lancement ASC, of.rank ASC, of.rowid DESC';
+    if(getDolGlobalString('OF_RANK_PRIOR_BY_LAUNCHING_DATE'))$sql .= ' ORDER BY of.date_lancement ASC, of.rank ASC, of.rowid DESC';
 	$Tab = $PDOdb->ExecuteAsArray($sql);
 
 	$TTransStatus = array_map(array($langs, 'trans'), TAssetOf::$TStatus);
@@ -492,11 +494,11 @@ function _showDocuments($PDOdb, $fk_of) {
         $out .= _printTableFiles($upload_dir, $object, $langs->trans('OFAsset') . ' : <strong>' . $object->ref . '</strong>', 'of', 'flat-table flat-table-1', true);
 
         //commande
-        if(!empty($conf->global->OF_SHOW_ORDER_DOCUMENTS)) {
+        if(getDolGlobalString('OF_SHOW_ORDER_DOCUMENTS')) {
             dol_include_once('/commande/class/commande.class.php');
             $langs->load('orders');
             $TCommandes = array();
-            if(!empty($conf->global->OF_MANAGE_ORDER_LINK_BY_LINE)) {
+            if(getDolGlobalString('OF_MANAGE_ORDER_LINK_BY_LINE')) {
                 $displayOrders = '';
                 $TLine_to_make = $object->getLinesProductToMake();
 
@@ -509,7 +511,7 @@ function _showDocuments($PDOdb, $fk_of) {
                         $TCommandes[$orderLine->fk_commande] = $commande;
                     }
                 }
-                if(!empty($TCommandes) && !empty($user->rights->commande->lire)) {
+                if(!empty($TCommandes) && $user->hasRight('commande', 'lire')) {
                     foreach($TCommandes as $commande) {
                         $upload_dir = $conf->commande->dir_output . "/" . dol_sanitizeFileName($commande->ref);
                         $out .= _printTableFiles($upload_dir, $commande, $langs->trans('Order'), 'commande', 'flat-table flat-table-2');
@@ -525,13 +527,13 @@ function _showDocuments($PDOdb, $fk_of) {
         }
 
         //Product
-        if(!empty($conf->global->OF_SHOW_PRODUCT_DOCUMENTS) && !empty($object->TAssetOFLine)) {
+        if(getDolGlobalString('OF_SHOW_PRODUCT_DOCUMENTS') && !empty($object->TAssetOFLine)) {
             foreach($object->TAssetOFLine as $line) {
                 if(!empty($line->fk_product)) {
                     $product = new Product($db);
                     $product->fetch($line->fk_product);
-                    if(!empty($conf->product->enabled)) $upload_dir = $conf->product->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
-                    else if(!empty($conf->service->enabled)) $upload_dir = $conf->service->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
+                    if(isset($conf->product->enabled) && $conf->product->enabled) $upload_dir = $conf->product->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
+                    else if(isset($conf->service->enabled) && $conf->service->enabled) $upload_dir = $conf->service->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
 
                     $out .= _printTableFiles($upload_dir, $product, $langs->trans('Product') . ' : <strong>' . $product->ref . '</strong> ' . $product->label, 'product', $class = 'flat-table flat-table-3');
                 }
@@ -590,7 +592,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, t.description as taskDescription, p.ref as projetRef, p.title as projetLabel, t.planned_workload,p.entity
 			, t.progress, t.priority, t.tasklist_time_start";
 
-	if (!empty($conf->ordo->enabled)) {
+	if (isset($conf->ordo->enabled) &&  $conf->ordo->enabled) {
 		$sql .= " ,t.date_estimated_start as dateo,t.date_estimated_end as datee";
 	}
 	else{
@@ -600,14 +602,14 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$sql.=" FROM ".MAIN_DB_PREFIX."projet_task as t
 				LEFT JOIN ".MAIN_DB_PREFIX."projet as p ON (p.rowid = t.fk_projet)
 				LEFT JOIN ".MAIN_DB_PREFIX."projet_task_extrafields as te ON (te.fk_object = t.rowid)";
-	if(!empty($conf->global->ASSET_CUMULATE_PROJECT_TASK)){
+	if(getDolGlobalString('ASSET_CUMULATE_PROJECT_TASK')){
         $sql.= "LEFT JOIN ".MAIN_DB_PREFIX."element_element as ee ON (ee.fk_target=t.rowid AND targettype='project_task' AND sourcetype='tassetof')";
     }
 	$sql.= " WHERE 1 AND p.entity IN(".getEntity('project',1).")";
 
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 
-	if (!empty($conf->ordo->enabled)) {
+	if (isset($conf->ordo->enabled) &&  $conf->ordo->enabled) {
 		$sql .= " AND t.date_estimated_start < '".$date_deb."'
 		";
 	}
@@ -631,7 +633,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				$static_user->fetch($id_user);
 				$static_user->getrights('projet');
 
-				if(empty($static_user->rights->projet->all->lire) && empty($user->admin)) {
+				if(!$static_user->hasRight('projet', 'all', 'lire') && empty($user->admin)) {
 
 					$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
 					$TTaskIds = implode(',',array_keys($TRoles));
@@ -646,7 +648,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				if($fk_user>0) {
 					$static_user->fetch($fk_user);
 					$static_user->getrights('projet');
-					if(empty($static_user->rights->projet->all->lire)) {
+					if(!$static_user->hasRight('projet', 'all', 'lire')) {
 						$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
 						$TTaskIds = implode(',',array_keys($TRoles));
 						if(!empty($TTaskIds)) $sql .= " AND t.rowid IN (".$TTaskIds.") ";
@@ -658,14 +660,14 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			case 'of':
 				//On ne prends que les tâches liées à l'Ordre de Fabrication
 				if(!empty($id) && $id>=0){
-				    if(empty($conf->global->ASSET_CUMULATE_PROJECT_TASK))$sql .= " AND te.fk_of = ".$id." ";
+				    if(!getDolGlobalString('ASSET_CUMULATE_PROJECT_TASK'))$sql .= " AND te.fk_of = ".$id." ";
 				    else $sql .= " AND ee.fk_source = ".$id." ";
                 }
 
 				if($fk_user>0) {
 					$static_user->fetch($fk_user);
 					$static_user->getrights('projet');
-					if(empty($static_user->rights->projet->all->lire)) {
+					if(!$static_user->hasRight('projet', 'all', 'lire')) {
 						$TRoles = $static_task->getUserRolesForProjectsOrTasks('',$static_user);
 						$TTaskIds = implode(',',array_keys($TRoles));
 						if(!empty($TTaskIds)) $sql .= " AND t.rowid IN (".$TTaskIds.") ";
@@ -678,11 +680,11 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		}
 	}
 
-    if(!empty($conf->global->ASSET_CUMULATE_PROJECT_TASK)){
+    if(getDolGlobalString('ASSET_CUMULATE_PROJECT_TASK')){
         $sql .= " GROUP BY ee.fk_target ";
     }
 
-    if (!empty($conf->ordo->enabled)) {
+	if (isset($conf->ordo->enabled) &&  $conf->ordo->enabled) {
 		$sql .= " ORDER BY t.progress DESC, t.date_estimated_start ASC,t.rowid ASC";
 	}
 	else{
@@ -696,8 +698,8 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$extrafields= new ExtraFields($db);
 	$extrafields->fetch_name_optionals_label($static_task->table_element);
 
-	if(!empty($conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM)) {
-	    $TIn = explode(',', $conf->global->TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM);
+	if(getDolGlobalString('TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM')) {
+	    $TIn = explode(',', getDolGlobalString('TASKLIST_SHOW_LINE_ORDER_EXTRAFIELD_JUST_THEM'));
 
 		if(!empty($extrafields->attribute_label)) {
 			foreach ($extrafields->attribute_label as $field => $data) {
@@ -718,7 +720,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 		foreach($TRes as &$res){
 			$static_task->fetch($res->rowid);
 			$static_task->fetch_optionals($static_task->id);
-            if( !empty($conf->global->ASSET_CUMULATE_PROJECT_TASK) ) {
+            if( getDolGlobalString('ASSET_CUMULATE_PROJECT_TASK') ) {
                 if (!isset($conf->tassetof))$conf->tassetof = new \stdClass(); // for warning
                 $conf->tassetof->enabled = 1; // pour fetchobjectlinked
                 $static_task->fetchObjectLinked(0,'tassetof',$static_task->id,$static_task->element,'OR',1,'sourcetype',0);
@@ -726,18 +728,18 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			$charset = mb_detect_encoding($res->taskLabel);
 			$res->taskLabel=iconv($charset,'UTF-8', $res->taskLabel);
 
-			if(!empty($conf->global->TASKLIST_SHOW_EXTRAFIELDS)) {
+			if(getDolGlobalString('TASKLIST_SHOW_EXTRAFIELDS')) {
 			     $res->extrafields = '<table class="table table-hover" >'.$static_task->showOptionals($extrafields,'view',array('style'=>'style="background-color:rgb(91, 192, 222); color:#000; font-size:15px;"','colspan'=>1)).'</table>';
 			}
 			else {
 			    $res->extrafields='';
 			}
 
-			if (!empty($conf->global->TASKLIST_SHOW_DOCPREVIEW))
+			if (getDolGlobalString('TASKLIST_SHOW_DOCPREVIEW'))
 			{
 				$docpreview='';
 				$commande_origin = _getCommandeFromProjectId($static_task->fk_project);
-				if ($commande_origin && !empty($user->rights->commande->lire))
+				if ($commande_origin && $user->hasRight('commande', 'lire'))
 				{
 					$modulepart=$commande_origin->element; // commande
 					$modulesubdir=dol_sanitizeFileName($commande_origin->ref);
@@ -758,7 +760,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 				$res->docpreview = json_encode($docpreview);
 			}
 
-			if(!empty($conf->global->TASKLIST_SHOW_REF_PROJECT)) {
+			if(getDolGlobalString('TASKLIST_SHOW_REF_PROJECT')) {
 			    dol_include_once('/projet/class/project.class.php');
 			    $project = new Project($db);
 			    $project->fetch($static_task->fk_project);
@@ -767,14 +769,14 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			    }
 			}
 
-			if(!empty($conf->global->TASKLIST_SHOW_DESCRIPTION_TASK)) {
+			if(getDolGlobalString('TASKLIST_SHOW_DESCRIPTION_TASK')) {
 			    $res->taskDescription=nl2br($res->taskDescription);
 			}
 
 
-			if((!empty($conf->global->ASSET_CUMULATE_PROJECT_TASK) && !empty($static_task->linkedObjectsIds['tassetof'])) || $static_task->array_options['options_fk_of']>0) {
+			if((getDolGlobalString('ASSET_CUMULATE_PROJECT_TASK') && ( isset($static_task->linkedObjectsIds['tassetof']) && !empty($static_task->linkedObjectsIds['tassetof']))) || (isset ($static_task->array_options['options_fk_of']) && $static_task->array_options['options_fk_of']>0)) {
                 $res->taskOF = '';
-                if(empty($conf->global->ASSET_CUMULATE_PROJECT_TASK))_btOF( $PDOdb, $TOf, $static_task->array_options['options_fk_of'], $res);
+                if(!getDolGlobalString('ASSET_CUMULATE_PROJECT_TASK'))_btOF( $PDOdb, $TOf, $static_task->array_options['options_fk_of'], $res);
                 else {
                     if(!empty($static_task->linkedObjectsIds['tassetof'])) {
                         foreach($static_task->linkedObjectsIds['tassetof'] as $fk_of) {
@@ -830,7 +832,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 			if($res->tasklist_time_start === '0000-00-00 00:00:00') $res->tasklist_time_start = '';
 			else $res->tasklist_time_start = dol_print_date($res->tasklist_time_start,'dayhour');
 
-			if(!empty($user->rights->tasklist->all->AllowToChangeTaskPercent)) {
+			if($user->hasRight('tasklist', 'all', 'AllowToChangeTaskPercent')) {
 			     dol_include_once('/core/class/html.formother.class.php');
 			     $formother = new FormOther($db);
 			     $res->select_progress = $formother->select_percent($res->progress,'progress_declared_'.$res->rowid,0,5,0,100,0);
@@ -890,7 +892,7 @@ function _btOF(&$PDOdb, &$TOf, $fk_of, &$res){
         $TOf[$fk_of]->load($PDOdb, $fk_of);
     }
 
-    if(!empty($user->rights->tasklist->user->AllowToUseDolibarrOFRedirection)) { //!empty($conf->global->TASKLIST_OF_LINK_TO_DOLIBARR) &&
+    if($user->hasRight('tasklist', 'user', 'AllowToUseDolibarrOFRedirection')) { //!empty($conf->global->TASKLIST_OF_LINK_TO_DOLIBARR) &&
         $link_of = dol_buildpath('/of/fiche_of.php',1).'?id='.$TOf[$fk_of]->id;
     }
     else {

@@ -6,20 +6,20 @@
 	dol_include_once('/user/class/usergroup.class.php');
 	dol_include_once('/core/lib/date.lib.php');
 
-	if (!($user->admin || $user->rights->tasklist->all->read)) {
+	if (!($user->admin || $user->hasRight('tasklist', 'all', 'read'))) {
     	accessforbidden();
 	}
 
-	if(!empty($conf->of->enabled)) dol_include_once('/of/class/ordre_fabrication_asset.class.php');
-	if($conf->workstationatm->enabled) dol_include_once('/workstationatm/class/workstation.class.php');
+	if(isset($conf->of->enabled) && $conf->of->enabled) dol_include_once('/of/class/ordre_fabrication_asset.class.php');
+	if(isset($conf->workstationatm->enabled) && $conf->workstationatm->enabled) dol_include_once('/workstationatm/class/workstation.class.php');
 
     $conf->use_javascript_ajax = false; // 3.7 compatibility
 
-    if($conf->workstationatm->enabled) $langs->load('workstationatm@workstationatm');
-    if($conf->{ ATM_ASSET_NAME }->enabled) $langs->load(ATM_ASSET_NAME . '@' . ATM_ASSET_NAME);
+    if(isset($conf->workstationatm->enabled ) &&  $conf->workstationatm->enabled )  $langs->load('workstationatm@workstationatm');
+    if(isset($conf->{ ATM_ASSET_NAME }->enabled)  && $conf->{ ATM_ASSET_NAME }->enabled ) $langs->load(ATM_ASSET_NAME . '@' . ATM_ASSET_NAME);
 
-    $accessOF = (!empty($conf->{ ATM_ASSET_NAME }->enabled) && !empty($user->rights->{ ATM_ASSET_NAME }->of->lire)) //TODO AA remove old def
-					||(!empty($conf->of->enabled) && !empty($user->rights->of->of->lire));
+    $accessOF = (isset($conf->{ ATM_ASSET_NAME }->enabled) && $conf->{ ATM_ASSET_NAME }->enabled && $user->hasRight( ATM_ASSET_NAME,'of','lire') ) //TODO AA remove old def
+					||( isset($conf->of->enabled) && $conf->of->enabled && $user->hasRight('of','of','lire'));
 
 
 	$langs->load("projects");
@@ -49,7 +49,7 @@
         } ?>
 		<script src="<?php echo DOL_URL_ROOT; ?>/core/js/lib_head.js.php" type="text/javascript"></script>
 		<script type="text/javascript">
-			TASKLIST_SHOW_DOCPREVIEW = <?php echo (int) $conf->global->TASKLIST_SHOW_DOCPREVIEW; ?>;
+			TASKLIST_SHOW_DOCPREVIEW = <?php echo getDolGlobalInt('TASKLIST_SHOW_DOCPREVIEW'); ?>;
 			initPreview = function() {
 				$(".documentpreview").click(function () {
 					console.log("We click on preview for element with href="+$(this).attr('href')+" mime="+$(this).attr('mime'));
@@ -76,7 +76,7 @@
 			  <div class="tab-pane" id="list-task-workstation">
 			  		<div class="row">
 			  		<?php
-	                    if($conf->workstationatm->enabled && $user->rights->workstationatm->all->read){
+	                    if(isset($conf->workstationatm->enabled) &&  $conf->workstationatm->enabled && $user->hasRight('workstationatm', 'all', 'read')){
 	                        ?>
 	                            <!-- Affichage de l'onglet "Postes de travail" -->
 	                            <div class="col-md-4">

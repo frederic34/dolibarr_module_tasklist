@@ -60,7 +60,7 @@ class modtasklist extends DolibarrModules
 		// Module description, used if translation string 'ModuleXXXDesc' not found (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Description of module tasklist";
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->version = '3.0.5';
+		$this->version = '3.1.0';
 		// Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
 		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
@@ -103,8 +103,8 @@ class modtasklist extends DolibarrModules
 		$this->depends = array();		// List of modules id that must be enabled if this module is enabled
 		$this->requiredby = array();	// List of modules id to disable if this one is disabled
 		$this->conflictwith = array();	// List of modules id this module is in conflict with
-		$this->phpmin = array(5,0);					// Minimum version of PHP required by module
-		$this->need_dolibarr_version = array(3,0);	// Minimum version of Dolibarr required by module
+		$this->phpmin = array(7,0);					// Minimum version of PHP required by module
+		$this->need_dolibarr_version = array(15,0);	// Minimum version of Dolibarr required by module
 		$this->langfiles = array("tasklist@tasklist");
 
 		// Constants
@@ -255,8 +255,8 @@ class modtasklist extends DolibarrModules
 								'url'=>'/tasklist/tasklist.php',
 								'langs'=>'tasklist@tasklist',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 								'position'=>1031,
-								'enabled'=>'$conf->tasklist->enabled',	// Define condition to show or hide menu entry. Use '$conf->tasklist->enabled' if entry must be visible if module is enabled.
-								'perms'=>'$user->rights->tasklist->all->read',			                // Use 'perms'=>'$user->rights->tasklist->level1->level2' if you want your menu with a permission rules
+								'enabled'=>'isset($conf->tasklist->enabled) && $conf->tasklist->enabled ',	// Define condition to show or hide menu entry. Use '$conf->tasklist->enabled' if entry must be visible if module is enabled.
+								'perms'=> '$user->hasRight("tasklist","all","read")' ,			                // Use 'perms'=>'$user->rights->tasklist->level1->level2' if you want your menu with a permission rules
 								'target'=>'_blank',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
@@ -269,8 +269,8 @@ class modtasklist extends DolibarrModules
 								'url'=>'/tasklist/tasklist.php',
 								'langs'=>'tasklist@tasklist',	        // Lang file to use (without .lang) by module. File must be in langs/code_CODE/ directory.
 								'position'=>1030,
-								'enabled'=>'$conf->tasklist->enabled',	// Define condition to show or hide menu entry. Use '$conf->tasklist->enabled' if entry must be visible if module is enabled.
-								'perms'=>'$user->rights->tasklist->all->read',			                // Use 'perms'=>'$user->rights->tasklist->level1->level2' if you want your menu with a permission rules
+								'enabled'=>'isset($conf->tasklist->enabled) &&  $conf->tasklist->enabled',	// Define condition to show or hide menu entry. Use '$conf->tasklist->enabled' if entry must be visible if module is enabled.
+								'perms'=>'$user->hasRight("tasklist","all","read")',			                // Use 'perms'=>'$user->rights->tasklist->level1->level2' if you want your menu with a permission rules
 								'target'=>'_blank',
 								'user'=>2);				                // 0=Menu for internal users, 1=external users, 2=both
 		$r++;
