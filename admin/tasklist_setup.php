@@ -133,7 +133,7 @@ print '</form>';
 print '</td></tr>';
 
 
-if(getDolGlobalString('TASKLIST_SHOW_EXTRAFIELDS')) {
+if(getDolGlobalInt('TASKLIST_SHOW_EXTRAFIELDS')) {
 
     $var=!$var;
     print '<tr '.$bc[$var].'>';
