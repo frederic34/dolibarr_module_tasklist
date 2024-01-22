@@ -219,7 +219,21 @@ function _getProductTaskOF(&$PDOdb, $fk_of) {
 
 
     }
-    $Tab['conf'] = $conf;
+
+	// $conf has a lot of sensitive data.
+	// We should NEVER send it to the client without any filter.
+	// Plus it is totally inefficient to send 3000+ values when you only need 2.
+	// This also holds for CommonObject or TObjetStd instances.
+	$TConfForJS = array(
+		'OF_RANK_PRIOR_BY_LAUNCHING_DATE' => null,
+		'OF_MANAGE_NON_COMPLIANT' => null,
+	);
+	foreach ($TConfForJS as $confName => &$confValue) {
+		if (isset($conf->global->{$confName})) {
+			$confValue = $conf->global->{$confName};
+		}
+	}
+    $Tab['conf'] = ['global' => $TConfForJS];
     $Tab['of'] = $of;
     return $Tab;
 
