@@ -5,6 +5,7 @@
 
 ## 3.0
 
+- FIX : Display products needed - *05/03/2024* - 3.0.6
 - FIX : Remove Vardump warnning - *03/07/2023* - 3.0.5
 - FIX : Compatibility 17 - *12/01/2023* - 3.0.4
 - FIX : Module icon - *30/09/2022* - 3.0.3
