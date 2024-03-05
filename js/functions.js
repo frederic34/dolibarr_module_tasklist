@@ -11,6 +11,77 @@ $(document).ready(function (event, ui) {
 	reload_liste_of();
 });
 
+/**
+ * Objet helper pour construire des tableaux sur la liste des tâches.
+ */
+const TasklistTableHelper = {
+	// affiche un OF
+	/**
+	 * Retourne un objet permettant de manipuler un tableau HTML persistant
+	 *
+	 * @param id
+	 * @param parentDiv
+	 * @returns {{table: jQuery, head: jQuery, body: jQuery, reset: function, addRow: function}}
+	 */
+	getTable(id, parentDiv) {
+		const ret = $('#' + id);
+		if (ret.length) return ret.data('tasklistTableObj');
+		return ({
+			table: $(`<table id="${id}" class="table table-striped table-condensed product-list">`),
+			head: $('<thead>'),
+			body: $('<tbody>'),
+			cols: [],
+			init() {
+				this.table.append(this.head);
+				this.table.append(this.body);
+				this.table.data('tasklistTableObj', this);
+				parentDiv.append(this.table);
+				return this;
+			},
+			/**
+			 * Vide le <tbody> et redéfinit les colonnes et leurs en-têtes si newCols fourni.
+			 * @param {object[]} newCols
+			 */
+			reset(newCols = undefined) {
+				this.body.html('');
+				this.cols.length = 0;
+				this.cols.push(...newCols);
+				if (newCols) {
+					console.log(this.table.attr('id'));
+					this.head.html('');
+					const $tr = $('<tr>').appendTo(this.head);
+					for (let col of this.cols) {
+						console.log(col);
+						const $th = $('<th>').appendTo($tr);
+						$th.attr('className', `col-md-${col.width ?? '2'}`);
+						$th.text(col.text);
+					}
+				}
+			},
+			/**
+			 * Ajoute une ligne au tableau et la remplit avec les cellules définies par des objets.
+			 * NB la fonction prend un nombre variable d'arguments, autant qu'on ne veut ajouter de cellules.
+			 *
+			 * @param {{}[]} cells  Objets avec un attribut html ou text (contenu affiché) et optionnellement des
+			 *                      attributs className et colspan.
+			 * @returns {jQuery}
+			 */
+			addRow(...cells) {
+				console.log(this.body);
+				const $tr = $('<tr>').appendTo(this.body);
+				for (let cell of cells) {
+					const $td = $('<td>').appendTo($tr);
+					if (cell.text) $td.text(cell.text);
+					else if (cell.html) $td.html(cell.html);
+					if (cell.colspan) $td.attr('colspan', cell.colspan);
+					if (cell.className) $td.attr('className', cell.className);
+				}
+				return $tr;
+			}
+		}).init();
+	},
+};
+
 function setWorkstation(wsid) {
 	$("#search_workstation").val(wsid);
 	$('ul#list-workstation li,ul#list-workstation li').removeClass('active');
@@ -20,20 +91,18 @@ function setWorkstation(wsid) {
 }
 
 function changeUser(fk_user) {
-
 	$("#search_user").val(fk_user);
 	$("#user-name").html($('li[user-id=' + fk_user + ']').attr('login'));
 	reload_liste_tache('user');
 	reload_liste_tache('workstation');
 	reload_liste_of();
-
 }
 
-
 function resizeAll() {
-	var doc_width = $(window).width();
-	var doc_height = $(window).height();
+	let doc_width = $(window).width();
+	let doc_height = $(window).height();
 
+	let nb_user;
 	if (doc_width > 768) {
 
 		nb_user = $('#select-user-list>li').length;
@@ -59,7 +128,7 @@ function resizeAll() {
 }
 
 function start_task(id_task, onglet) {
-	$li = $("#liste_tache_" + onglet + " > #" + id_task);
+	let $li = $("#liste_tache_" + onglet + " > #" + id_task);
 
 	$li.find('.start').hide();
 	$li.find('.pause').show();
@@ -98,10 +167,10 @@ function aff_popup(id_task, onglet, action) {
 
 	$("#confirm-add-time").modal({show: true});
 
-	timespent = getTimeSpent(id_task, action);
-	TTime = timespent.split(":");
-	hour = TTime[0];
-	minutes = TTime[1];
+	let timespent = getTimeSpent(id_task, action);
+	let TTime = timespent.split(":");
+	let hour = TTime[0];
+	let minutes = TTime[1];
 	$('#heure').val(hour);
 	$('#minute').val(minutes);
 
@@ -123,7 +192,7 @@ function aff_popup(id_task, onglet, action) {
 
 function stop_task(id_task, onglet, hour, minutes) {
 
-	$li = $('#liste_tache_' + onglet + ' > #' + id_task);
+	let $li = $('#liste_tache_' + onglet + ' > #' + id_task);
 	$li.find('.start').show();
 	$li.find('.pause').hide();
 	$li.find('.close').show();
@@ -206,7 +275,7 @@ function _draw_of_product(fk_of) {
 		}, dataType: 'json'
 	}).done(function (data) {
 
-		$('#list-task-of table.product-list').remove();
+		$('#list-task	-of table.product-list').remove();
 
 		var needed = false;
 		var tomake = false;
@@ -222,10 +291,10 @@ function _draw_of_product(fk_of) {
 				var originalText = $bt.text();
 				$bt.html("<span class=\"glyphicon glyphicon-refresh glyphicon-refresh-animate\"></span> ...");
 
-				TLine = [];
+				let TLine = [];
 				$('input[rel=prod-qty-used]').closest('tr').each(function (i, item) {
 					TLine.push({
-						'lineid': $(item).find('input[rel=prod-qty-used]').attr('line-id'),
+						'lineid': $(item).find('input[rel=prod-qty-used]').attr('data-line-id'),
 						'qty_use': $(item).find('input[rel=prod-qty-used]').val(),
 						'qty_non_compliant': $(item).find('input[rel=prod-qty-non-compliant]').val()
 					});
@@ -249,17 +318,18 @@ function _draw_of_product(fk_of) {
 		}
 
 		if (data.productTask.length > 0) {
-			for (taskid in data.productTask) {
-				$('#task_list_' + taskid + ' collapse.collapse').preprend('<table id="product-list-task-' + taskid + '" class="table table-striped table-condensed product-list"></table> ');
-				$table = $('table#product-list-task-' + taskid);
+			for (let taskid in data.productTask) {
+				const taskProducts = data.productTask[taskid];
+				console.log(taskProducts);
+				const $collapsedDiv = $(`#task_list_${taskid} div.collapse`);
+				console.log($('#product-list-of-tomake'));
+				$('#product-list-of-tomake').preprend('<table id="product-list-task-' + taskid + '" class="table table-striped table-condensed product-list"></table> ');
+				const $table = $('table#product-list-task-' + taskid);
 				$table.append('<tr><th>Produit</th><th>Quantité</th><th>#</th></tr>');
 
-				for (x in data.productTask[taskid]) {
-
-					line = data.productTask[taskid][x];
-
+				for (let x in data.productTask[taskid]) {
+					const line = data.productTask[taskid][x];
 					$table.append('<tr><td>' + line.label + '</td><td>' + line.qty + '</td><td></td></tr>');
-
 				}
 
 			}
@@ -270,69 +340,87 @@ function _draw_of_product(fk_of) {
 
 }
 
+/**
+ * Affichage des produits nécessaires à la fabrication des produits de l'OF et des
+ * produits à fabriquer de l'OF
+ *
+ * @param {{conf: {}, productOF: {}[], productTask: {}}[]} data
+ */
 function reload_tomake_needed(data) {
-	$table = $('<table id="product-list-of" class="table table-striped table-condensed product-list"></table> ');
+	console.log('reload_tomake_needed');
+	const parentDiv =$('#tables_tomake_needed');
+	const tableNeeded = TasklistTableHelper.getTable('product-list-of-needed', parentDiv);
+	const tableToMake = TasklistTableHelper.getTable('product-list-of-tomake', parentDiv);
 
-	$table.append('<thead><tr><th class="col-md-8">Produit Nécessaire</th><th class="col-md-2">Quantité prévue</th><th class="col-md-2">Utilisée</th></tr></thead><tbody></tbody>');
-	needed = false;
-	tomake = false;
-	for (x in data.productOF) {
-
-		line = data.productOF[x];
-
-		if (line.type == 'NEEDED') {
-			$tr = $('<tr />');
-			$tr.append('<td>' + line.label + '</td>');
-			$tr.append('<td>' + line.qty + '</td>');
-
-			$tr.append('<td><input rel="prod-qty-used" line-id="' + line.lineid + '" type="text" value="' + line.qty_used + '" size="5" /></td>');
-			$table.find('tbody').append($tr);
-
-			needed = true;
-		}
-	}
-
-	$table2 = $('<table id="product-list-of-tomake" class="table table-striped table-condensed product-list"></table> ');
+	const showComplianceCols = (data.conf.global.OF_MANAGE_NON_COMPLIANT ?? false) && data.of.status.match(/^(OPEN|CLOSE)$/);
+	const complianceCols = [{text: 'Conforme'}, {text: 'Non conforme'}];
+	const tableNeededCols = [
+		{text: 'Produit(s) nécessaire(s)', width: 8},
+		{text: 'Quantité prévue'},
+		{text: 'Utilisée'},
+	];
+	const tableToMakeCols = [
+		{text: 'Produit(s) fabriqué(s)', width: 8},
+		{text: 'Quantité prévue'},
+		// on n'ajoute pas la dernière colonne "Fabriquée" tout de suite car dans le cas où
+		// on doit gérer le non conforme, on la remplace par 2 colonnes "Conforme" et "Non conforme"
+	];
+	if (showComplianceCols) tableToMakeCols.push(...complianceCols);
+	else tableToMakeCols.push({text: 'Fabriquée'});
+	tableNeeded.reset(tableNeededCols);
+	tableToMake.reset(tableToMakeCols);
 	console.log(data.conf.global.OF_MANAGE_NON_COMPLIANT, data.of.status);
-	if (data.conf.global.OF_MANAGE_NON_COMPLIANT == 1 && (data.of.status == 'OPEN' || data.of.status == 'CLOSE')) {
-		$compliantTHead = '<th class="col-md-2">Conforme</th><th class="col-md-2">Non Conforme</th>';
-	} else {
-		$compliantTHead = '<th class="col-md-2">Fabriquée</th>';
-	}
+	console.log(tableNeeded, tableToMake);
 
-	$table2.append('<thead><tr><th class="col-md-8">Produit Fabriqué</th><th class="col-md-2">Quantité prévue</th>' + $compliantTHead + '</tr></thead><tbody></tbody>');
-
-	for (x in data.productOF) {
-
+	let needed = false;
+	let tomake = false;
+	let line;
+	let $tr;
+	for (let x in data.productOF) {
 		line = data.productOF[x];
-
-		if (line.type == 'TO_MAKE') {
-			$tr = $('<tr />');
-			$tr.append('<td>' + line.label + '</td>');
-			$tr.append('<td>' + line.qty + '</td>');
-
-			$tr.append('<td><input rel="prod-qty-used" line-id="' + line.lineid + '" type="text" value="' + line.qty_used + '" size="5" /></td>');
-
-			if (data.conf.global.OF_MANAGE_NON_COMPLIANT == 1 && (data.of.status == 'OPEN' || data.of.status == 'CLOSE')) {
-				$tr.append('<td><input rel="prod-qty-non-compliant" line-id="' + line.lineid + '" type="text" value="' + line.qty_non_compliant + '" size="5" /></td>');
-			}
-			$table2.find('tbody').append($tr);
-
+		const inputQtyUsed = `<input rel="prod-qty-used" data-line-id="${line.lineid}" value="${line.qty_used}" size="5" />`;
+		const inputNonCompliant = `<input rel="prod-qty-non-compliant" data-line-id="${line.lineid}" value="${line.qty_non_compliant}" size="5" />`;
+		if (line.type === 'NEEDED') {
+			needed = true;
+			tableNeeded.addRow(
+				{text: line.label, className: 'product-label'},
+				{text: line.qty, className: 'product-qty-planned'},
+				{html: inputQtyUsed, className: 'product-qty-used'},
+			);
+		} else if (line.type === 'TO_MAKE') {
 			tomake = true;
+			$tr = tableToMake.addRow(
+				{text: line.label, className: 'product-label'},
+				{text: line.qty, className: 'product-qty-planned'},
+				{html: inputQtyUsed, className: 'product-qty-used'},
+			);
+			if (showComplianceCols) {$(`<td>${inputNonCompliant}</td>`).appendTo($tr);}
 		}
 	}
+	if (!needed) {
+		tableNeeded.addRow({
+			text: 'Aucun',
+			colspan: tableNeeded.cols.length
+		});
+	}
 
-	if (needed || tomake) {
-		if (data.conf.global.OF_MANAGE_NON_COMPLIANT == 1 && (data.of.status == 'OPEN' || data.of.status == 'CLOSE') && tomake) {
-			$colspan = 4;
-		} else $colspan = 3;
-		$table2.append('<tr><td align="right" colspan="' + $colspan + '"><button class="btn btn-default" id="retour-atelier">Enregistrer</button></td></tr>');
-		$('#list-task-of div#liste_tache_of').before($table);
-		$('#list-task-of div#liste_tache_of').before($table2);
-
+	if (tomake) {
+		tableToMake.addRow({
+			html: '<button class="btn btn-default" id="retour-atelier">Enregistrer</button>',
+			colspan: tableToMake.cols.length,
+			className: 'td-enregistrer'
+		});
+	} else {
+		tableToMake.addRow({
+			text: 'Aucun',
+			colspan: tableToMake.cols.length
+		});
 	}
 }
 
+/**
+ * Onglet "Ordre de fabrication": récupération en ajax puis affichage des résultats
+ */
 function reload_liste_of() {
 
 	var conf = '';
@@ -344,12 +432,12 @@ function reload_liste_of() {
 		.then(function (data) {
 			//console.log(data);
 			conf = data['conf'];
-			$li = $('ul#liste-of');
+			let $li = $('ul#liste-of');
 
 			$('#list-task-of table.product-list').remove();
 			$li.empty();
 
-			for (x in data) {
+			for (let x in data) {
 				if (x == 'conf') continue;
 				var OF = data[x];
 				var more = '';
@@ -434,6 +522,11 @@ function reload_liste_tache(type, id) {
 	ajax_get_liste_task(id, type);
 }
 
+/**
+ * Récupération en ajax puis affichage de la liste de l'onglet "Tâches"
+ * @param {number} id
+ * @param {string} type
+ */
 function ajax_get_liste_task(id, type) {
 
 	$.ajax({
@@ -447,8 +540,13 @@ function ajax_get_liste_task(id, type) {
 		});
 }
 
+/**
+ * Affichage de l'onglet "Tâches"
+ *
+ * @param {object[]} data
+ * @param {string} type
+ */
 function refresh_liste_tache(data, type) {
-
 	vider_liste(type);
 
 	$.each(data, function (i, task) {
@@ -533,6 +631,9 @@ function vider_liste(onglet) {
 
 checkLoginStatus();
 
+/**
+ * Envoie une requête ajax pour rafraîchir la session: si on a été déconnecté, recharge la page complète.
+ */
 function checkLoginStatus() {
 
 	$.ajax({
@@ -553,5 +654,3 @@ function checkLoginStatus() {
 		});
 
 }
-
-

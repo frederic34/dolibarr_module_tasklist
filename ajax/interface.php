@@ -170,6 +170,14 @@ function _updateQtyOfLine(&$PDOdb,&$fk_of,&$TLine){
 	return $TLineUpdated;
 }
 
+/**
+ * Ajax appelé quand on clique sur un OF dans l'onglet "Ordre de fabrication" de tasklist:
+ * retourne les produits à fabriquer et les produits nécessaires.
+ *
+ * @param $PDOdb
+ * @param $fk_of
+ * @return array|array[]
+ */
 function _getProductTaskOF(&$PDOdb, $fk_of) {
     global $db,$conf;
 

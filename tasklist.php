@@ -100,6 +100,7 @@
                             </div>
                             <div class="col-md-8">
                             	<div id="list-task-of" class="">
+									<div id="tables_tomake_needed"></div>
                             		<div id="liste_tache_of" class="list-group table-responsive"></div>
                             	</div>
                             </div>

@@ -100,3 +100,20 @@ body {
 .flat-table-3 tr:hover {
 	background: rgba(0, 0, 0, 0.1);
 }
+
+#tables_tomake_needed table {
+	border: solid 1px white;
+}
+
+#tables_tomake_needed td.full-width {
+	text-align: right;
+}
+
+#tables_tomake_needed td.product-label {
+}
+
+#tables_tomake_needed td.product-qty-planned {
+}
+
+#tables_tomake_needed td.product-qty-used {
+}
