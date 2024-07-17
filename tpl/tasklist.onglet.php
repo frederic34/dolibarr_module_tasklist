@@ -13,7 +13,7 @@
 		<div class="collapse navbar-collapse " id="menu-tasklist">
 		    <ul class="nav navbar-nav" role="tablist">
 			  <li class="active"><a href="#list-task-user" role="tab" data-toggle="tab"><?php echo $langs->trans('Tasks'); ?></a></li>
-			  <?php if(isset($conf->workstationatm->enabled) && $conf->workstationatm->enabled && $user->hasRight('workstationatm', 'all', 'read')){ ?><li><a href="#list-task-workstation" id="onglet2"  role="tab" data-toggle="tab"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
+			  <?php if(isModEnabled('workstationatm') && $user->hasRight('workstationatm', 'all', 'read')){ ?><li><a href="#list-task-workstation" id="onglet2"  role="tab" data-toggle="tab"><?php echo $langs->trans('WorkStations'); ?></a></li><?php } ?>
 		      <?php if($accessOF) { ?><li><a href="#list-of" id="onglet3" role="tab" data-toggle="tab"><?php echo $langs->trans('OFAsset'); ?></a></li><?php } ?>
 			</ul>
 
