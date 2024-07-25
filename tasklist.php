@@ -10,16 +10,16 @@
     	accessforbidden();
 	}
 
-	if(isset($conf->of->enabled) && $conf->of->enabled) dol_include_once('/of/class/ordre_fabrication_asset.class.php');
-	if(isset($conf->workstationatm->enabled) && $conf->workstationatm->enabled) dol_include_once('/workstationatm/class/workstation.class.php');
+	if(isModEnabled('of')) dol_include_once('/of/class/ordre_fabrication_asset.class.php');
+	if(isModEnabled('workstationatm')) dol_include_once('/workstationatm/class/workstation.class.php');
 
     $conf->use_javascript_ajax = false; // 3.7 compatibility
 
-    if(isset($conf->workstationatm->enabled ) &&  $conf->workstationatm->enabled )  $langs->load('workstationatm@workstationatm');
+    if(isModEnabled('workstationatm'))  $langs->load('workstationatm@workstationatm');
     if(isset($conf->{ ATM_ASSET_NAME }->enabled)  && $conf->{ ATM_ASSET_NAME }->enabled ) $langs->load(ATM_ASSET_NAME . '@' . ATM_ASSET_NAME);
 
     $accessOF = (isset($conf->{ ATM_ASSET_NAME }->enabled) && $conf->{ ATM_ASSET_NAME }->enabled && $user->hasRight( ATM_ASSET_NAME,'of','lire') ) //TODO AA remove old def
-					||( isset($conf->of->enabled) && $conf->of->enabled && $user->hasRight('of','of','lire'));
+					||(isModEnabled('of') && $user->hasRight('of','of','lire'));
 
 
 	$langs->load("projects");
@@ -76,7 +76,7 @@
 			  <div class="tab-pane" id="list-task-workstation">
 			  		<div class="row">
 			  		<?php
-	                    if(isset($conf->workstationatm->enabled) &&  $conf->workstationatm->enabled && $user->hasRight('workstationatm', 'all', 'read')){
+	                    if(isModEnabled('workstationatm') && $user->hasRight('workstationatm', 'all', 'read')){
 	                        ?>
 	                            <!-- Affichage de l'onglet "Postes de travail" -->
 	                            <div class="col-md-4">
