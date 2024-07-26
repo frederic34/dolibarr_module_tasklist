@@ -13,7 +13,7 @@ ob_start();
 	dol_include_once('/core/lib/date.lib.php');
 	dol_include_once('/core/lib/files.lib.php');
 
-	if( isset($conf->of->enabled) &&  $conf->of->enabled)
+	if( isModEnabled('of'))
 		$resOF = dol_include_once('/of/class/ordre_fabrication_asset.class.php');
 	else if( isset($conf->{ ATM_ASSET_NAME }->enabled) &&  $conf->{ ATM_ASSET_NAME }->enabled)
 		$resOF = dol_include_once('/' . ATM_ASSET_NAME . '/class/ordre_fabrication_asset.class.php');
@@ -532,8 +532,8 @@ function _showDocuments($PDOdb, $fk_of) {
                 if(!empty($line->fk_product)) {
                     $product = new Product($db);
                     $product->fetch($line->fk_product);
-                    if(isset($conf->product->enabled) && $conf->product->enabled) $upload_dir = $conf->product->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
-                    else if(isset($conf->service->enabled) && $conf->service->enabled) $upload_dir = $conf->service->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
+                    if(isModEnabled('product')) $upload_dir = $conf->product->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
+                    else if(isModEnabled('service')) $upload_dir = $conf->service->multidir_output[$product->entity] . '/' . get_exdir(0, 0, 0, 0, $product, 'product') . dol_sanitizeFileName($product->ref);
 
                     $out .= _printTableFiles($upload_dir, $product, $langs->trans('Product') . ' : <strong>' . $product->ref . '</strong> ' . $product->label, 'product', $class = 'flat-table flat-table-3');
                 }
@@ -592,7 +592,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 	$sql = "SELECT t.rowid, t.ref as taskRef, t.label as taskLabel, t.description as taskDescription, p.ref as projetRef, p.title as projetLabel, t.planned_workload,p.entity
 			, t.progress, t.priority, t.tasklist_time_start";
 
-	if (isset($conf->ordo->enabled) &&  $conf->ordo->enabled) {
+	if (isModEnabled('ordo')) {
 		$sql .= " ,t.date_estimated_start as dateo,t.date_estimated_end as datee";
 	}
 	else{
@@ -609,7 +609,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
 
 	$date_deb = date('Y-m-d H:i',strtotime('+2 day'));
 
-	if (isset($conf->ordo->enabled) &&  $conf->ordo->enabled) {
+	if (isModEnabled('ordo')) {
 		$sql .= " AND t.date_estimated_start < '".$date_deb."'
 		";
 	}
@@ -684,7 +684,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
         $sql .= " GROUP BY ee.fk_target ";
     }
 
-	if (isset($conf->ordo->enabled) &&  $conf->ordo->enabled) {
+	if (isModEnabled('ordo->enabled) &&  $conf->ordo->enabled) {
 		$sql .= " ORDER BY t.progress DESC, t.date_estimated_start ASC,t.rowid ASC";
 	}
 	else{
