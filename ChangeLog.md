@@ -1,15 +1,14 @@
 # CHANGELOG FOR TASKLIST MODULE
 
 ## Not Released
+
+## Release 3.2
 - NEW : COMPATV20 - *25/07/2024* - 3.2.0
 
-
 ## Release 3.1
-
 - NEW : COMPATV19 - *13/12/2023* - 3.1.0
 
 ## Release 3.0
-
 - FIX : Remove Vardump warnning - *03/07/2023* - 3.0.5
 - FIX : Compatibility 17 - *12/01/2023* - 3.0.4
 - FIX : Module icon - *30/09/2022* - 3.0.3
