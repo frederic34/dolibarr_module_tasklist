@@ -684,7 +684,7 @@ function _getTasklist(&$PDOdb,$id='',$type='', $fk_user = -1){
         $sql .= " GROUP BY ee.fk_target ";
     }
 
-	if (isModEnabled('ordo->enabled) &&  $conf->ordo->enabled) {
+	if (isModEnabled('ordo')) {
 		$sql .= " ORDER BY t.progress DESC, t.date_estimated_start ASC,t.rowid ASC";
 	}
 	else{
